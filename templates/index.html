@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UFC Analytics Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+:root {
+  --red:     #d20000;
+  --red2:    #ff2222;
+  --red3:    #8b0000;
+  --black:   #0a0a0a;
+  --dark:    #111111;
+  --dark2:   #1a1a1a;
+  --card:    #161616;
+  --card2:   #1e1e1e;
+  --border:  rgba(210,0,0,0.2);
+  --white:   #ffffff;
+  --white2:  #cccccc;
+  --white3:  #888888;
+  --sidebar: 240px;
+  --radius:  10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--dark); }
+::-webkit-scrollbar-thumb { background: rgba(210,0,0,0.4); border-radius: 3px; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar);
+  min-width: var(--sidebar);
+  background: var(--black);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 10;
+}
+
+.sb-logo {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sb-logo-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--red);
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  color: white;
+  flex-shrink: 0;
+}
+.sb-logo-text { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; }
+.sb-logo-sub { font-size: 10px; color: var(--white3); letter-spacing: 2px; }
+
+.sb-nav { flex: 1; padding: 12px 0; }
+.sb-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--white3);
+  text-transform: uppercase;
+  padding: 12px 18px 6px;
+}
+.sb-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 18px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--white2);
+  position: relative;
+}
+.sb-item:hover { background: rgba(210,0,0,0.07); color: var(--white); border-left-color: rgba(210,0,0,0.4); }
+.sb-item.active { background: rgba(210,0,0,0.12); color: var(--red2); border-left-color: var(--red); }
+.sb-item i { width: 16px; height: 16px; flex-shrink: 0; }
+
+.sb-footer {
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sb-footer-stats { display: flex; justify-content: space-between; font-size: 10px; color: var(--white3); }
+.sb-footer-stats span strong { color: var(--white2); font-size: 11px; }
+.foot-link {
+  font-size: 11px;
+  color: var(--white3);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+.foot-link:hover { color: var(--red2); }
+
+/* ── Main ── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.topbar {
+  height: 56px;
+  min-height: 56px;
+  background: var(--black);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  gap: 16px;
+}
+
+.topbar-title { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 600; letter-spacing: 1px; }
+.topbar-title span { color: var(--red); }
+
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+
+.search-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--dark2);
+  border: 1px solid var(--border);
+  color: var(--white2);
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+.search-btn:hover { border-color: rgba(210,0,0,0.5); color: var(--white); }
+.search-btn i { width: 15px; height: 15px; }
+.search-kbd { font-size: 10px; background: var(--dark); padding: 2px 5px; border-radius: 3px; color: var(--white3); border: 1px solid #333; }
+
+.topbar-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(210,0,0,0.1);
+  border: 1px solid rgba(210,0,0,0.25);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--red2);
+}
+.topbar-badge .dot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; animation: pulse-dot 1.5s infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+
+/* ── Content ── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+/* ── Section ── */
+.section { display: none; }
+.section.active { display: block; }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.section-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(210,0,0,0.1);
+  border: 1px solid rgba(210,0,0,0.3);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--red);
+}
+.section-icon i { width: 20px; height: 20px; }
+.section-title { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 1px; }
+.section-sub { font-size: 12px; color: var(--white3); margin-top: 2px; }
+
+/* ── Grid ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.col-span-2 { grid-column: span 2; }
+
+/* ── Card ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.card-header {
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-title { font-size: 13px; font-weight: 600; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+.card-title i { width: 14px; height: 14px; color: var(--red); }
+.card-body { padding: 14px 18px; }
+
+/* ── KPI cards ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+.kpi {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.kpi::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--red);
+}
+.kpi:hover { border-color: rgba(210,0,0,0.4); }
+.kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--white3); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.kpi-label i { width: 12px; height: 12px; }
+.kpi-value { font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 700; color: var(--white); }
+.kpi-value span { font-size: 13px; color: var(--white3); font-family: 'Inter', sans-serif; margin-left: 4px; }
+.kpi-trend { font-size: 11px; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+.kpi-trend.pos { color: #22c55e; }
+.kpi-trend.neg { color: var(--red2); }
+.kpi-trend i { width: 12px; height: 12px; }
+
+/* ── Chart container ── */
+.chart-wrap {
+  position: relative;
+  min-height: 340px;
+}
+.chart-wrap.tall { min-height: 440px; }
+.chart-inner {
+  width: 100%;
+  min-height: 340px;
+}
+.chart-loader {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px;
+  color: var(--white3);
+  font-size: 12px;
+}
+.spinner {
+  width: 32px; height: 32px;
+  border: 2px solid var(--border);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.chart-error { color: var(--red2); font-size: 12px; display: flex; align-items: center; gap: 6px; }
+.chart-error i { width: 14px; height: 14px; }
+
+/* ── Fighter Search ── */
+.search-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-top: 16px; }
+
+.fighter-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+.fighter-card:hover { border-color: rgba(210,0,0,0.5); transform: translateY(-2px); }
+
+.fighter-card-img {
+  height: 160px;
+  background: linear-gradient(180deg, var(--dark2) 0%, var(--card) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.fighter-card-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.fighter-card-img .silhouette {
+  width: 80px;
+  height: 110px;
+  color: rgba(210,0,0,0.25);
+}
+.fighter-card-img::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40px;
+  background: linear-gradient(to top, var(--card), transparent);
+}
+
+.fighter-card-info { padding: 12px 14px 14px; flex: 1; }
+.fighter-card-name { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fighter-card-record { font-size: 12px; color: var(--white3); margin-bottom: 8px; }
+.fighter-card-record strong { color: var(--white2); }
+.fighter-card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.fighter-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 3px;
+  background: rgba(210,0,0,0.1);
+  border: 1px solid rgba(210,0,0,0.25);
+  color: var(--red2);
+}
+.fighter-tag.neutral { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: var(--white3); }
+
+.search-bar-wrap {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.search-input {
+  flex: 1;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: var(--white);
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: rgba(210,0,0,0.5); }
+.search-input::placeholder { color: var(--white3); }
+
+.btn-red {
+  background: var(--red);
+  border: none;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: background 0.2s;
+}
+.btn-red:hover { background: var(--red2); }
+.btn-red i { width: 15px; height: 15px; }
+
+.pagination { display: flex; gap: 6px; margin-top: 20px; justify-content: center; }
+.page-btn {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  color: var(--white2);
+  width: 34px; height: 34px;
+  border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+.page-btn:hover, .page-btn.active { background: var(--red); border-color: var(--red); color: white; }
+.page-btn i { width: 14px; height: 14px; }
+
+/* ── Fighter Overlay ── */
+.overlay-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.overlay-backdrop.open { display: flex; }
+
+.fighter-overlay {
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.overlay-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  background: rgba(210,0,0,0.15);
+  border: 1px solid rgba(210,0,0,0.3);
+  color: var(--white);
+  width: 34px; height: 34px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+  z-index: 2;
+}
+.overlay-close:hover { background: rgba(210,0,0,0.35); }
+.overlay-close i { width: 16px; height: 16px; }
+
+.overlay-hero {
+  display: flex;
+  gap: 24px;
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.overlay-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 200px; height: 100%;
+  background: linear-gradient(135deg, transparent 0%, rgba(210,0,0,0.05) 100%);
+}
+.overlay-photo {
+  width: 120px;
+  height: 160px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--dark2) 0%, var(--card) 100%);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+.overlay-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.overlay-photo .silhouette { width: 70px; height: 95px; color: rgba(210,0,0,0.3); }
+
+.overlay-info { flex: 1; }
+.overlay-name { font-family: 'Rajdhani', sans-serif; font-size: 30px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+.overlay-record { font-size: 22px; font-family: 'Orbitron', sans-serif; font-weight: 600; color: var(--red); margin-bottom: 12px; }
+.overlay-record span { color: var(--white3); font-size: 14px; margin: 0 4px; }
+.overlay-attrs { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
+.attr-item { display: flex; flex-direction: column; gap: 2px; }
+.attr-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--white3); }
+.attr-value { font-size: 14px; font-weight: 600; color: var(--white2); }
+
+.stars-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.star-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.star-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--white3); text-align: center; }
+.star-pips { display: flex; gap: 3px; }
+.pip {
+  width: 8px; height: 8px;
+  border-radius: 2px;
+  border: 1px solid rgba(210,0,0,0.4);
+  transition: background 0.3s;
+}
+.pip.filled { background: var(--red); border-color: var(--red); }
+
+.overlay-body { padding: 20px 24px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+.mini-chart-card { grid-column: span 2; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.mini-chart-card .card-header { padding: 10px 14px 8px; }
+.mini-chart-card .card-title { font-size: 12px; }
+.mini-chart-inner { min-height: 200px; }
+
+.perf-bars { grid-column: span 2; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+.perf-bar-title { font-size: 11px; font-weight: 600; margin-bottom: 12px; letter-spacing: 0.5px; color: var(--white2); }
+.perf-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.perf-label { display: flex; justify-content: space-between; font-size: 11px; }
+.perf-label span:first-child { color: var(--white3); }
+.perf-label span:last-child { font-weight: 600; color: var(--white2); }
+.perf-track { height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
+.perf-fill { height: 100%; background: linear-gradient(90deg, var(--red), var(--red2)); border-radius: 3px; transition: width 0.8s ease; }
+
+/* ── Compare Section ── */
+.compare-layout { display: grid; grid-template-columns: 1fr 80px 1fr; gap: 0; align-items: start; }
+.compare-side { display: flex; flex-direction: column; gap: 14px; }
+.vs-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 48px;
+}
+.vs-badge {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--red);
+  background: var(--card);
+  border: 2px solid var(--red);
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.compare-search {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.compare-search-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--white3); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.compare-search-label i { width: 13px; height: 13px; }
+.compare-input-wrap { position: relative; }
+.compare-input {
+  width: 100%;
+  background: var(--dark2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 12px;
+  color: var(--white);
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.compare-input:focus { border-color: rgba(210,0,0,0.5); }
+.compare-input::placeholder { color: var(--white3); }
+.compare-dropdown {
+  position: absolute;
+  top: 100%; left: 0; right: 0;
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 20;
+  display: none;
+}
+.compare-dropdown.open { display: block; }
+.compare-opt {
+  padding: 9px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  display: flex; justify-content: space-between; align-items: center;
+  transition: background 0.15s;
+}
+.compare-opt:hover { background: rgba(210,0,0,0.1); }
+.compare-opt-name { font-weight: 500; }
+.compare-opt-rec { color: var(--white3); font-size: 11px; }
+
+.compare-fighter-card {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.compare-fighter-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--red);
+}
+.compare-fighter-card.visible { display: flex; }
+.cfc-photo {
+  width: 80px; height: 100px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, var(--dark2) 0%, var(--card) 100%);
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.cfc-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.cfc-photo .silhouette { width: 45px; height: 60px; color: rgba(210,0,0,0.3); }
+.cfc-name { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; }
+.cfc-record { font-size: 13px; color: var(--white3); }
+.cfc-record strong { color: var(--red2); font-size: 15px; }
+
+.compare-btn-row { display: flex; justify-content: center; margin-top: 8px; }
+.compare-go-btn {
+  background: var(--red);
+  border: none;
+  color: white;
+  padding: 11px 32px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 1px;
+  transition: background 0.2s;
+}
+.compare-go-btn:hover { background: var(--red2); }
+.compare-go-btn i { width: 16px; height: 16px; }
+
+.compare-results { margin-top: 20px; display: none; }
+.compare-results.visible { display: block; }
+
+.prob-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.prob-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.prob-track {
+  height: 28px;
+  background: var(--dark2);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  margin-bottom: 8px;
+}
+.prob-f1 { background: linear-gradient(90deg, var(--red), var(--red2)); transition: width 0.8s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; }
+.prob-f2 { background: linear-gradient(90deg, #333, #555); flex: 1; display: flex; align-items: center; padding-left: 10px; }
+.prob-pct { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; color: white; }
+.prob-names { display: flex; justify-content: space-between; font-size: 11px; color: var(--white3); }
+
+.stats-compare-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.stats-compare-header { text-align: center; padding: 12px; background: var(--dark2); border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--white3); }
+.stat-row-f1, .stat-row-label, .stat-row-f2 {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  align-items: center;
+}
+.stat-row-f1 { justify-content: flex-end; font-weight: 600; }
+.stat-row-label { justify-content: center; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--white3); background: rgba(255,255,255,0.02); border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); }
+.stat-row-f2 { justify-content: flex-start; font-weight: 600; }
+.stat-winner { color: var(--red2) !important; }
+
+.compare-radar-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* ── Global search overlay ── */
+.gsearch-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 80px;
+}
+.gsearch-overlay.open { display: flex; }
+.gsearch-box {
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  overflow: hidden;
+}
+.gsearch-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.gsearch-input-row i { width: 18px; height: 18px; color: var(--red); flex-shrink: 0; }
+.gsearch-main-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--white);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+}
+.gsearch-main-input::placeholder { color: var(--white3); }
+.gsearch-esc { font-size: 10px; color: var(--white3); background: var(--dark2); padding: 3px 7px; border-radius: 3px; border: 1px solid #333; cursor: pointer; flex-shrink: 0; }
+.gsearch-results { max-height: 380px; overflow-y: auto; }
+.gsearch-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 18px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.15s;
+}
+.gsearch-item:hover { background: rgba(210,0,0,0.08); }
+.gsearch-item-photo {
+  width: 38px; height: 50px;
+  border-radius: 4px;
+  background: var(--dark2);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border);
+}
+.gsearch-item-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.gsearch-item-photo .silhouette { width: 22px; height: 28px; color: rgba(210,0,0,0.3); }
+.gsearch-item-info { flex: 1; }
+.gsearch-item-name { font-size: 14px; font-weight: 600; }
+.gsearch-item-sub { font-size: 11px; color: var(--white3); margin-top: 2px; }
+.gsearch-item-record { font-size: 12px; font-weight: 600; color: var(--red2); }
+.gsearch-empty { padding: 32px 18px; text-align: center; color: var(--white3); font-size: 13px; }
+
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-icon">UFC</div>
+    <div>
+      <div class="sb-logo-text">ANALYTICS</div>
+      <div class="sb-logo-sub">DASHBOARD</div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section-label">Analytics</div>
+    <div class="sb-item active" onclick="showSection('overview',this)">
+      <i data-lucide="layout-dashboard"></i> Overview
+    </div>
+    <div class="sb-item" onclick="showSection('physical',this)">
+      <i data-lucide="ruler"></i> Physical Attributes
+    </div>
+    <div class="sb-item" onclick="showSection('stance',this)">
+      <i data-lucide="shield"></i> Stance Analysis
+    </div>
+    <div class="sb-item" onclick="showSection('experience',this)">
+      <i data-lucide="star"></i> Experience
+    </div>
+    <div class="sb-item" onclick="showSection('outcomes',this)">
+      <i data-lucide="target"></i> Fight Outcomes
+    </div>
+    <div class="sb-item" onclick="showSection('weight',this)">
+      <i data-lucide="scale"></i> Weight Classes
+    </div>
+    <div class="sb-item" onclick="showSection('trends',this)">
+      <i data-lucide="trending-up"></i> Trends
+    </div>
+    <div class="sb-section-label">Fighters</div>
+    <div class="sb-item" onclick="showSection('fighters',this)">
+      <i data-lucide="users"></i> Fighter Search
+    </div>
+    <div class="sb-item" onclick="showSection('compare',this)" id="compare-nav-item">
+      <i data-lucide="git-compare"></i> Compare Fighters
+    </div>
+  </nav>
+
+  <div class="sb-footer">
+    <div class="sb-footer-stats">
+      <span>Fighters <strong id="total-fighters">—</strong></span>
+      <span>Fights <strong id="total-fights">—</strong></span>
+    </div>
+    <a href="/" class="foot-link">
+      <i data-lucide="home"></i> Home
+    </a>
+  </div>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-title">UFC <span>Analytics</span></div>
+    <div class="topbar-right">
+      <button class="search-btn" onclick="openGSearch()">
+        <i data-lucide="search"></i>
+        Search fighters
+        <span class="search-kbd">Ctrl+K</span>
+      </button>
+      <div class="topbar-badge">
+        <span class="dot"></span>
+        Live Data
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content" id="content">
+
+    <!-- Overview -->
+    <div class="section active" id="sec-overview">
+      <div class="section-header">
+        <div class="section-icon"><i data-lucide="layout-dashboard"></i></div>
+        <div>
+          <div class="section-title">Overview</div>
+          <div class="section-sub">Dataset summary and key performance indicators</div>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label"><i data-lucide="users"></i> Total Fighters</div>
+          <div class="kpi-value" id="kpi-fighters">—</div>
+          <div class="kpi-trend pos"><i data-lucide="trending-up"></i> In dataset</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label"><i data-lucide="zap"></i> Total Fights</div>
+          <div class="kpi-value" id="kpi-fights">—</div>
+          <div class="kpi-trend pos"><i data-lucide="trending-up"></i> Recorded</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label"><i data-lucide="percent"></i> Avg Win Rate</div>
+          <div class="kpi-value" id="kpi-winrate">—<span>%</span></div>
+          <div class="kpi-trend"><i data-lucide="bar-chart-2"></i> Across all fighters</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label"><i data-lucide="flame"></i> KO Rate</div>
+          <div class="kpi-value" id="kpi-ko">—<span>%</span></div>
+          <div class="kpi-trend"><i data-lucide="activity"></i> Avg finish rate</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="grid"></i> Win Rate Heatmap</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-overview-heatmap">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-overview-heatmap"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="pie-chart"></i> Fight Result Distribution</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-overview-pie">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-overview-pie"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Physical -->
+    <div class="section" id="sec-physical">
+      <div class="section-header">
+        <div class="section-icon"><i data-lucide="ruler"></i></div>
+        <div>
+          <div class="section-title">Physical Attributes</div>
+          <div class="section-sub">Height, reach, and weight correlations with performance</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="bar-chart-2"></i> Physical vs Performance</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap tall" id="wrap-physical">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-physical"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="scatter-chart"></i> Attribute Scatter</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap tall" id="wrap-physical2">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-physical2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stance -->
+    <div class="section" id="sec-stance">
+      <div class="section-header">
+        <div class="section-icon"><i data-lucide="shield"></i></div>
+        <div>
+          <div class="section-title">Stance Analysis</div>
+          <div class="section-sub">Orthodox vs Southpaw and other stance distributions</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i data-lucide="bar-chart-2"></i> Win Rate by Stance</div></div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-stance-bar">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-stance-bar"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i data-lucide="pie-chart"></i> Stance Distribution</div></div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-stance-pie">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-stance-pie"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card col-span-2">
+          <div class="card-header"><div class="card-title"><i data-lucide="box"></i> Performance Box Plots</div></div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-stance-box">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-stance-box"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Experience -->
+    <div class="section" id="sec-experience">
+      <div class="section-header">
+        <div class="section-icon"><i data-lucide="star"></i></div>
+        <div>
+          <div class="section-title">Experience</div>
+          <div class="section-sub">Fight count impact on performance metrics</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i data-lucide="bar-chart-2"></i> Experience Brackets</div></div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-exp-bar">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-exp-bar"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i data-lucide="trending-up"></i> Performance Trend</div></div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-exp-scatter">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-exp-scatter"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Outcomes -->
+    <div class="section" id="sec-outcomes">
+      <div class="section-header">
+        <div class="section-icon"><i data-lucide="target"></i></div>
+        <div>
+          <div class="section-title">Fight Outcomes</div>
+          <div class="section-sub">Win methods, finish rates, and historical trends</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i data-lucide="bar-chart-2"></i> Outcome Metrics</div></div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-outcomes-multi">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-outcomes-multi"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i data-lucide="layers"></i> Stacked Over Time</div></div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-outcomes-stacked">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-outcomes-stacked"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weight Classes -->
+    <div class="section" id="sec-weight">
+      <div class="section-header">
+        <div class="section-icon"><i data-lucide="scale"></i></div>
+        <div>
+          <div class="section-title">Weight Classes</div>
+          <div class="section-sub">Physical and performance breakdown by division</div>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i data-lucide="ruler"></i> Physical Stats</div></div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-wc-phys">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-wc-phys"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i data-lucide="percent"></i> Win/KO Rates</div></div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-wc-rates">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-wc-rates"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i data-lucide="crosshair"></i> Strike Stats</div></div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-wc-str">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-wc-str"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trends -->
+    <div class="section" id="sec-trends">
+      <div class="section-header">
+        <div class="section-icon"><i data-lucide="trending-up"></i></div>
+        <div>
+          <div class="section-title">Trends</div>
+          <div class="section-sub">Year-over-year analytics and sport evolution</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i data-lucide="line-chart"></i> Historical Trends</div></div>
+        <div class="card-body">
+          <div class="chart-wrap tall" id="wrap-trends">
+            <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+            <div class="chart-inner" id="chart-trends"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fighters -->
+    <div class="section" id="sec-fighters">
+      <div class="section-header">
+        <div class="section-icon"><i data-lucide="users"></i></div>
+        <div>
+          <div class="section-title">Fighter Search</div>
+          <div class="section-sub">Browse and search all fighters in the database</div>
+        </div>
+      </div>
+      <div class="search-bar-wrap" style="margin-bottom:16px">
+        <input type="text" class="search-input" id="fighter-search-input" placeholder="Search by name, stance, weight class..." oninput="filterFighters(this.value)">
+        <button class="btn-red" onclick="filterFighters(document.getElementById('fighter-search-input').value)">
+          <i data-lucide="search"></i> Search
+        </button>
+      </div>
+      <div id="fighter-grid" class="search-grid"></div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <!-- Compare -->
+    <div class="section" id="sec-compare">
+      <div class="section-header">
+        <div class="section-icon"><i data-lucide="git-compare"></i></div>
+        <div>
+          <div class="section-title">Compare Fighters</div>
+          <div class="section-sub">Head-to-head stats and win probability analysis</div>
+        </div>
+      </div>
+
+      <div class="compare-layout">
+        <!-- Fighter 1 -->
+        <div class="compare-side">
+          <div class="compare-search">
+            <div class="compare-search-label"><i data-lucide="user"></i> Fighter 1</div>
+            <div class="compare-input-wrap">
+              <input type="text" class="compare-input" id="cmp-input-1" placeholder="Search fighter..." oninput="searchCompare(1,this.value)" autocomplete="off">
+              <div class="compare-dropdown" id="cmp-drop-1"></div>
+            </div>
+          </div>
+          <div class="compare-fighter-card" id="cmp-card-1">
+            <div class="cfc-photo" id="cmp-photo-1">
+              <svg viewBox="0 0 80 110" fill="currentColor" class="silhouette">
+                <ellipse cx="42" cy="13" rx="11" ry="12"/>
+                <path d="M37 24 L47 24 L49 31 L35 31 Z"/>
+                <path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/>
+                <path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/>
+                <path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/>
+                <path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/>
+                <path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/>
+              </svg>
+            </div>
+            <div class="cfc-name" id="cmp-name-1">Fighter 1</div>
+            <div class="cfc-record" id="cmp-record-1"><strong>0</strong>-0-0</div>
+          </div>
+        </div>
+
+        <!-- VS -->
+        <div class="vs-divider">
+          <div class="vs-badge">VS</div>
+        </div>
+
+        <!-- Fighter 2 -->
+        <div class="compare-side">
+          <div class="compare-search">
+            <div class="compare-search-label"><i data-lucide="user"></i> Fighter 2</div>
+            <div class="compare-input-wrap">
+              <input type="text" class="compare-input" id="cmp-input-2" placeholder="Search fighter..." oninput="searchCompare(2,this.value)" autocomplete="off">
+              <div class="compare-dropdown" id="cmp-drop-2"></div>
+            </div>
+          </div>
+          <div class="compare-fighter-card" id="cmp-card-2">
+            <div class="cfc-photo" id="cmp-photo-2">
+              <svg viewBox="0 0 80 110" fill="currentColor" class="silhouette">
+                <ellipse cx="42" cy="13" rx="11" ry="12"/>
+                <path d="M37 24 L47 24 L49 31 L35 31 Z"/>
+                <path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/>
+                <path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/>
+                <path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/>
+                <path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/>
+                <path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/>
+              </svg>
+            </div>
+            <div class="cfc-name" id="cmp-name-2">Fighter 2</div>
+            <div class="cfc-record" id="cmp-record-2"><strong>0</strong>-0-0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-btn-row" style="margin-top:20px">
+        <button class="compare-go-btn" onclick="runCompare()">
+          <i data-lucide="zap"></i> ANALYZE MATCHUP
+        </button>
+      </div>
+
+      <!-- Results -->
+      <div class="compare-results" id="cmp-results">
+        <div class="prob-section">
+          <div class="prob-label">
+            <span id="prob-name-f1">Fighter 1</span>
+            <span id="prob-name-f2">Fighter 2</span>
+          </div>
+          <div class="prob-track">
+            <div class="prob-f1" id="prob-bar-f1" style="width:50%">
+              <span class="prob-pct" id="prob-pct-f1">50%</span>
+            </div>
+            <div class="prob-f2">
+              <span class="prob-pct" id="prob-pct-f2">50%</span>
+            </div>
+          </div>
+          <div class="prob-names">
+            <span>Win Probability</span>
+            <span>Win Probability</span>
+          </div>
+        </div>
+
+        <div class="stats-compare-grid">
+          <div class="stats-compare-header">Fighter 1</div>
+          <div class="stats-compare-header">Stat</div>
+          <div class="stats-compare-header">Fighter 2</div>
+          <div id="cmp-stat-rows"></div>
+          <div></div>
+          <div id="cmp-stat-labels"></div>
+          <div></div>
+          <div id="cmp-stat-rows2"></div>
+        </div>
+
+        <div class="compare-radar-card">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="radar"></i> Radar Comparison</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap" id="wrap-cmp-radar">
+              <div class="chart-loader"><div class="spinner"></div>Loading...</div>
+              <div class="chart-inner" id="chart-cmp-radar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- Fighter overlay -->
+<div class="overlay-backdrop" id="fighter-overlay">
+  <div class="fighter-overlay">
+    <button class="overlay-close" onclick="closeOverlay()"><i data-lucide="x"></i></button>
+    <div class="overlay-hero">
+      <div class="overlay-photo" id="ov-photo">
+        <svg viewBox="0 0 80 110" fill="currentColor" class="silhouette">
+          <ellipse cx="42" cy="13" rx="11" ry="12"/>
+          <path d="M37 24 L47 24 L49 31 L35 31 Z"/>
+          <path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/>
+          <path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/>
+          <path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/>
+          <path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/>
+          <path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/>
+        </svg>
+      </div>
+      <div class="overlay-info">
+        <div class="overlay-name" id="ov-name">Fighter Name</div>
+        <div class="overlay-record"><span id="ov-w">0</span><span>-</span><span id="ov-l">0</span><span>-</span><span id="ov-d">0</span></div>
+        <div class="overlay-attrs" id="ov-attrs"></div>
+        <div class="stars-grid" id="ov-stars"></div>
+      </div>
+    </div>
+    <div class="overlay-body">
+      <div class="mini-chart-card">
+        <div class="card-header"><div class="card-title"><i data-lucide="pie-chart"></i> Win Methods</div></div>
+        <div class="mini-chart-inner" id="ov-chart-methods"></div>
+      </div>
+      <div class="mini-chart-card">
+        <div class="card-header"><div class="card-title"><i data-lucide="radar"></i> Radar Profile</div></div>
+        <div class="mini-chart-inner" id="ov-chart-radar"></div>
+      </div>
+      <div class="perf-bars">
+        <div class="perf-bar-title">Performance Metrics</div>
+        <div id="ov-perf-bars"></div>
+      </div>
+      <div class="mini-chart-card">
+        <div class="card-header"><div class="card-title"><i data-lucide="bar-chart-2"></i> Wins vs Losses</div></div>
+        <div class="mini-chart-inner" id="ov-chart-wl"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Global search overlay -->
+<div class="gsearch-overlay" id="gsearch-overlay">
+  <div class="gsearch-box">
+    <div class="gsearch-input-row">
+      <i data-lucide="search"></i>
+      <input type="text" class="gsearch-main-input" id="gsearch-input" placeholder="Search UFC fighters..." oninput="gsearchDebounced(this.value)">
+      <span class="gsearch-esc" onclick="closeGSearch()">ESC</span>
+    </div>
+    <div class="gsearch-results" id="gsearch-results">
+      <div class="gsearch-empty">Start typing to search fighters...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Silhouette SVG ──
+const SVG_SIL = `<svg viewBox="0 0 80 110" fill="currentColor" class="silhouette">
+  <ellipse cx="42" cy="13" rx="11" ry="12"/>
+  <path d="M37 24 L47 24 L49 31 L35 31 Z"/>
+  <path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/>
+  <path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/>
+  <path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/>
+  <path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/>
+  <path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/>
+</svg>`;
+
+// ── Section navigation ──
+const loaded = new Set();
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  if (!loaded.has(id)) {
+    loaded.add(id);
+    loadSection(id);
+  }
+}
+
+// ── Chart renderer ──
+function renderChart(elId, fig, height) {
+  const f = typeof fig === 'string' ? JSON.parse(fig) : fig;
+  const wrap = document.getElementById('wrap-' + elId.replace('chart-', ''));
+  const loader = wrap ? wrap.querySelector('.chart-loader') : null;
+  if (loader) loader.style.display = 'none';
+
+  const layout = f.layout || {};
+  layout.paper_bgcolor = 'rgba(0,0,0,0)';
+  layout.plot_bgcolor  = 'rgba(0,0,0,0)';
+  layout.font = { color: '#cccccc', family: 'Inter, sans-serif', size: 11 };
+  layout.margin = layout.margin || { t: 30, r: 20, b: 50, l: 50 };
+  layout.height = height || 340;
+  if (layout.xaxis) { layout.xaxis.gridcolor = 'rgba(255,255,255,0.06)'; layout.xaxis.linecolor = '#333'; }
+  if (layout.yaxis) { layout.yaxis.gridcolor = 'rgba(255,255,255,0.06)'; layout.yaxis.linecolor = '#333'; }
+
+  Plotly.react(elId, f.data || [], layout, {
+    responsive: true,
+    displayModeBar: false,
+    staticPlot: false
+  });
+}
+
+function showError(wrapId) {
+  const wrap = document.getElementById(wrapId);
+  if (!wrap) return;
+  const loader = wrap.querySelector('.chart-loader');
+  if (loader) loader.innerHTML = '<span class="chart-error"><i data-lucide="alert-circle"></i> Failed to load chart</span>';
+  lucide.createIcons();
+}
+
+// ── Generic chart loader ──
+async function loadCharts(url, pairs) {
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(resp.status);
+    const data = await resp.json();
+    for (const [elId, key] of pairs) {
+      if (data[key]) renderChart(elId, data[key]);
+      else showError('wrap-' + elId.replace('chart-', ''));
+    }
+  } catch(e) {
+    for (const [elId] of pairs) showError('wrap-' + elId.replace('chart-', ''));
+  }
+}
+
+// ── Physical special handler ──
+async function loadPhysical() {
+  try {
+    const resp = await fetch('/api/charts/physical');
+    if (!resp.ok) throw new Error(resp.status);
+    const data = await resp.json();
+    if (data.charts && data.charts[0]) renderChart('chart-physical',  data.charts[0], 400);
+    else showError('wrap-physical');
+    if (data.charts && data.charts[1]) renderChart('chart-physical2', data.charts[1], 400);
+    else showError('wrap-physical2');
+  } catch(e) {
+    showError('wrap-physical');
+    showError('wrap-physical2');
+  }
+}
+
+// ── Overview stats ──
+async function loadOverview() {
+  try {
+    const resp = await fetch('/api/stats');
+    if (!resp.ok) throw new Error(resp.status);
+    const d = await resp.json();
+    animNum('kpi-fighters', 0, d.fighters || 0, 1000);
+    animNum('kpi-fights',   0, d.fights   || 0, 1000);
+    animDec('kpi-winrate', d.avg_win_rate || 0, 1000);
+    animDec('kpi-ko',      d.ko_rate      || 0, 1000);
+    const tf = document.getElementById('total-fighters');
+    const tft = document.getElementById('total-fights');
+    if (tf) tf.textContent = d.fighters || '—';
+    if (tft) tft.textContent = d.fights   || '—';
+  } catch(e) {}
+  loadCharts('/api/charts/overview', [
+    ['chart-overview-heatmap', 'heatmap'],
+    ['chart-overview-pie',     'pie']
+  ]);
+}
+
+function animNum(id, from, to, ms) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const suffix = el.querySelector('span') ? el.querySelector('span').outerHTML : '';
+  const frames = 40;
+  let i = 0;
+  const iv = setInterval(() => {
+    i++;
+    const f = i / frames;
+    const eased = 1 - Math.pow(1 - f, 3);
+    const val = Math.round(from + (to - from) * eased);
+    el.innerHTML = val.toLocaleString() + suffix;
+    if (i >= frames) clearInterval(iv);
+  }, ms / frames);
+}
+function animDec(id, to, ms) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const suffix = el.querySelector('span') ? el.querySelector('span').outerHTML : '';
+  const frames = 40;
+  let i = 0;
+  const iv = setInterval(() => {
+    i++;
+    const f = i / frames;
+    const eased = 1 - Math.pow(1 - f, 3);
+    el.innerHTML = (to * eased).toFixed(1) + suffix;
+    if (i >= frames) clearInterval(iv);
+  }, ms / frames);
+}
+
+// ── Section loader dispatch ──
+function loadSection(id) {
+  if (id === 'overview')  return loadOverview();
+  if (id === 'physical')  return loadPhysical();
+  if (id === 'stance')    return loadCharts('/api/charts/stance',    [['chart-stance-bar','bar'],['chart-stance-pie','pie'],['chart-stance-box','box']]);
+  if (id === 'experience') return loadCharts('/api/charts/experience', [['chart-exp-bar','bar'],['chart-exp-scatter','scatter']]);
+  if (id === 'outcomes')  return loadCharts('/api/charts/outcomes',  [['chart-outcomes-multi','metrics'],['chart-outcomes-stacked','time']]);
+  if (id === 'weight')    return loadCharts('/api/charts/weight',    [['chart-wc-phys','physical'],['chart-wc-rates','rates'],['chart-wc-str','strike']]);
+  if (id === 'trends')    return loadCharts('/api/charts/trends',    [['chart-trends','trends']]);
+  if (id === 'fighters')  return initFighters();
+  // compare: no auto-load
+}
+
+// ── Fighter Search ──
+let allFighters = [], filteredFighters = [], page = 1, perPage = 12;
+
+async function initFighters() {
+  try {
+    const resp = await fetch('/api/search?q=');
+    const data = await resp.json();
+    allFighters = data.results || [];
+    filteredFighters = allFighters;
+    renderFighters();
+  } catch(e) {}
+}
+
+function filterFighters(q) {
+  const ql = q.toLowerCase().trim();
+  filteredFighters = ql ? allFighters.filter(f => (f['Full Name']||'').toLowerCase().includes(ql) || (f.Stance||'').toLowerCase().includes(ql)) : allFighters;
+  page = 1;
+  renderFighters();
+}
+
+function renderFighters() {
+  const grid = document.getElementById('fighter-grid');
+  const pgn  = document.getElementById('pagination');
+  const start = (page - 1) * perPage;
+  const slice = filteredFighters.slice(start, start + perPage);
+  const totalPages = Math.ceil(filteredFighters.length / perPage);
+
+  grid.innerHTML = slice.map(f => {
+    const name = f['Full Name'] || 'Unknown';
+    const w = f.W || 0, l = f.L || 0, d = f.D || 0;
+    const stance = f.Stance || '';
+    const winRate = f.Win_Rate ? (f.Win_Rate * 100).toFixed(0) + '% wins' : '';
+    return `
+    <div class="fighter-card" onclick="openFighter('${f.Fighter_Id}')">
+      <div class="fighter-card-img">
+        ${SVG_SIL}
+      </div>
+      <div class="fighter-card-info">
+        <div class="fighter-card-name">${name}</div>
+        <div class="fighter-card-record">Record: <strong>${w}-${l}-${d}</strong></div>
+        <div class="fighter-card-tags">
+          ${stance ? `<span class="fighter-tag">${stance}</span>` : ''}
+          ${winRate ? `<span class="fighter-tag neutral">${winRate}</span>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  pgn.innerHTML = '';
+  if (totalPages > 1) {
+    const addBtn = (label, icon, p, active) => {
+      const b = document.createElement('div');
+      b.className = 'page-btn' + (active ? ' active' : '');
+      b.innerHTML = icon ? `<i data-lucide="${icon}"></i>` : label;
+      if (p) b.onclick = () => { page = p; renderFighters(); };
+      pgn.appendChild(b);
+      lucide.createIcons({ el: b });
+    };
+    if (page > 1) addBtn('', 'chevron-left', page - 1, false);
+    for (let p2 = Math.max(1, page-2); p2 <= Math.min(totalPages, page+2); p2++) {
+      addBtn(p2, null, p2, p2 === page);
+    }
+    if (page < totalPages) addBtn('', 'chevron-right', page + 1, false);
+  }
+  lucide.createIcons({ el: grid });
+}
+
+// ── Fighter Overlay ──
+async function openFighter(fid) {
+  document.getElementById('fighter-overlay').classList.add('open');
+  try {
+    const [infoResp, chartResp] = await Promise.all([
+      fetch('/api/fighter/' + fid),
+      fetch('/api/fighter/' + fid + '/charts')
+    ]);
+    const info   = await infoResp.json();
+    const charts = await chartResp.json();
+
+    const photo = document.getElementById('ov-photo');
+    photo.innerHTML = SVG_SIL;
+
+    document.getElementById('ov-name').textContent = info['Full Name'] || info.name || fid;
+    document.getElementById('ov-w').textContent = info.W || 0;
+    document.getElementById('ov-l').textContent = info.L || 0;
+    document.getElementById('ov-d').textContent = info.D || 0;
+
+    const attrs = document.getElementById('ov-attrs');
+    attrs.innerHTML = [
+      ['Height',  info.height_cm ? info.height_cm + ' cm' : 'N/A'],
+      ['Weight',  info.weight_kg ? info.weight_kg + ' kg' : 'N/A'],
+      ['Reach',   info.reach_cm  ? info.reach_cm + ' cm'  : 'N/A'],
+      ['Stance',  info.Stance    || 'N/A'],
+    ].map(([lbl, val]) => `<div class="attr-item"><div class="attr-label">${lbl}</div><div class="attr-value">${val}</div></div>`).join('');
+
+    const starsGrid = document.getElementById('ov-stars');
+    const ratings = info.stars || {};
+    const starKeys = [
+      ['striking',   'Striking'],
+      ['ko_power',   'KO Power'],
+      ['grappling',  'Grappling'],
+      ['win_rate',   'Win Rate'],
+      ['experience', 'Experience']
+    ];
+    starsGrid.innerHTML = starKeys.map(([key, label]) => {
+      const val = ratings[key] || 0;
+      const pips = [1,2,3,4,5].map(n => `<div class="pip${n <= val ? ' filled' : ''}"></div>`).join('');
+      return `<div class="star-item"><div class="star-pips">${pips}</div><div class="star-label">${label}</div></div>`;
+    }).join('');
+
+    if (charts.methods) renderChart('ov-chart-methods', charts.methods, 200);
+    if (charts.radar)   renderChart('ov-chart-radar',   charts.radar,   200);
+    if (charts.wins)    renderChart('ov-chart-wl',      charts.wins,    200);
+
+    const perf = document.getElementById('ov-perf-bars');
+    const wins = info.W || 0;
+    const total = (info.W || 0) + (info.L || 0) + (info.D || 0);
+    const wr = total > 0 ? (wins / total * 100) : 0;
+    const kop = (ratings.ko_power || 0) / 5 * 100;
+    const grp = (ratings.grappling || 0) / 5 * 100;
+    const exp = (ratings.experience || 0) / 5 * 100;
+    perf.innerHTML = [
+      ['Win Rate',    wr.toFixed(1) + '%',   wr],
+      ['KO Power',    kop.toFixed(0) + '/5', kop],
+      ['Grappling',   grp.toFixed(0) + '/5', grp],
+      ['Experience',  exp.toFixed(0) + '/5', exp],
+    ].map(([lbl, val, pct]) => `
+      <div class="perf-row">
+        <div class="perf-label"><span>${lbl}</span><span>${val}</span></div>
+        <div class="perf-track"><div class="perf-fill" style="width:${pct}%"></div></div>
+      </div>`).join('');
+
+  } catch(e) {
+    document.getElementById('ov-name').textContent = 'Error loading fighter';
+  }
+  lucide.createIcons();
+}
+
+function closeOverlay() {
+  document.getElementById('fighter-overlay').classList.remove('open');
+}
+
+// ── Global Search ──
+function openGSearch() {
+  document.getElementById('gsearch-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('gsearch-input').focus(), 50);
+}
+function closeGSearch() {
+  document.getElementById('gsearch-overlay').classList.remove('open');
+  document.getElementById('gsearch-input').value = '';
+  document.getElementById('gsearch-results').innerHTML = '<div class="gsearch-empty">Start typing to search fighters...</div>';
+}
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openGSearch(); }
+  if (e.key === 'Escape') { closeGSearch(); closeOverlay(); }
+});
+document.getElementById('gsearch-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeGSearch();
+});
+
+let gsearchTimer = null;
+function gsearchDebounced(q) {
+  clearTimeout(gsearchTimer);
+  gsearchTimer = setTimeout(() => doGSearch(q), 250);
+}
+async function doGSearch(q) {
+  if (!q.trim()) {
+    document.getElementById('gsearch-results').innerHTML = '<div class="gsearch-empty">Start typing to search fighters...</div>';
+    return;
+  }
+  try {
+    const resp = await fetch('/api/search?q=' + encodeURIComponent(q));
+    const data = await resp.json();
+    const results = data.results || [];
+    if (!results.length) {
+      document.getElementById('gsearch-results').innerHTML = '<div class="gsearch-empty">No fighters found for "' + q + '"</div>';
+      return;
+    }
+    document.getElementById('gsearch-results').innerHTML = results.slice(0, 8).map(f => `
+      <div class="gsearch-item" onclick="closeGSearch();openFighter('${f.Fighter_Id}')">
+        <div class="gsearch-item-photo">${SVG_SIL}</div>
+        <div class="gsearch-item-info">
+          <div class="gsearch-item-name">${f['Full Name'] || 'Unknown'}</div>
+          <div class="gsearch-item-sub">${f.Stance || ''}</div>
+        </div>
+        <div class="gsearch-item-record">${f.W || 0}-${f.L || 0}-${f.D || 0}</div>
+      </div>`).join('');
+    lucide.createIcons({ el: document.getElementById('gsearch-results') });
+  } catch(e) {}
+}
+
+// ── Compare Fighters ──
+let cmpFighters = { 1: null, 2: null };
+
+async function searchCompare(side, q) {
+  const drop = document.getElementById('cmp-drop-' + side);
+  if (!q.trim()) { drop.classList.remove('open'); return; }
+  try {
+    const resp = await fetch('/api/search?q=' + encodeURIComponent(q));
+    const data = await resp.json();
+    const results = (data.results || []).slice(0, 6);
+    if (!results.length) { drop.classList.remove('open'); return; }
+    drop.innerHTML = results.map(f => `
+      <div class="compare-opt" onclick="selectCompare(${side}, '${f.Fighter_Id}', '${(f['Full Name']||'').replace(/'/g,"\\'")}', ${f.W||0}, ${f.L||0}, ${f.D||0})">
+        <span class="compare-opt-name">${f['Full Name'] || 'Unknown'}</span>
+        <span class="compare-opt-rec">${f.W||0}-${f.L||0}-${f.D||0}</span>
+      </div>`).join('');
+    drop.classList.add('open');
+  } catch(e) {}
+}
+
+function selectCompare(side, fid, name, w, l, d) {
+  cmpFighters[side] = { id: fid, name, w, l, d };
+  document.getElementById('cmp-input-' + side).value = name;
+  document.getElementById('cmp-drop-' + side).classList.remove('open');
+
+  const card = document.getElementById('cmp-card-' + side);
+  card.classList.add('visible');
+  document.getElementById('cmp-name-' + side).textContent = name;
+  document.getElementById('cmp-record-' + side).innerHTML = `<strong>${w}</strong>-${l}-${d}`;
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.compare-input-wrap')) {
+    document.querySelectorAll('.compare-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+
+async function runCompare() {
+  if (!cmpFighters[1] || !cmpFighters[2]) {
+    alert('Please select both fighters first.');
+    return;
+  }
+  const results = document.getElementById('cmp-results');
+  results.classList.add('visible');
+  const wrap = document.getElementById('wrap-cmp-radar');
+  const loader = wrap.querySelector('.chart-loader');
+  if (loader) loader.style.display = 'flex';
+
+  try {
+    const resp = await fetch(`/api/compare?f1=${cmpFighters[1].id}&f2=${cmpFighters[2].id}`);
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error);
+
+    const f1 = data.fighter1, f2 = data.fighter2;
+    const p1 = data.prob1, p2 = data.prob2;
+
+    document.getElementById('prob-name-f1').textContent = f1.name;
+    document.getElementById('prob-name-f2').textContent = f2.name;
+    document.getElementById('prob-pct-f1').textContent  = p1 + '%';
+    document.getElementById('prob-pct-f2').textContent  = p2 + '%';
+    document.getElementById('prob-bar-f1').style.width  = p1 + '%';
+
+    const statDefs = [
+      ['Win Rate',      'win_rate',    '%'],
+      ['KO Rate',       'ko_rate',     '%'],
+      ['Sub Rate',      'sub_rate',    '%'],
+      ['Sig Str %',     'sig_str_pct', '%'],
+      ['Total Fights',  'fights',      ''],
+    ];
+
+    const rowsLeft  = document.getElementById('cmp-stat-rows');
+    const rowsMid   = document.getElementById('cmp-stat-labels');
+    const rowsRight = document.getElementById('cmp-stat-rows2');
+    rowsLeft.innerHTML  = '';
+    rowsMid.innerHTML   = '';
+    rowsRight.innerHTML = '';
+
+    statDefs.forEach(([label, key, unit]) => {
+      const v1 = f1[key] != null ? (unit === '%' ? (f1[key]*100).toFixed(1) + '%' : f1[key]) : 'N/A';
+      const v2 = f2[key] != null ? (unit === '%' ? (f2[key]*100).toFixed(1) + '%' : f2[key]) : 'N/A';
+      const win1 = f1[key] != null && f2[key] != null && f1[key] > f2[key];
+      const win2 = f1[key] != null && f2[key] != null && f2[key] > f1[key];
+      rowsLeft.innerHTML  += `<div class="stat-row-f1 ${win1 ? 'stat-winner' : ''}">${v1}</div>`;
+      rowsMid.innerHTML   += `<div class="stat-row-label">${label}</div>`;
+      rowsRight.innerHTML += `<div class="stat-row-f2 ${win2 ? 'stat-winner' : ''}">${v2}</div>`;
+    });
+
+    if (data.radar) renderChart('chart-cmp-radar', data.radar, 340);
+    else if (loader) loader.style.display = 'none';
+
+  } catch(e) {
+    if (loader) loader.innerHTML = '<span class="chart-error"><i data-lucide="alert-circle"></i> Failed to load comparison</span>';
+    lucide.createIcons();
+  }
+  results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  loadSection('overview');
+
+  if (window.location.hash === '#compare') {
+    const nav = document.getElementById('compare-nav-item');
+    showSection('compare', nav);
+  }
+});
+</script>
+</body>
+</html>
