@@ -109,7 +109,7 @@ def ax(**kw):
     d = dict(gridcolor=GRID, linecolor='#d1d5db',
              zerolinecolor='#e5e7eb',
              tickfont=dict(size=11, color='#6b7280'),
-             titlefont=dict(size=12, color='#374151'))
+             title=dict(font=dict(size=12, color='#374151')))
     d.update(kw)
     return d
 
