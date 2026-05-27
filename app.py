@@ -1,4 +1,4 @@
-﻿from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -501,8 +501,8 @@ def ch_physical():
         fig = make_subplots(
             1,
             3,
-            subplot_titles=[f"{al} vs {metric_lbl}" for _, al in attrs],
-            horizontal_spacing=0.16
+            subplot_titles=[f"{al}" for _, al in attrs],
+            horizontal_spacing=0.12
         )
 
         for i, (ac, al) in enumerate(attrs, 1):
@@ -532,15 +532,17 @@ def ch_physical():
                 y=da[metric_col].tolist(),
                 mode="markers",
                 marker=dict(
-                    size=6,
+                    size=5,
                     color=da[metric_col].tolist(),
                     colorscale=[[0, "#3b82f6"], [0.5, "#8b5cf6"], [1, "#d20000"]],
-                    opacity=0.7,
+                    opacity=0.65,
                     showscale=(i == 3),
                     colorbar=dict(
                         title=dict(text=metric_lbl, font=dict(color="#374151", size=10)),
-                        tickfont=dict(color="#6b7280", size=10),
+                        tickfont=dict(color="#6b7280", size=9),
                         x=1.02,
+                        len=0.8,
+                        thickness=12,
                         tickformat=".0%"
                     ) if i == 3 else None
                 ),
@@ -561,18 +563,20 @@ def ch_physical():
 
         fig.update_layout(**L(
             title=f"Physical Attributes vs {metric_lbl}",
-            height=520,
+            height=480,
             showlegend=True,
-            margin=dict(t=110, r=88, b=72, l=70),
+            margin=dict(t=90, r=100, b=60, l=65),
             legend=dict(
-                bgcolor="rgba(255,255,255,0.9)",
-                font=dict(color="#374151"),
+                bgcolor="rgba(255,255,255,0.95)",
+                font=dict(color="#374151", size=11),
                 x=0,
-                y=1.18,
-                orientation="h"
+                y=1.12,
+                orientation="h",
+                bordercolor="rgba(0,0,0,0.1)",
+                borderwidth=1
             )
         ))
-        fig.update_annotations(font=dict(size=13, color="#111827"), yshift=14)
+        fig.update_annotations(font=dict(size=12, color="#374151"), yshift=8)
 
         charts.append(jfig(fig))
 
