@@ -179,27 +179,36 @@ def ch_overview():
 @app.route('/api/charts/physical')
 def ch_physical():
     df = fighter_stats_df.dropna(subset=['height_cm','weight_kg','reach_cm','Win_Rate']).copy()
+    # Ensure Win_Rate is in 0-1 range
+    if df['Win_Rate'].max() > 1:
+        df['Win_Rate'] = df['Win_Rate'] / 100
+    if 'Strike_Acc' in df.columns and df['Strike_Acc'].max() > 1:
+        df['Strike_Acc'] = df['Strike_Acc'] / 100
+    
     attrs = [('height_cm','Height (cm)'), ('reach_cm','Reach (cm)'), ('weight_kg','Weight (kg)')]
     charts = []
-    for metric_col, metric_lbl in [('Win_Rate','Win Rate'), ('Strike_Acc','Striking Accuracy %')]:
+    for metric_col, metric_lbl in [('Win_Rate','Win Rate'), ('Strike_Acc','Striking Accuracy')]:
         if metric_col not in df.columns: continue
         dm = df.dropna(subset=[metric_col])
+        if dm.empty: continue
+        
         fig = make_subplots(1, 3,
             subplot_titles=[f'{al} vs {metric_lbl}' for _, al in attrs],
-            horizontal_spacing=0.09)
+            horizontal_spacing=0.12)
         for i, (ac, al) in enumerate(attrs, 1):
             da = dm.dropna(subset=[ac])
+            if da.empty: continue
             try:
                 c  = np.polyfit(da[ac].values, da[metric_col].values, 1)
                 xs = np.linspace(da[ac].min(), da[ac].max(), 80)
                 fig.add_trace(go.Scatter(x=xs, y=np.polyval(c, xs), mode='lines',
-                    line=dict(color='#f5a623', width=1.8, dash='dash'),
+                    line=dict(color='#f5a623', width=2, dash='dash'),
                     name='Trend', showlegend=(i == 1), legendgroup='trend'), row=1, col=i)
             except Exception: pass
             fig.add_trace(go.Scatter(x=da[ac], y=da[metric_col], mode='markers',
-                marker=dict(size=5, color=da[metric_col],
+                marker=dict(size=6, color=da[metric_col],
                     colorscale=[[0,'#3b82f6'],[0.5,'#8b5cf6'],[1,'#d20000']],
-                    opacity=0.65, showscale=(i==3),
+                    opacity=0.7, showscale=(i==3),
                     colorbar=dict(title=dict(text=metric_lbl, font=dict(color='#374151',size=10)),
                                   tickfont=dict(color='#6b7280',size=10), x=1.02,
                                   tickformat='.0%') if i==3 else None),
@@ -207,9 +216,10 @@ def ch_physical():
                 hovertemplate=f'<b>%{{text}}</b><br>{al}: %{{x:.1f}}<br>{metric_lbl}: %{{y:.1%}}<extra></extra>',
                 showlegend=False), row=1, col=i)
             fig.update_xaxes(title_text=al, row=1, col=i, **ax())
-            fig.update_yaxes(title_text=(metric_lbl if i==1 else ''), tickformat='.0%', row=1, col=i, **ax())
-        fig.update_layout(**L(title=f'Physical Attributes vs {metric_lbl}', height=370, showlegend=True,
-            legend=dict(bgcolor='rgba(0,0,0,0)', font=dict(color='#6a9ec0'), x=0, y=1.08, orientation='h')))
+            fig.update_yaxes(title_text=(metric_lbl if i==1 else ''), tickformat='.0%', 
+                            range=[0, 1], row=1, col=i, **ax())
+        fig.update_layout(**L(title=f'Physical Attributes vs {metric_lbl}', height=400, showlegend=True,
+            legend=dict(bgcolor='rgba(255,255,255,0.9)', font=dict(color='#374151'), x=0, y=1.12, orientation='h')))
         charts.append(jfig(fig))
     return jsonify({'charts': charts})
 
@@ -217,110 +227,168 @@ def ch_physical():
 @app.route('/api/charts/stance')
 def ch_stance():
     MAIN = ['Orthodox', 'Southpaw', 'Switch']
-    df = fighter_stats_df.dropna(subset=['Stance','Win_Rate'])
+    df = fighter_stats_df.dropna(subset=['Stance','Win_Rate']).copy()
     df = df[df['Stance'].isin(MAIN)].copy()
+    
+    # Ensure rates are in 0-1 range
+    for col in ['Win_Rate', 'KO_Rate', 'Sub_Rate', 'Strike_Acc']:
+        if col in df.columns and df[col].max() > 1:
+            df[col] = df[col] / 100
+    
     ss = df.groupby('Stance').agg(Win_Rate=('Win_Rate','mean'), Count=('Win_Rate','count'),
         KO_Rate=('KO_Rate','mean'), Sub_Rate=('Sub_Rate','mean'),
         Strike_Acc=('Strike_Acc','mean')).reset_index()
+    
+    # Performance bar chart - horizontal grouped bars for cleaner look
     bar = go.Figure()
-    for col, lbl, color in [('Win_Rate','Win Rate','#d20000'),('KO_Rate','KO Rate','#ef4444'),
-                              ('Sub_Rate','Sub Rate','#8b5cf6'),('Strike_Acc','Strike Acc','#3b82f6')]:
-        bar.add_trace(go.Bar(name=lbl, x=ss['Stance'], y=ss[col], marker_color=color,
-            text=ss[col].apply(lambda v: f'{v:.1%}'), textposition='outside',
-            textfont=dict(color='white', size=11)))
-    max_val = ss[['Win_Rate','KO_Rate','Sub_Rate','Strike_Acc']].max().max()
-    bar.update_layout(**L(title='Performance Metrics by Fighting Stance', height=390,
+    metrics = [('Win_Rate','Win Rate','#d20000'),('KO_Rate','KO Rate','#ef4444'),
+               ('Sub_Rate','Sub Rate','#8b5cf6'),('Strike_Acc','Strike Acc','#3b82f6')]
+    for col, lbl, color in metrics:
+        if col in ss.columns:
+            bar.add_trace(go.Bar(name=lbl, x=ss['Stance'], y=ss[col], marker_color=color,
+                text=ss[col].apply(lambda v: f'{v:.1%}'), textposition='outside',
+                textfont=dict(color='#374151', size=11)))
+    bar.update_layout(**L(title='Performance Metrics by Fighting Stance', height=420,
         barmode='group', showlegend=True, xaxis=ax(title='Fighting Stance'),
-        yaxis=ax(title='Rate', tickformat='.0%', range=[0, max_val*1.22])))
+        yaxis=ax(title='Rate', tickformat='.0%', range=[0, 1])))
+    
+    # Pie chart - fighter distribution
     sc = df['Stance'].value_counts()
-    pie = go.Figure(go.Pie(labels=sc.index, values=sc.values, hole=0.44,
+    pie = go.Figure(go.Pie(labels=sc.index, values=sc.values, hole=0.5,
         marker=dict(colors=['#d20000','#ef4444','#f87171'], line=dict(color='#ffffff',width=2)),
         textfont=dict(color='#374151', size=13), textinfo='label+percent'))
-    pie.update_layout(**L(title='Fighter Distribution by Stance', height=360))
+    pie.update_layout(**L(title='Fighter Distribution by Stance', height=380))
+    
+    # Box plot - win rate distribution
     box = go.Figure()
-    for stance, color in zip(MAIN, ['#d20000','#ef4444','#f87171']):
+    colors = {'Orthodox': '#d20000', 'Southpaw': '#ef4444', 'Switch': '#f87171'}
+    for stance in MAIN:
         sdf = df[df['Stance']==stance]
-        box.add_trace(go.Box(y=sdf['Win_Rate'], name=stance, marker=dict(color=color,size=4),
-            line=dict(color=color), boxmean=True))
-    box.update_layout(**L(title='Win Rate Distribution by Stance', height=380,
-        yaxis=ax(title='Win Rate', tickformat='.0%'), xaxis=ax(title='Fighting Stance')))
+        if not sdf.empty:
+            box.add_trace(go.Box(y=sdf['Win_Rate'], name=stance, 
+                marker=dict(color=colors.get(stance, '#6b7280'), size=4),
+                line=dict(color=colors.get(stance, '#6b7280')), boxmean=True))
+    box.update_layout(**L(title='Win Rate Distribution by Stance', height=400,
+        yaxis=ax(title='Win Rate', tickformat='.0%', range=[0, 1]), 
+        xaxis=ax(title='Fighting Stance')))
     return jsonify({'bar': jfig(bar), 'pie': jfig(pie), 'box': jfig(box)})
 
 # ── Experience Q3 ─────────────────────────────────────────────────────────────
 @app.route('/api/charts/experience')
 def ch_experience():
     df = fighter_stats_df.dropna(subset=['Total_Fights','Win_Rate']).copy()
+    
+    # Ensure Win_Rate is in 0-1 range
+    if df['Win_Rate'].max() > 1:
+        df['Win_Rate'] = df['Win_Rate'] / 100
+    
     bins  = [0,5,10,15,20,25,float('inf')]
     blbls = ['1-5','6-10','11-15','16-20','21-25','26+']
     df['Exp'] = pd.cut(df['Total_Fights'], bins=bins, labels=blbls)
     es = df.groupby('Exp', observed=True).agg(Win_Rate=('Win_Rate','mean'),
         Count=('Win_Rate','count'), KO_Rate=('KO_Rate','mean'),
         Sub_Rate=('Sub_Rate','mean')).reset_index()
+    
+    # Combo chart - bars for win rate, line for fighter count
     fig_bar = make_subplots(specs=[[{'secondary_y': True}]])
+    colors = ['#d20000', '#dc2626', '#ef4444', '#f87171', '#fca5a5', '#6b7280']
     fig_bar.add_trace(go.Bar(x=es['Exp'].astype(str), y=es['Win_Rate'], name='Avg Win Rate',
-        marker=dict(color=PAL[:len(es)], line=dict(width=0)),
+        marker=dict(color=colors[:len(es)], line=dict(width=0)),
         text=es['Win_Rate'].apply(lambda v: f'{v:.1%}'),
-        textposition='outside', textfont=dict(color='white')), secondary_y=False)
+        textposition='outside', textfont=dict(color='#374151', size=11)), secondary_y=False)
     fig_bar.add_trace(go.Scatter(x=es['Exp'].astype(str), y=es['Count'], name='Fighter Count',
-        mode='lines+markers', line=dict(color='#f5a623',width=2,dash='dot'),
-        marker=dict(size=8,color='#f5a623',line=dict(color='white',width=1))), secondary_y=True)
-    fig_bar.update_layout(**L(title='Win Rate & Fighter Count by Career Experience', height=390,
-        showlegend=True, xaxis=ax(title='Total Career Fights')))
-    fig_bar.update_yaxes(title_text='Average Win Rate', tickformat='.0%', secondary_y=False, **ax())
+        mode='lines+markers', line=dict(color='#f5a623',width=2.5),
+        marker=dict(size=10,color='#f5a623',line=dict(color='white',width=2))), secondary_y=True)
+    fig_bar.update_layout(**L(title='Win Rate & Fighter Count by Career Experience', height=420,
+        showlegend=True, xaxis=ax(title='Total Career Fights'),
+        legend=dict(bgcolor='rgba(255,255,255,0.9)', font=dict(color='#374151'), 
+                    orientation='h', x=0.5, xanchor='center', y=1.1)))
+    fig_bar.update_yaxes(title_text='Average Win Rate', tickformat='.0%', 
+                         range=[0, 1], secondary_y=False, **ax())
     fig_bar.update_yaxes(title_text='Number of Fighters', secondary_y=True, **ax())
+    
+    # Scatter plot - experience vs win rate
     sc = go.Figure()
     try:
         c  = np.polyfit(df['Total_Fights'].values, df['Win_Rate'].values, 1)
         xs = np.linspace(df['Total_Fights'].min(), df['Total_Fights'].max(), 200)
         sc.add_trace(go.Scatter(x=xs, y=np.polyval(c,xs), mode='lines',
-            line=dict(color='#f5a623',width=2,dash='dash'), name='Trend', showlegend=True))
+            line=dict(color='#f5a623',width=2.5,dash='dash'), name='Trend', showlegend=True))
     except Exception: pass
     sc.add_trace(go.Scatter(x=df['Total_Fights'], y=df['Win_Rate'], mode='markers',
-        marker=dict(size=5, color=df['Win_Rate'],
+        marker=dict(size=6, color=df['Win_Rate'],
             colorscale=[[0,'#3b82f6'],[0.5,'#8b5cf6'],[1,'#d20000']],
-            opacity=0.6, showscale=True,
+            opacity=0.7, showscale=True,
             colorbar=dict(title=dict(text='Win Rate',font=dict(color='#374151')),
                           tickfont=dict(color='#6b7280'), tickformat='.0%')),
         text=df['Full Name'],
         hovertemplate='<b>%{text}</b><br>Fights: %{x}<br>Win Rate: %{y:.1%}<extra></extra>',
         showlegend=False))
     sc.update_layout(**L(title='Career Experience vs Win Rate', height=420, showlegend=True,
-        xaxis=ax(title='Total Career Fights'), yaxis=ax(title='Win Rate', tickformat='.0%')))
+        xaxis=ax(title='Total Career Fights'), 
+        yaxis=ax(title='Win Rate', tickformat='.0%', range=[0, 1])))
     return jsonify({'bar': jfig(fig_bar), 'scatter': jfig(sc)})
 
 # ── Fight Outcomes ─────────────────────────────────────────────────────────────
 @app.route('/api/charts/outcomes')
 def ch_outcomes():
+    # Calculate performance metrics by win method
     perf = fights_df.groupby('Win_Method').agg(
         KD=('KD_1','mean'), TD=('TD_1','mean'), SUB=('SUB_1','mean'),
-        SA=('Sig. Str. %_1','mean'), Ctrl=('Ctrl_1','mean'), STR=('STR_1','mean')).reset_index()
-    mets    = [('KD','Avg Knockdowns'),('TD','Avg Takedowns'),('SUB','Avg Sub Attempts'),
-               ('SA','Strike Accuracy'),('Ctrl','Avg Control (s)'),('STR','Avg Total Strikes')]
+        SA=('Sig. Str. %_1','mean'), Ctrl=('Ctrl_1','mean'), STR=('STR_1','mean'),
+        Count=('Fight_Id','count')).reset_index()
+    
+    # Ensure SA (Strike Accuracy) is in 0-1 range
+    if perf['SA'].max() > 1:
+        perf['SA'] = perf['SA'] / 100
+    
+    # Single clean bar chart for key metrics
     methods = perf['Win_Method'].tolist()
-    mcolors = [PAL[i%len(PAL)] for i in range(len(methods))]
-    fig = make_subplots(2,3, subplot_titles=[m[1] for m in mets],
-                        vertical_spacing=0.2, horizontal_spacing=0.09)
-    for idx,(col,lbl) in enumerate(mets):
+    method_colors = {'KO/TKO': '#d20000', 'Submission': '#8b5cf6', 'Decision': '#3b82f6', 'Other': '#6b7280'}
+    colors = [method_colors.get(m, '#9ca3af') for m in methods]
+    
+    # Create a cleaner 2x2 subplot layout
+    fig = make_subplots(2, 2, 
+        subplot_titles=['Avg Knockdowns per Fight', 'Avg Takedowns per Fight', 
+                        'Strike Accuracy', 'Avg Significant Strikes'],
+        vertical_spacing=0.18, horizontal_spacing=0.12)
+    
+    metrics = [('KD', 1, 1, '.1f'), ('TD', 1, 2, '.1f'), ('SA', 2, 1, '.1%'), ('STR', 2, 2, '.0f')]
+    for col, row, colnum, fmt in metrics:
         if col not in perf.columns: continue
-        r,c = idx//3+1, idx%3+1
         fig.add_trace(go.Bar(x=methods, y=perf[col],
-            marker=dict(color=mcolors, line=dict(width=0)),
-            text=perf[col].apply(lambda v: f'{v:.2f}' if col!='SA' else f'{v:.1%}'),
-            textposition='outside', textfont=dict(color='white',size=10),
-            showlegend=False), row=r, col=c)
-        fig.update_xaxes(**ax(), row=r, col=c)
-        fig.update_yaxes(tickformat='.0%' if col=='SA' else '', **ax(), row=r, col=c)
-    fig.update_layout(**L(title='Average Performance Metrics by Win Method', height=580))
+            marker=dict(color=colors, line=dict(width=0)),
+            text=perf[col].apply(lambda v: f'{v:{fmt}}'),
+            textposition='outside', textfont=dict(color='#374151', size=11),
+            showlegend=False), row=row, col=colnum)
+        fig.update_xaxes(tickangle=-20, **ax(), row=row, col=colnum)
+        yaxis_args = ax()
+        if col == 'SA':
+            yaxis_args['tickformat'] = '.0%'
+            yaxis_args['range'] = [0, 1]
+        fig.update_yaxes(**yaxis_args, row=row, col=colnum)
+    
+    fig.update_layout(**L(title='Performance Metrics by Win Method', height=520))
+    
+    # Win methods over time - stacked area chart for cleaner visualization
     wmy = fights_df.groupby(['Year','Win_Method']).size().reset_index(name='n')
     wmy = wmy[wmy['Year'].notna()].copy()
     wmy['Year'] = wmy['Year'].astype(int)
+    wmy = wmy[wmy['Year'] >= 2010]  # Focus on recent years
+    
     tf = go.Figure()
-    for i,method in enumerate(['KO/TKO','Submission','Decision','Other']):
-        d = wmy[wmy['Win_Method']==method]
-        tf.add_trace(go.Bar(x=d['Year'], y=d['n'], name=method, marker_color=PAL[i]))
-    tf.update_layout(**L(title='Win Method Distribution Over Time', height=370,
-        barmode='stack', showlegend=True, xaxis=ax(title='Year',dtick=2),
-        yaxis=ax(title='Number of Fights')))
+    for method in ['KO/TKO','Submission','Decision','Other']:
+        d = wmy[wmy['Win_Method']==method].sort_values('Year')
+        if not d.empty:
+            tf.add_trace(go.Scatter(x=d['Year'], y=d['n'], name=method, 
+                mode='lines+markers', stackgroup='one',
+                line=dict(width=2, color=method_colors.get(method, '#9ca3af')),
+                marker=dict(size=6)))
+    tf.update_layout(**L(title='Win Method Distribution Over Time (2010-Present)', height=400,
+        showlegend=True, xaxis=ax(title='Year', dtick=2),
+        yaxis=ax(title='Number of Fights'),
+        legend=dict(bgcolor='rgba(255,255,255,0.9)', font=dict(color='#374151'),
+                    orientation='h', x=0.5, xanchor='center', y=1.1)))
     return jsonify({'metrics': jfig(fig), 'time': jfig(tf)})
 
 # ── Weight Classes ─────────────────────────────────────────────────────────────
@@ -329,34 +397,55 @@ def ch_weight():
     wc = fighter_stats_df.groupby('Weight_Class_Std').agg(
         height=('height_cm','mean'), weight=('weight_kg','mean'), reach=('reach_cm','mean'),
         win_rate=('Win_Rate','mean'), strike_acc=('Strike_Acc','mean'),
-        ko_rate=('KO_Rate','mean'), sub_rate=('Sub_Rate','mean')).reset_index()
+        ko_rate=('KO_Rate','mean'), sub_rate=('Sub_Rate','mean'),
+        count=('Fighter_Id','count')).reset_index()
     wc = wc.dropna(subset=['Weight_Class_Std'])
+    
+    # Ensure rates are in 0-1 range
+    for col in ['win_rate', 'strike_acc', 'ko_rate', 'sub_rate']:
+        if col in wc.columns and wc[col].max() > 1:
+            wc[col] = wc[col] / 100
+    
     cat   = pd.CategoricalDtype(categories=WC_ORDER, ordered=True)
     wc['Weight_Class_Std'] = wc['Weight_Class_Std'].astype(cat)
     wc    = wc.sort_values('Weight_Class_Std')
     wlbls = wc['Weight_Class_Std'].astype(str).tolist()
+    
+    # Physical attributes - clean line chart
     phys = go.Figure()
-    for attr,color,lbl in [('height','#3b82f6','Height (cm)'),('reach','#8b5cf6','Reach (cm)'),('weight','#d20000','Weight (kg)')]:
+    for attr, color, lbl in [('height','#3b82f6','Height (cm)'),('reach','#8b5cf6','Reach (cm)'),('weight','#d20000','Weight (kg)')]:
         phys.add_trace(go.Scatter(x=wlbls, y=wc[attr], mode='lines+markers', name=lbl,
-            line=dict(color=color,width=2.5), marker=dict(size=9,color=color,line=dict(color='white',width=1.5))))
-    phys.update_layout(**L(title='Average Physical Attributes by Weight Class', height=390,
-        showlegend=True, xaxis=ax(title='Weight Class',tickangle=-30), yaxis=ax(title='Measurement')))
+            line=dict(color=color, width=2.5), 
+            marker=dict(size=10, color=color, line=dict(color='white', width=2))))
+    phys.update_layout(**L(title='Average Physical Attributes by Weight Class', height=420,
+        showlegend=True, xaxis=ax(title='', tickangle=-35), yaxis=ax(title='Measurement'),
+        legend=dict(bgcolor='rgba(255,255,255,0.9)', font=dict(color='#374151'),
+                    orientation='h', x=0.5, xanchor='center', y=1.1)))
+    
+    # Win/KO/Sub rates - horizontal bar chart for readability
     rates = go.Figure()
-    for col,color,lbl in [('win_rate','#d20000','Win Rate'),('ko_rate','#ef4444','KO Rate'),('sub_rate','#8b5cf6','Sub Rate')]:
-        rates.add_trace(go.Bar(name=lbl, x=wlbls, y=wc[col], marker_color=color))
-    rates.update_layout(**L(title='Win / KO / Submission Rates by Weight Class', height=390,
-        barmode='group', showlegend=True, xaxis=ax(title='Weight Class',tickangle=-30),
-        yaxis=ax(title='Rate', tickformat='.0%')))
-    sa = go.Figure(go.Bar(x=wlbls, y=wc['strike_acc'],
+    for col, color, lbl in [('win_rate','#d20000','Win Rate'),('ko_rate','#ef4444','KO Rate'),('sub_rate','#8b5cf6','Sub Rate')]:
+        if col in wc.columns:
+            rates.add_trace(go.Bar(name=lbl, y=wlbls, x=wc[col], orientation='h',
+                marker_color=color, text=wc[col].apply(lambda v: f'{v:.1%}'), 
+                textposition='outside', textfont=dict(color='#374151', size=10)))
+    rates.update_layout(**L(title='Win / KO / Submission Rates by Weight Class', height=500,
+        barmode='group', showlegend=True, yaxis=ax(title=''),
+        xaxis=ax(title='Rate', tickformat='.0%', range=[0, 1]),
+        legend=dict(bgcolor='rgba(255,255,255,0.9)', font=dict(color='#374151'),
+                    orientation='h', x=0.5, xanchor='center', y=1.05)))
+    
+    # Strike accuracy - gradient bar chart
+    sa = go.Figure(go.Bar(y=wlbls, x=wc['strike_acc'], orientation='h',
         marker=dict(color=wc['strike_acc'],
             colorscale=[[0,'#3b82f6'],[0.5,'#8b5cf6'],[1,'#d20000']],
             showscale=True,
-            colorbar=dict(title=dict(text='Strike Acc.',font=dict(color='#374151')),
+            colorbar=dict(title=dict(text='Strike Acc.', font=dict(color='#374151')),
                           tickfont=dict(color='#6b7280'), tickformat='.0%')),
         text=wc['strike_acc'].apply(lambda v: f'{v:.1%}'),
-        textposition='outside', textfont=dict(color='#374151')))
-    sa.update_layout(**L(title='Striking Accuracy by Weight Class', height=370,
-        xaxis=ax(title='Weight Class',tickangle=-30), yaxis=ax(title='Strike Accuracy',tickformat='.0%')))
+        textposition='outside', textfont=dict(color='#374151', size=10)))
+    sa.update_layout(**L(title='Striking Accuracy by Weight Class', height=450,
+        yaxis=ax(title=''), xaxis=ax(title='Strike Accuracy', tickformat='.0%', range=[0, 1])))
     return jsonify({'physical': jfig(phys), 'rates': jfig(rates), 'strike': jfig(sa)})
 
 # ── Trends ─────────────────────────────────────────────────────────────────────
@@ -368,24 +457,37 @@ def ch_trends():
         Total=('Fight_Id','count')).reset_index()
     yr = yr[yr['Year'].notna()].copy()
     yr['Year'] = yr['Year'].astype(int)
-    yr = yr.sort_values('Year')
+    yr = yr[yr['Year'] >= 2010].sort_values('Year')  # Focus on recent years
+    
+    # Ensure SA is in 0-1 range
+    if yr['SA'].max() > 1:
+        yr['SA'] = yr['SA'] / 100
+    
+    # Create a cleaner 2x3 layout
     mets = [
-        ('KD','#d20000','Avg Knockdowns / Fight'), ('TD','#ef4444','Avg Takedowns / Fight'),
-        ('SA','#f87171','Striking Accuracy'),       ('Ctrl','#8b5cf6','Avg Control Time (s)'),
-        ('Total','#3b82f6','Total Fights / Year'),  ('SUB','#6b7280','Avg Sub Attempts / Fight'),
+        ('KD','#d20000','Avg Knockdowns / Fight'), 
+        ('TD','#ef4444','Avg Takedowns / Fight'),
+        ('SA','#f87171','Strike Accuracy'),       
+        ('Ctrl','#8b5cf6','Avg Control Time (s)'),
+        ('Total','#3b82f6','Total Fights / Year'),  
+        ('SUB','#6b7280','Avg Sub Attempts / Fight'),
     ]
-    fig = make_subplots(2,3, subplot_titles=[m[2] for m in mets],
-                        vertical_spacing=0.22, horizontal_spacing=0.09)
-    for idx,(col,color,lbl) in enumerate(mets):
-        r,c = idx//3+1, idx%3+1
-        fc  = FILL.get(color,'rgba(0,212,255,0.12)')
+    fig = make_subplots(2, 3, subplot_titles=[m[2] for m in mets],
+                        vertical_spacing=0.18, horizontal_spacing=0.10)
+    for idx, (col, color, lbl) in enumerate(mets):
+        r, c = idx // 3 + 1, idx % 3 + 1
+        fc = FILL.get(color, 'rgba(0,212,255,0.12)')
         fig.add_trace(go.Scatter(x=yr['Year'], y=yr[col], mode='lines+markers', name=lbl,
-            line=dict(color=color,width=2.2),
-            marker=dict(size=7,color=color,line=dict(color='white',width=1.2)),
+            line=dict(color=color, width=2.5),
+            marker=dict(size=8, color=color, line=dict(color='white', width=2)),
             fill='tozeroy', fillcolor=fc, showlegend=False), row=r, col=c)
-        fig.update_xaxes(**ax(), dtick=4, title_text='Year', row=r, col=c)
-        fig.update_yaxes(tickformat='.0%' if col=='SA' else '', **ax(), row=r, col=c)
-    fig.update_layout(**L(title='UFC Performance Trends Over Time (2016 – Present)', height=580))
+        fig.update_xaxes(**ax(), dtick=3, title_text='', row=r, col=c)
+        yaxis_args = ax()
+        if col == 'SA':
+            yaxis_args['tickformat'] = '.0%'
+            yaxis_args['range'] = [0, 1]
+        fig.update_yaxes(**yaxis_args, row=r, col=c)
+    fig.update_layout(**L(title='UFC Performance Trends Over Time (2010 - Present)', height=550))
     return jsonify({'trends': jfig(fig)})
 
 # ── Fighter Search ─────────────────────────────────────────────────────────────
@@ -409,6 +511,16 @@ def fighter_detail(fid):
     d   = row.iloc[0].fillna('N/A').to_dict()
     if not sr.empty: d.update(sr.iloc[0].fillna('N/A').to_dict())
 
+    # Normalize percentages to 0-1 range if needed
+    for col in ['Win_Rate', 'Strike_Acc', 'KO_Rate', 'Sub_Rate']:
+        val = d.get(col)
+        if val != 'N/A':
+            try:
+                v = float(val)
+                if v > 1:  # Was stored as percentage
+                    d[col] = v / 100
+            except: pass
+
     # Star ratings
     stars = {}
     rating_map = [('Strike_Acc','striking'), ('KO_Rate','ko_power'),
@@ -430,7 +542,7 @@ def fighter_detail(fid):
             if col == 'Total_Fights':
                 v = min(v / 40.0, 1.0) * 100
             else:
-                v = v * 100
+                v = min(v, 1.0) * 100  # Ensure we don't exceed 100
             radar['values'].append(round(v, 1))
         except Exception:
             radar['values'].append(50)

@@ -598,12 +598,12 @@ body {
 }
 .page-btn i { width: 16px; height: 16px; }
 
-/* ── Fighter Overlay ── */
+/* ── Fighter Overlay - Premium Redesign ── */
 .overlay-backdrop {
   position: fixed; 
   inset: 0;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(12px);
   z-index: 100;
   display: none;
   align-items: center;
@@ -614,25 +614,25 @@ body {
 
 .fighter-overlay {
   background: var(--white);
-  border-radius: 16px;
+  border-radius: 20px;
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 25px 80px -12px rgba(0, 0, 0, 0.4);
 }
 
 .overlay-close {
   position: absolute;
-  top: 16px; 
-  right: 16px;
-  background: var(--gray-100);
+  top: 20px; 
+  right: 20px;
+  background: rgba(255,255,255,0.9);
   border: 1px solid var(--gray-200);
   color: var(--gray-600);
-  width: 40px; 
-  height: 40px;
-  border-radius: 8px;
+  width: 44px; 
+  height: 44px;
+  border-radius: 50%;
   cursor: pointer;
   display: flex; 
   align-items: center; 
@@ -641,145 +641,233 @@ body {
   z-index: 2;
 }
 .overlay-close:hover { 
-  background: var(--red-bg);
+  background: var(--red);
   border-color: var(--red);
-  color: var(--red);
+  color: var(--white);
 }
-.overlay-close i { width: 18px; height: 18px; }
+.overlay-close i { width: 20px; height: 20px; }
 
 .overlay-hero {
-  display: flex;
-  gap: 28px;
-  padding: 32px;
-  border-bottom: 1px solid var(--gray-200);
-  background: linear-gradient(135deg, var(--gray-100) 0%, var(--white) 100%);
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 32px;
+  padding: 40px;
+  background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 50%, var(--red-dark) 100%);
+  border-radius: 20px 20px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.overlay-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.5;
 }
 
 .overlay-photo {
-  width: 140px;
-  height: 180px;
-  border-radius: 12px;
+  width: 180px;
+  height: 220px;
+  border-radius: 16px;
   overflow: hidden;
-  background: var(--gray-200);
+  background: linear-gradient(180deg, var(--gray-200) 0%, var(--gray-300) 100%);
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--gray-300);
+  border: 4px solid rgba(255,255,255,0.2);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 1;
 }
-.overlay-photo .silhouette { width: 80px; height: 110px; color: var(--gray-400); }
+.overlay-photo .silhouette { width: 100px; height: 140px; color: var(--gray-400); }
 
-.overlay-info { flex: 1; }
+.overlay-info { 
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
 
-.overlay-name { 
-  font-family: 'Space Grotesk', sans-serif; 
-  font-size: 32px; 
-  font-weight: 700; 
-  line-height: 1;
-  color: var(--gray-900);
+.overlay-nickname {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red-light);
   margin-bottom: 8px;
 }
 
-.overlay-record { 
-  font-size: 24px; 
-  font-family: 'Space Grotesk', sans-serif; 
-  font-weight: 600; 
-  color: var(--red);
-  margin-bottom: 16px;
+.overlay-name { 
+  font-family: 'Oswald', sans-serif; 
+  font-size: 42px; 
+  font-weight: 700; 
+  line-height: 1;
+  color: var(--white);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
-.overlay-record span { color: var(--gray-400); font-size: 16px; margin: 0 4px; }
 
-.overlay-attrs { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; }
+.overlay-record { 
+  font-size: 28px; 
+  font-family: 'Space Grotesk', sans-serif; 
+  font-weight: 700; 
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.overlay-record .wins { color: #22c55e; }
+.overlay-record .losses { color: #ef4444; }
+.overlay-record .draws { color: var(--gray-400); }
+.overlay-record span.sep { color: rgba(255,255,255,0.3); font-size: 20px; }
+
+.overlay-attrs { 
+  display: flex; 
+  gap: 32px; 
+  flex-wrap: wrap; 
+  margin-bottom: 24px;
+  background: rgba(255,255,255,0.1);
+  padding: 16px 20px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
 
 .attr-item { display: flex; flex-direction: column; gap: 4px; }
 .attr-label { 
   font-size: 10px; 
   text-transform: uppercase; 
-  letter-spacing: 1px; 
-  color: var(--gray-500);
+  letter-spacing: 1.5px; 
+  color: rgba(255,255,255,0.6);
+  font-weight: 600;
 }
 .attr-value { 
-  font-size: 15px; 
-  font-weight: 600; 
-  color: var(--gray-800);
+  font-size: 16px; 
+  font-weight: 700; 
+  color: var(--white);
 }
 
-.stars-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.stars-grid { 
+  display: grid; 
+  grid-template-columns: repeat(5, 1fr); 
+  gap: 16px;
+  background: rgba(255,255,255,0.05);
+  padding: 16px;
+  border-radius: 12px;
+}
 
-.star-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.star-item { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 8px;
+}
 
 .star-label { 
   font-size: 10px; 
   text-transform: uppercase; 
   letter-spacing: 0.5px; 
-  color: var(--gray-500); 
+  color: rgba(255,255,255,0.7); 
   text-align: center;
+  font-weight: 600;
 }
 
 .star-pips { display: flex; gap: 4px; }
 
 .pip {
-  width: 10px; 
-  height: 10px;
-  border-radius: 2px;
-  border: 1px solid var(--gray-300);
-  background: var(--gray-100);
+  width: 12px; 
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
   transition: all 0.3s;
 }
 .pip.filled { 
-  background: var(--red); 
+  background: linear-gradient(135deg, var(--red), var(--red-light)); 
   border-color: var(--red);
+  box-shadow: 0 0 8px var(--red-glow);
 }
 
 .overlay-body { 
-  padding: 24px 32px; 
+  padding: 32px 40px; 
   display: grid; 
   grid-template-columns: 1fr 1fr; 
-  gap: 20px;
+  gap: 24px;
+  background: var(--white);
 }
 
 .mini-chart-card { 
-  background: var(--gray-100); 
+  background: var(--white); 
   border: 1px solid var(--gray-200); 
-  border-radius: 12px; 
+  border-radius: 16px; 
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s;
 }
-.mini-chart-card .card-header { padding: 12px 16px; background: var(--white); }
-.mini-chart-card .card-title { font-size: 13px; }
-.mini-chart-inner { min-height: 200px; background: var(--white); }
+.mini-chart-card:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--gray-300);
+}
+.mini-chart-card .card-header { 
+  padding: 16px 20px; 
+  background: var(--gray-100);
+  border-bottom: 1px solid var(--gray-200);
+}
+.mini-chart-card .card-title { font-size: 14px; font-weight: 600; }
+.mini-chart-inner { min-height: 220px; background: var(--white); padding: 12px; }
 
 .perf-bars { 
-  background: var(--gray-100); 
+  background: var(--white); 
   border: 1px solid var(--gray-200); 
-  border-radius: 12px; 
-  padding: 18px;
+  border-radius: 16px; 
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .perf-bar-title { 
-  font-size: 13px; 
+  font-size: 14px; 
   font-weight: 600; 
-  margin-bottom: 16px;
-  color: var(--gray-700);
+  margin-bottom: 20px;
+  color: var(--gray-800);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.perf-bar-title::before {
+  content: '';
+  width: 4px;
+  height: 16px;
+  background: var(--red);
+  border-radius: 2px;
 }
 
-.perf-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.perf-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.perf-row:last-child { margin-bottom: 0; }
 
-.perf-label { display: flex; justify-content: space-between; font-size: 12px; }
-.perf-label span:first-child { color: var(--gray-500); }
-.perf-label span:last-child { font-weight: 600; color: var(--gray-700); }
+.perf-label { display: flex; justify-content: space-between; font-size: 13px; }
+.perf-label span:first-child { color: var(--gray-600); font-weight: 500; }
+.perf-label span:last-child { font-weight: 700; color: var(--gray-800); }
 
 .perf-track { 
-  height: 8px; 
+  height: 10px; 
   background: var(--gray-200); 
-  border-radius: 4px; 
+  border-radius: 5px; 
   overflow: hidden;
 }
 
 .perf-fill { 
   height: 100%; 
   background: linear-gradient(90deg, var(--red), var(--red-light)); 
-  border-radius: 4px; 
+  border-radius: 5px; 
   transition: width 0.8s ease;
+  box-shadow: 0 2px 8px var(--red-glow);
 }
 
 /* ── Compare Section ── */
@@ -1660,8 +1748,15 @@ body {
         </svg>
       </div>
       <div class="overlay-info">
+        <div class="overlay-nickname" id="ov-nickname"></div>
         <div class="overlay-name" id="ov-name">Fighter Name</div>
-        <div class="overlay-record"><span id="ov-w">0</span><span>-</span><span id="ov-l">0</span><span>-</span><span id="ov-d">0</span></div>
+        <div class="overlay-record">
+          <span class="wins" id="ov-w">0</span>
+          <span class="sep">-</span>
+          <span class="losses" id="ov-l">0</span>
+          <span class="sep">-</span>
+          <span class="draws" id="ov-d">0</span>
+        </div>
         <div class="overlay-attrs" id="ov-attrs"></div>
         <div class="stars-grid" id="ov-stars"></div>
       </div>
@@ -1672,15 +1767,15 @@ body {
         <div class="mini-chart-inner" id="ov-chart-methods"></div>
       </div>
       <div class="mini-chart-card">
-        <div class="card-header"><div class="card-title"><i data-lucide="radar"></i> Radar Profile</div></div>
+        <div class="card-header"><div class="card-title"><i data-lucide="radar"></i> Ability Radar</div></div>
         <div class="mini-chart-inner" id="ov-chart-radar"></div>
       </div>
       <div class="perf-bars">
-        <div class="perf-bar-title">Performance Metrics</div>
+        <div class="perf-bar-title">Performance Stats</div>
         <div id="ov-perf-bars"></div>
       </div>
       <div class="mini-chart-card">
-        <div class="card-header"><div class="card-title"><i data-lucide="bar-chart-2"></i> Wins vs Losses</div></div>
+        <div class="card-header"><div class="card-title"><i data-lucide="bar-chart-2"></i> Fight History</div></div>
         <div class="mini-chart-inner" id="ov-chart-wl"></div>
       </div>
     </div>
@@ -1917,7 +2012,12 @@ function renderFighters() {
     const name = f['Full Name'] || 'Unknown';
     const w = f.W || 0, l = f.L || 0, d = f.D || 0;
     const stance = f.Stance || '';
-    const winRate = f.Win_Rate ? (f.Win_Rate * 100).toFixed(0) + '% wins' : '';
+    // Handle win rate - ensure it's a proper percentage
+    let winRate = '';
+    if (f.Win_Rate != null) {
+      const rate = f.Win_Rate <= 1 ? f.Win_Rate * 100 : f.Win_Rate;
+      winRate = rate.toFixed(0) + '% wins';
+    }
     return `
     <div class="fighter-card" onclick="openFighter('${f.Fighter_Id}')">
       <div class="fighter-card-img">
@@ -1967,19 +2067,34 @@ async function openFighter(fid) {
     const photo = document.getElementById('ov-photo');
     photo.innerHTML = SVG_SIL;
 
+    // Set nickname if available
+    const nicknameEl = document.getElementById('ov-nickname');
+    if (nicknameEl) {
+      nicknameEl.textContent = info.Nickname && info.Nickname !== 'No Nickname' ? `"${info.Nickname}"` : '';
+    }
+
     document.getElementById('ov-name').textContent = info['Full Name'] || info.name || fid;
     document.getElementById('ov-w').textContent = info.W || 0;
     document.getElementById('ov-l').textContent = info.L || 0;
     document.getElementById('ov-d').textContent = info.D || 0;
 
+    // Physical attributes with better formatting
     const attrs = document.getElementById('ov-attrs');
+    const heightCm = info.height_cm || info['Ht.'];
+    const weightKg = info.weight_kg || info['Wt.'];
+    const reachCm = info.reach_cm || info['Reach'];
+    const weightClass = info.Weight_Class_Std || info.Weight_Class || 'N/A';
+    
     attrs.innerHTML = [
-      ['Height',  info.height_cm ? info.height_cm + ' cm' : 'N/A'],
-      ['Weight',  info.weight_kg ? info.weight_kg + ' kg' : 'N/A'],
-      ['Reach',   info.reach_cm  ? info.reach_cm + ' cm'  : 'N/A'],
-      ['Stance',  info.Stance    || 'N/A'],
+      ['Height', heightCm ? Math.round(heightCm) + ' cm' : 'N/A'],
+      ['Weight', weightKg ? Math.round(weightKg) + ' kg' : 'N/A'],
+      ['Reach', reachCm ? Math.round(reachCm) + ' cm' : 'N/A'],
+      ['Stance', info.Stance || 'N/A'],
+      ['Division', weightClass],
+      ['Fights', info.Total_Fights || ((info.W || 0) + (info.L || 0) + (info.D || 0))],
     ].map(([lbl, val]) => `<div class="attr-item"><div class="attr-label">${lbl}</div><div class="attr-value">${val}</div></div>`).join('');
 
+    // Star ratings
     const starsGrid = document.getElementById('ov-stars');
     const ratings = info.stars || {};
     const starKeys = [
@@ -1995,29 +2110,35 @@ async function openFighter(fid) {
       return `<div class="star-item"><div class="star-pips">${pips}</div><div class="star-label">${label}</div></div>`;
     }).join('');
 
+    // Render charts with proper sizing
     if (charts.methods) renderChart('ov-chart-methods', charts.methods, 200);
     if (charts.radar)   renderChart('ov-chart-radar',   charts.radar,   200);
     if (charts.wins)    renderChart('ov-chart-wl',      charts.wins,    200);
 
+    // Performance bars with actual data
     const perf = document.getElementById('ov-perf-bars');
     const wins = info.W || 0;
     const total = (info.W || 0) + (info.L || 0) + (info.D || 0);
     const wr = total > 0 ? (wins / total * 100) : 0;
-    const kop = (ratings.ko_power || 0) / 5 * 100;
-    const grp = (ratings.grappling || 0) / 5 * 100;
-    const exp = (ratings.experience || 0) / 5 * 100;
+    
+    // Get actual rates if available, otherwise use star ratings
+    const strikeAcc = info.Strike_Acc ? (info.Strike_Acc <= 1 ? info.Strike_Acc * 100 : info.Strike_Acc) : (ratings.striking || 0) / 5 * 100;
+    const koRate = info.KO_Rate ? (info.KO_Rate <= 1 ? info.KO_Rate * 100 : info.KO_Rate) : (ratings.ko_power || 0) / 5 * 100;
+    const subRate = info.Sub_Rate ? (info.Sub_Rate <= 1 ? info.Sub_Rate * 100 : info.Sub_Rate) : (ratings.grappling || 0) / 5 * 100;
+    
     perf.innerHTML = [
-      ['Win Rate',    wr.toFixed(1) + '%',   wr],
-      ['KO Power',    kop.toFixed(0) + '/5', kop],
-      ['Grappling',   grp.toFixed(0) + '/5', grp],
-      ['Experience',  exp.toFixed(0) + '/5', exp],
+      ['Win Rate', wr.toFixed(1) + '%', wr],
+      ['Strike Accuracy', strikeAcc.toFixed(1) + '%', strikeAcc],
+      ['KO Rate', koRate.toFixed(1) + '%', Math.min(koRate, 100)],
+      ['Submission Rate', subRate.toFixed(1) + '%', Math.min(subRate, 100)],
     ].map(([lbl, val, pct]) => `
       <div class="perf-row">
         <div class="perf-label"><span>${lbl}</span><span>${val}</span></div>
-        <div class="perf-track"><div class="perf-fill" style="width:${pct}%"></div></div>
+        <div class="perf-track"><div class="perf-fill" style="width:${Math.min(pct, 100)}%"></div></div>
       </div>`).join('');
 
   } catch(e) {
+    console.error('Error loading fighter:', e);
     document.getElementById('ov-name').textContent = 'Error loading fighter';
   }
   lucide.createIcons();
