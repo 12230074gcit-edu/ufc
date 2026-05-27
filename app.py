@@ -27,6 +27,15 @@ fighter_stats_df = fighter_stats_df.merge(
     on='Fighter_Id', how='left'
 )
 
+# Rename columns to match expected names
+rename_cols = {
+    'KO Rate': 'KO_Rate',
+    'SUB Rate': 'Sub_Rate',
+    'DEC Rate': 'DEC_Rate',
+    'Sig. Str. %': 'Strike_Acc',
+}
+fighter_stats_df.rename(columns=rename_cols, inplace=True)
+
 WC_MAP = {
     'BANTAMWEIGHT': 'Bantamweight', 'FEATHERWEIGHT': 'Featherweight',
     'FLYWEIGHT': 'Flyweight', 'HEAVYWEIGHT': 'Heavyweight',
