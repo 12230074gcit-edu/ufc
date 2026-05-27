@@ -328,8 +328,8 @@ def ch_outcomes():
 def ch_weight():
     wc = fighter_stats_df.groupby('Weight_Class_Std').agg(
         height=('height_cm','mean'), weight=('weight_kg','mean'), reach=('reach_cm','mean'),
-        win_rate=('Win_Rate','mean'), strike_acc=('Sig. Str. %','mean'),
-        ko_rate=('KO Rate','mean'), sub_rate=('SUB Rate','mean')).reset_index()
+        win_rate=('Win_Rate','mean'), strike_acc=('Strike_Acc','mean'),
+        ko_rate=('KO_Rate','mean'), sub_rate=('Sub_Rate','mean')).reset_index()
     wc = wc.dropna(subset=['Weight_Class_Std'])
     cat   = pd.CategoricalDtype(categories=WC_ORDER, ordered=True)
     wc['Weight_Class_Std'] = wc['Weight_Class_Std'].astype(cat)
@@ -411,8 +411,8 @@ def fighter_detail(fid):
 
     # Star ratings
     stars = {}
-    rating_map = [('Sig. Str. %','striking'), ('KO Rate','ko_power'),
-                  ('SUB Rate','grappling'), ('Win_Rate','win_rate'), ('Total_Fights','experience')]
+    rating_map = [('Strike_Acc','striking'), ('KO_Rate','ko_power'),
+                  ('Sub_Rate','grappling'), ('Win_Rate','win_rate'), ('Total_Fights','experience')]
     for col, lbl in rating_map:
         val = d.get(col)
         if val != 'N/A':
@@ -423,7 +423,7 @@ def fighter_detail(fid):
 
     # Radar values (0–100 scale)
     radar = {'labels': ['Striking','Power','Grappling','Win Rate','Experience'], 'values': []}
-    for col in ['Sig. Str. %','KO Rate','SUB Rate','Win_Rate','Total_Fights']:
+    for col in ['Strike_Acc','KO_Rate','Sub_Rate','Win_Rate','Total_Fights']:
         val = d.get(col)
         try:
             v = float(val)
