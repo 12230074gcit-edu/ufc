@@ -446,7 +446,7 @@ def ch_weight():
     
     # Strike accuracy - gradient bar chart
     sa = go.Figure(go.Bar(y=wlbls, x=wc['strike_acc'], orientation='h',
-        marker=dict(color=wc['strike_acc'],
+        marker=dict(color=wc['strike_acc'], cmin=0, cmax=1,
             colorscale=[[0,'#3b82f6'],[0.5,'#8b5cf6'],[1,'#d20000']],
             showscale=True,
             colorbar=dict(title=dict(text='Strike Acc.', font=dict(color='#374151')),
