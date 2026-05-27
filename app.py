@@ -563,20 +563,22 @@ def ch_physical():
 
         fig.update_layout(**L(
             title=f"Physical Attributes vs {metric_lbl}",
-            height=480,
+            height=420,
             showlegend=True,
-            margin=dict(t=90, r=100, b=60, l=65),
+            margin=dict(t=70, r=100, b=55, l=60),
             legend=dict(
                 bgcolor="rgba(255,255,255,0.95)",
                 font=dict(color="#374151", size=11),
-                x=0,
-                y=1.12,
+                x=1.0,
+                y=1.0,
+                xanchor="right",
+                yanchor="top",
                 orientation="h",
                 bordercolor="rgba(0,0,0,0.1)",
                 borderwidth=1
             )
         ))
-        fig.update_annotations(font=dict(size=12, color="#374151"), yshift=8)
+        fig.update_annotations(font=dict(size=11, color="#374151"), yshift=0)
 
         charts.append(jfig(fig))
 
@@ -1355,15 +1357,15 @@ def fighter_charts(fid):
         ))
 
         method_fig.update_layout(**L(
-            title="Win Methods",
+            title="",
             height=220,
-            margin=dict(t=40, r=10, b=10, l=10),
+            margin=dict(t=15, r=10, b=10, l=10),
             showlegend=False
         ))
 
     else:
         method_fig = go.Figure()
-        method_fig.update_layout(**L(title="Win Methods", height=220))
+        method_fig.update_layout(**L(title="", height=220))
 
     sr = fighter_stats_df[fighter_stats_df["Fighter_Id"] == fid]
 
@@ -1416,13 +1418,8 @@ def fighter_charts(fid):
             )
         ),
         font=dict(color="#374151", family="Inter, sans-serif"),
-        margin=dict(t=40, r=30, b=30, l=30),
+        margin=dict(t=15, r=30, b=30, l=30),
         height=220,
-        title=dict(
-            text="Ability Radar",
-            font=dict(size=13, color="#111827", family="Inter, sans-serif"),
-            x=0.05
-        ),
         showlegend=False
     )
 
