@@ -7,562 +7,388 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+
+/* =============================================
+   CSS VARIABLES
+   ============================================= */
 :root {
-  --white:    #ffffff;
-  --white-95: rgba(255, 255, 255, 0.95);
-  --white-80: rgba(255, 255, 255, 0.80);
-  --white-60: rgba(255, 255, 255, 0.60);
-  --white-40: rgba(255, 255, 255, 0.40);
-  --white-20: rgba(255, 255, 255, 0.20);
-  --white-10: rgba(255, 255, 255, 0.10);
-  --white-05: rgba(255, 255, 255, 0.05);
-  --dark:     #0a0a0a;
-  --dark-90:  rgba(10, 10, 10, 0.90);
-  --dark-80:  rgba(10, 10, 10, 0.80);
-  --red:      #d20000;
-  --red-light:#ff3333;
-  --red-glow: rgba(210, 0, 0, 0.3);
-  --gold:     #c9a227;
+  --white:     #ffffff;
+  --white-95:  rgba(255,255,255,0.95);
+  --white-80:  rgba(255,255,255,0.80);
+  --white-60:  rgba(255,255,255,0.60);
+  --white-40:  rgba(255,255,255,0.40);
+  --white-20:  rgba(255,255,255,0.20);
+  --white-10:  rgba(255,255,255,0.10);
+  --white-05:  rgba(255,255,255,0.05);
+  --dark:      #0a0a0a;
+  --dark-90:   rgba(10,10,10,0.90);
+  --dark-80:   rgba(10,10,10,0.80);
+  --dark-60:   rgba(10,10,10,0.60);
+  --red:       #d20000;
+  --red-light: #ff3333;
+  --red-glow:  rgba(210,0,0,0.3);
+  --gold:      #c9a227;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --transition: 0.25s ease;
 }
 
+/* =============================================
+   RESET & BASE
+   ============================================= */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-
 body {
   font-family: 'Inter', sans-serif;
   background: var(--white);
   color: var(--dark);
   overflow-x: hidden;
-  min-height: 100vh;
+}
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
+button { cursor: pointer; border: none; background: none; font: inherit; }
+
+/* =============================================
+   NAVIGATION
+   ============================================= */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 68px;
+  background: rgba(10,10,10,0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--white-10);
 }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--white); }
-::-webkit-scrollbar-thumb { background: var(--red); border-radius: 3px; }
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.nav-logo-hex {
+  width: 38px; height: 38px;
+  background: var(--red);
+  clip-path: polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-hex span {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--white);
+  letter-spacing: 0.5px;
+}
+.nav-logo-text {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--white);
+  letter-spacing: 1px;
+}
+.nav-logo-text span { color: var(--red); }
 
-/* ── Video Background Section ── */
-.hero-section {
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--white-80);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition), background var(--transition);
+  letter-spacing: 0.4px;
+}
+.nav-links a:hover { color: var(--white); background: var(--white-10); }
+
+.nav-cta {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white);
+  background: var(--red);
+  padding: 9px 20px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.4px;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.nav-cta:hover {
+  background: var(--red-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px var(--red-glow);
+}
+
+/* Mute toggle button */
+.mute-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--white-20);
+  background: var(--white-10);
+  color: var(--white-80);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+  flex-shrink: 0;
+}
+.mute-btn:hover { background: var(--white-20); color: var(--white); border-color: var(--white-40); }
+.mute-btn.muted { color: var(--white-40); border-color: var(--white-10); }
+.mute-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* =============================================
+   HERO SECTION
+   ============================================= */
+.hero {
   position: relative;
-  min-height: 100vh;
+  width: 100%;
+  height: 100vh;
+  min-height: 680px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
   background: var(--dark);
 }
 
-.video-container {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
 #bg-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.6;
-}
-
-.video-overlay {
   position: absolute;
   inset: 0;
-  background: 
-    linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.6) 100%),
-    linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.03) 100%);
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.45;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10,10,10,0.55) 0%,
+    rgba(10,10,10,0.35) 50%,
+    rgba(10,10,10,0.90) 100%
+  );
   z-index: 1;
 }
 
-/* ── Audio Controls ── */
-.audio-control {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--white-20);
-  padding: 12px 20px;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.audio-control:hover {
-  background: rgba(255,255,255,0.2);
-  border-color: var(--white-40);
-  transform: scale(1.02);
-}
-
-.audio-icon {
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.audio-icon svg {
-  width: 20px;
-  height: 20px;
-  stroke: var(--white);
-  fill: none;
-  stroke-width: 2;
-}
-
-.audio-bars {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  height: 20px;
-}
-
-.audio-bar {
-  width: 3px;
-  background: var(--red);
-  border-radius: 2px;
-  animation: audio-wave 1.2s ease-in-out infinite;
-}
-
-.audio-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
-.audio-bar:nth-child(2) { height: 16px; animation-delay: 0.2s; }
-.audio-bar:nth-child(3) { height: 12px; animation-delay: 0.4s; }
-.audio-bar:nth-child(4) { height: 18px; animation-delay: 0.6s; }
-.audio-bar:nth-child(5) { height: 10px; animation-delay: 0.8s; }
-
-.audio-control.paused .audio-bar {
-  animation: none;
-  height: 4px !important;
-}
-
-@keyframes audio-wave {
-  0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(0.5); }
-}
-
-.audio-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--white-80);
-}
-
-/* ── Navigation ── */
-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 200;
-  padding: 0 60px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  background: transparent;
-  transition: all 0.4s ease;
-}
-
-nav.scrolled {
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(20px);
-  box-shadow: 0 2px 40px rgba(0,0,0,0.08);
-}
-
-.nav-btn {
-  padding: 14px 32px;
-  background: var(--white);
-  color: var(--dark);
-  text-decoration: none;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-}
-
-nav.scrolled .nav-btn {
-  background: var(--red);
-  color: var(--white);
-}
-
-.nav-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-}
-
-.nav-btn svg {
-  width: 16px;
-  height: 16px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-}
-
-/* ── Hero Content ── */
 .hero-content {
   position: relative;
-  z-index: 10;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  padding: 100px 60px 60px;
+  z-index: 2;
+  text-align: center;
+  padding: 0 24px;
+  max-width: 820px;
 }
 
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 80px;
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.hero-left { display: flex; flex-direction: column; justify-content: center; }
-
-.badge {
+.hero-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: var(--white-10);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--white-20);
-  padding: 10px 18px;
-  border-radius: 30px;
-  margin-bottom: 32px;
-  width: fit-content;
-}
-
-.badge-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--red);
-  border-radius: 50%;
-  animation: pulse-dot 2s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--red-glow); }
-  50% { opacity: 0.8; box-shadow: 0 0 0 8px transparent; }
-}
-
-.badge-text {
-  font-size: 11px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 2px;
-  color: var(--white-80);
+  color: var(--red);
+  letter-spacing: 3px;
   text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.hero-eyebrow::before,
+.hero-eyebrow::after {
+  content: '';
+  display: block;
+  width: 32px; height: 1px;
+  background: var(--red);
 }
 
 .hero-title {
   font-family: 'Oswald', sans-serif;
-  font-size: clamp(56px, 8vw, 100px);
   font-weight: 700;
-  line-height: 0.95;
-  text-transform: uppercase;
-  margin-bottom: 24px;
+  font-size: clamp(52px, 8vw, 96px);
+  line-height: 1.0;
   color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
 }
-
-.hero-title .highlight {
-  display: block;
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--white);
-  text-stroke: 1.5px var(--white);
-}
+.hero-title .red { color: var(--red); }
 
 .hero-subtitle {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--white-60);
-  line-height: 1.7;
-  max-width: 520px;
-  margin-bottom: 48px;
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--white-70, rgba(255,255,255,0.70));
+  line-height: 1.65;
+  max-width: 540px;
+  margin: 0 auto 40px;
 }
 
-/* ── Stats Grid ── */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
-  margin-bottom: 48px;
-}
-
-.stat-item {
-  text-align: left;
-  padding-left: 16px;
-  border-left: 2px solid var(--red);
-}
-
-.stat-number {
-  font-family: 'Oswald', sans-serif;
-  font-size: 42px;
-  font-weight: 600;
-  color: var(--white);
-  line-height: 1;
-  margin-bottom: 6px;
-}
-
-.stat-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  color: var(--white-40);
-  text-transform: uppercase;
-}
-
-/* ── CTA Buttons ── */
-.cta-group {
+.hero-buttons {
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
 }
 
 .btn-primary {
-  padding: 18px 40px;
-  background: var(--red);
-  color: var(--white);
-  text-decoration: none;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 8px 30px var(--red-glow);
+  font-size: 15px;
+  color: var(--white);
+  background: var(--red);
+  padding: 14px 32px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.3px;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
 }
-
 .btn-primary:hover {
   background: var(--red-light);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px var(--red-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--red-glow);
 }
 
-.btn-secondary {
-  padding: 18px 40px;
+.btn-outline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--white);
   background: transparent;
-  color: var(--white);
-  text-decoration: none;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  border: 1px solid var(--white-40);
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
+  padding: 13px 32px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--white-40);
+  letter-spacing: 0.3px;
+  transition: border-color var(--transition), background var(--transition), transform var(--transition);
 }
-
-.btn-secondary:hover {
-  background: var(--white-10);
+.btn-outline:hover {
   border-color: var(--white);
-  transform: translateY(-3px);
-}
-
-.btn-icon {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-}
-
-/* ── Stats Card (Right) ── */
-.stats-card {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(30px);
-  border: 1px solid var(--white-20);
-  border-radius: 16px;
-  padding: 32px;
-  position: relative;
-  overflow: hidden;
-}
-
-.stats-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--red), var(--red-light), var(--red));
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 28px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--white-10);
-}
-
-.card-title {
-  font-family: 'Oswald', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--white);
-}
-
-.live-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--red);
-  padding: 6px 14px;
-  border-radius: 20px;
-}
-
-.live-badge span {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--white);
-}
-
-.insight-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--red);
-  padding: 6px 14px;
-  border-radius: 20px;
-}
-
-.insight-badge span {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--white);
-  text-transform: uppercase;
-}
-
-.live-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--white);
-  border-radius: 50%;
-  animation: pulse-dot 1.5s ease-in-out infinite;
-}
-
-.stat-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--white-05);
-}
-
-.stat-row:last-child { border-bottom: none; }
-
-.stat-row-label {
-  font-size: 13px;
-  color: var(--white-60);
-  width: 130px;
-  flex-shrink: 0;
-}
-
-.stat-bar-container {
-  flex: 1;
-  height: 6px;
   background: var(--white-10);
-  border-radius: 3px;
-  overflow: hidden;
+  transform: translateY(-2px);
 }
 
-.stat-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--red), var(--red-light));
-  border-radius: 3px;
-  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-  width: 0;
-}
-
-.stat-row-value {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--white);
-  min-width: 50px;
-  text-align: right;
-}
-
-/* ── Features Section (White) ── */
-.features-section {
-  background: var(--white);
-  padding: 120px 60px;
-  position: relative;
-}
-
-.features-section::before {
-  content: '';
+/* Stat counters */
+.hero-stats {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 120px;
-  background: linear-gradient(to bottom, var(--dark), transparent);
-  pointer-events: none;
+  bottom: 0; left: 0; right: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  border-top: 1px solid var(--white-10);
+  background: rgba(10,10,10,0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-.section-container {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.section-header {
+.hero-stat {
+  padding: 24px 20px;
   text-align: center;
-  margin-bottom: 80px;
+  border-right: 1px solid var(--white-10);
+  transition: background var(--transition);
+}
+.hero-stat:last-child { border-right: none; }
+.hero-stat:hover { background: var(--white-05); }
+
+.hero-stat-value {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+.hero-stat-value .unit { font-size: 22px; color: var(--red); }
+
+.hero-stat-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--white-60);
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
+/* =============================================
+   SECTION UTILITIES
+   ============================================= */
 .section-badge {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 20px;
-}
-
-.section-badge-line {
-  width: 40px;
-  height: 2px;
-  background: var(--red);
-}
-
-.section-badge-text {
-  font-size: 12px;
-  font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
   letter-spacing: 3px;
-  color: var(--red);
   text-transform: uppercase;
+  margin-bottom: 16px;
 }
+.section-badge::before,
+.section-badge::after {
+  content: '';
+  display: block;
+  width: 28px; height: 1.5px;
+}
+
+.section-badge.light { color: var(--red); }
+.section-badge.light::before,
+.section-badge.light::after { background: var(--red); }
+
+.section-badge.dark { color: var(--red); }
+.section-badge.dark::before,
+.section-badge.dark::after { background: var(--red); }
 
 .section-title {
   font-family: 'Oswald', sans-serif;
-  font-size: clamp(40px, 5vw, 56px);
   font-weight: 700;
-  color: var(--dark);
   text-transform: uppercase;
+  letter-spacing: 1px;
   line-height: 1.1;
 }
+.section-title .red { color: var(--red); }
 
-.section-title span { color: var(--red); }
+/* =============================================
+   FEATURES SECTION
+   ============================================= */
+.features {
+  background: var(--white);
+  padding: 100px 40px;
+}
+
+.features-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.features-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.features-header .section-title {
+  font-size: clamp(34px, 4vw, 52px);
+  color: var(--dark);
+  margin-bottom: 16px;
+}
+
+.features-header p {
+  font-size: 16px;
+  color: #555;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
 
 .features-grid {
   display: grid;
@@ -571,244 +397,83 @@ nav.scrolled .nav-btn {
 }
 
 .feature-card {
-  background: #fafafa;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  padding: 40px 32px;
-  transition: all 0.4s ease;
+  background: #f7f7f7;
+  border: 1px solid #e8e8e8;
+  border-radius: var(--radius-md);
+  padding: 32px 28px;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
   position: relative;
   overflow: hidden;
-  cursor: pointer;
 }
-
 .feature-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   height: 3px;
   background: var(--red);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.4s ease;
+  transition: transform var(--transition);
 }
-
 .feature-card:hover {
-  background: var(--white);
-  border-color: #ddd;
-  transform: translateY(-8px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.10);
+  border-color: #d0d0d0;
 }
-
 .feature-card:hover::before { transform: scaleX(1); }
 
 .feature-icon {
-  width: 56px;
-  height: 56px;
-  background: linear-gradient(135deg, var(--red), var(--red-light));
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 24px;
-  transition: transform 0.3s ease;
+  width: 48px; height: 48px;
+  background: var(--dark);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+  flex-shrink: 0;
 }
-
-.feature-card:hover .feature-icon { transform: scale(1.1); }
-
-.feature-icon svg {
-  width: 26px;
-  height: 26px;
-  stroke: var(--white);
-  fill: none;
-  stroke-width: 2;
-}
+.feature-icon svg { width: 22px; height: 22px; }
 
 .feature-title {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Oswald', sans-serif;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--dark);
-  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
 }
 
 .feature-desc {
   font-size: 14px;
   color: #666;
-  line-height: 1.7;
-  margin-bottom: 24px;
+  line-height: 1.65;
+  margin-bottom: 20px;
 }
 
 .feature-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
   color: var(--red);
-  text-decoration: none;
-  transition: gap 0.3s ease;
+  letter-spacing: 0.3px;
+  transition: gap var(--transition);
 }
+.feature-link svg { width: 14px; height: 14px; transition: transform var(--transition); }
+.feature-card:hover .feature-link { gap: 10px; }
+.feature-card:hover .feature-link svg { transform: translateX(3px); }
 
-.feature-link:hover { gap: 14px; }
-
-.feature-link svg {
-  width: 16px;
-  height: 16px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-}
-
-/* ── CTA Banner ── */
-.cta-banner {
+/* =============================================
+   TOP 15 RANKINGS SECTION
+   ============================================= */
+.rankings {
   background: var(--dark);
-  padding: 80px 60px;
-}
-
-.cta-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-}
-
-.cta-text {
-  flex: 1;
-}
-
-.cta-title {
-  font-family: 'Oswald', sans-serif;
-  font-size: 36px;
-  font-weight: 700;
-  color: var(--white);
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-.cta-subtitle {
-  font-size: 16px;
-  color: var(--white-60);
-}
-
-.cta-btn {
-  padding: 20px 48px;
-  background: var(--red);
-  color: var(--white);
-  text-decoration: none;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 8px 30px var(--red-glow);
-}
-
-.cta-btn:hover {
-  background: var(--red-light);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px var(--red-glow);
-}
-
-.cta-btn svg {
-  width: 20px;
-  height: 20px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-}
-
-/* ── Footer ── */
-footer {
-  background: #050505;
-  padding: 60px 60px 40px;
-  border-top: 1px solid var(--white-10);
-}
-
-.footer-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.footer-logo {
-  font-family: 'Oswald', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.footer-logo span { color: var(--red); }
-
-.footer-stats {
-  display: flex;
-  gap: 40px;
-}
-
-.footer-stat {
-  text-align: center;
-}
-
-.footer-stat-num {
-  font-family: 'Oswald', sans-serif;
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--white);
-}
-
-.footer-stat-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  color: var(--white-40);
-  text-transform: uppercase;
-}
-
-.footer-copyright {
-  font-size: 12px;
-  color: var(--white-40);
-}
-
-/* ── Responsive ── */
-@media (max-width: 1024px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 60px; }
-  .stats-card { max-width: 480px; }
-  .features-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 768px) {
-  nav { padding: 0 24px; }
-  .hero-content { padding: 100px 24px 60px; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
-  .features-section { padding: 80px 24px; }
-  .features-grid { grid-template-columns: 1fr; }
-  .cta-banner { padding: 60px 24px; }
-  .cta-inner { flex-direction: column; text-align: center; }
-  .audio-control { bottom: 20px; right: 20px; padding: 10px 16px; }
-}
-
-/* ── Top 15 Section ── */
-.top15-section {
-  background: var(--dark);
-  padding: 80px 0;
+  padding: 100px 40px;
+  border-top: 3px solid var(--red);
   position: relative;
-  overflow: hidden;
 }
-.top15-section::before {
+.rankings::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -816,778 +481,1094 @@ footer {
   background: linear-gradient(90deg, transparent, var(--red), transparent);
 }
 
-.top15-container {
-  max-width: 1400px;
+.rankings-inner {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 40px;
 }
 
-.top15-header {
+.rankings-header {
   text-align: center;
-  margin-bottom: 40px;
-}
-.top15-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.top15-badge-line { width: 40px; height: 1px; background: var(--red); }
-.top15-badge-text {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--red);
-}
-.top15-title {
-  font-family: 'Oswald', sans-serif;
-  font-size: 42px;
-  font-weight: 700;
-  color: var(--white);
-  line-height: 1.1;
-  margin-bottom: 12px;
-}
-.top15-title span { color: var(--red); }
-.top15-subtitle {
-  font-size: 16px;
-  color: var(--white-60);
-  max-width: 500px;
-  margin: 0 auto;
+  margin-bottom: 48px;
 }
 
-.top15-tabs {
+.rankings-header .section-title {
+  font-size: clamp(34px, 4vw, 56px);
+  color: var(--white);
+}
+
+.rankings-header p {
+  font-size: 15px;
+  color: var(--white-60);
+  margin-top: 12px;
+}
+
+/* Division tabs */
+.division-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   justify-content: center;
-  margin-bottom: 36px;
+  margin-bottom: 48px;
 }
-.top15-tab {
-  padding: 8px 18px;
-  border-radius: 20px;
+
+.division-pill {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white-60);
+  background: var(--white-05);
+  border: 1px solid var(--white-10);
+  border-radius: 100px;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: color var(--transition), background var(--transition), border-color var(--transition);
+  letter-spacing: 0.3px;
+}
+.division-pill:hover {
+  color: var(--white);
+  background: var(--white-10);
+  border-color: var(--white-20);
+}
+.division-pill.active {
+  color: var(--white);
+  background: var(--red);
+  border-color: var(--red);
+}
+
+/* Rankings content */
+#rankings-content { min-height: 420px; }
+
+/* Champion banner */
+.champion-banner {
+  position: relative;
+  background: #111111;
+  border: 1px solid var(--white-10);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 200px;
+}
+.champion-banner::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--red);
+}
+.champion-banner-glow {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(210,0,0,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.champion-info {
+  padding: 36px 36px 36px 52px;
+  flex: 1;
+}
+
+.champion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.champion-badge svg { width: 16px; height: 16px; }
+
+.champion-name {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: clamp(28px, 3.5vw, 44px);
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  line-height: 1.0;
+}
+
+.champion-nickname {
+  font-style: italic;
+  font-size: 15px;
+  color: var(--white-60);
+  margin-bottom: 20px;
+}
+
+.champion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 12px;
   font-weight: 600;
-  cursor: pointer;
-  border: 1.5px solid var(--white-20);
-  background: transparent;
-  color: var(--white-60);
-  transition: all 0.2s;
-  white-space: nowrap;
-  letter-spacing: 0.5px;
+  padding: 5px 14px;
+  border-radius: 100px;
+  letter-spacing: 0.3px;
 }
-.top15-tab:hover { border-color: var(--red); color: var(--white); }
-.top15-tab.active { background: var(--red); border-color: var(--red); color: var(--white); }
+.chip-record {
+  color: var(--white-80);
+  background: var(--white-10);
+  border: 1px solid var(--white-20);
+}
+.chip-win {
+  color: #4ade80;
+  background: rgba(74,222,128,0.12);
+  border: 1px solid rgba(74,222,128,0.25);
+}
+.chip-ko {
+  color: #f87171;
+  background: rgba(248,113,113,0.12);
+  border: 1px solid rgba(248,113,113,0.25);
+}
 
-.top15-grid {
+.champion-photo-wrap {
+  flex-shrink: 0;
+  width: 220px;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+.champion-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+.champion-photo-wrap .photo-fallback {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  background: #1a1a1a;
+}
+.champion-photo-wrap .photo-fallback svg {
+  width: 80px; height: 80px;
+  opacity: 0.25;
+}
+
+/* Ranked grid */
+.ranked-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 16px;
 }
-@media (max-width: 1300px) { .top15-grid { grid-template-columns: repeat(4, 1fr); } }
-@media (max-width: 1000px) { .top15-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 700px)  { .top15-grid { grid-template-columns: repeat(2, 1fr); } }
 
-.t15-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
+.rank-card {
+  background: #111111;
+  border: 1px solid var(--white-10);
+  border-radius: var(--radius-md);
   overflow: hidden;
-  cursor: pointer;
-  transition: all 0.25s;
-  position: relative;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  cursor: default;
 }
-.t15-card:hover {
-  border-color: var(--red);
-  background: rgba(210,0,0,0.07);
+.rank-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(210,0,0,0.2);
-}
-.t15-card.champ {
-  border-color: var(--gold);
-  background: rgba(201,162,39,0.06);
-}
-.t15-card.champ:hover {
-  border-color: var(--gold);
-  box-shadow: 0 12px 32px rgba(201,162,39,0.2);
+  border-color: var(--white-20);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
 }
 
-.t15-rank {
-  position: absolute;
-  top: 10px; left: 10px;
-  width: 28px; height: 28px;
-  background: var(--red);
-  color: white;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700;
-  font-size: 12px;
-  z-index: 2;
-  box-shadow: 0 2px 8px rgba(210,0,0,0.5);
-}
-.t15-rank.gold-badge {
-  background: linear-gradient(135deg, var(--gold), #b8860b);
-  box-shadow: 0 2px 8px rgba(201,162,39,0.5);
-  font-size: 11px;
-}
-
-.t15-photo {
-  height: 180px;
-  background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
+.rank-card-photo {
   position: relative;
+  height: 140px;
+  background: #1a1a1a;
+  overflow: hidden;
 }
-.t15-photo img {
-  width: 100%; height: 100%;
+.rank-card-photo img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: top center;
 }
-.t15-silhouette {
-  width: 65px; height: 88px;
-  opacity: 0.25;
-}
-.t15-photo::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 60px;
-  background: linear-gradient(to top, rgba(10,10,10,0.9), transparent);
-  pointer-events: none;
-}
-.t15-card.champ .t15-photo {
-  background: linear-gradient(180deg, #1a1500 0%, #111 100%);
-}
-
-.t15-info {
-  padding: 10px 14px 14px;
-}
-.t15-name {
-  font-family: 'Oswald', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--white);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 2px;
-}
-.t15-nickname {
-  font-size: 11px;
-  color: var(--white-40);
-  font-style: italic;
-  margin-bottom: 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-height: 16px;
-}
-.t15-record {
-  font-size: 12px;
-  color: var(--white-60);
-  margin-bottom: 8px;
-}
-.t15-record strong { color: var(--red-light); font-size: 14px; }
-.t15-card.champ .t15-record strong { color: var(--gold); }
-.t15-stats {
-  display: flex; gap: 6px; flex-wrap: wrap;
-}
-.t15-stat {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: rgba(255,255,255,0.07);
-  color: var(--white-60);
-}
-.t15-stat.red { background: rgba(210,0,0,0.2); color: #ff6666; }
-.t15-stat.gold { background: rgba(201,162,39,0.2); color: var(--gold); }
-
-.top15-loader {
-  grid-column: 1 / -1;
+.rank-card-photo .photo-fallback {
+  width: 100%; height: 100%;
   display: flex; align-items: center; justify-content: center;
-  padding: 60px;
-  color: var(--white-40);
-  gap: 12px;
-  font-size: 14px;
 }
-.top15-loader .ld-spin {
-  width: 28px; height: 28px;
-  border: 2px solid rgba(255,255,255,0.1);
+.rank-card-photo .photo-fallback svg { width: 56px; height: 56px; opacity: 0.2; }
+
+.rank-badge {
+  position: absolute;
+  top: 8px; left: 8px;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--white);
+  background: var(--dark-90);
+  border: 1px solid var(--white-20);
+  border-radius: 4px;
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  letter-spacing: 0.3px;
+}
+.rank-badge.belt {
+  background: var(--red);
+  border-color: var(--red);
+  font-size: 11px;
+}
+
+.rank-card-body {
+  padding: 14px 14px 12px;
+}
+.rank-card-name {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rank-card-nickname {
+  font-size: 11px;
+  color: var(--white-50, rgba(255,255,255,0.5));
+  font-style: italic;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 14px;
+}
+.rank-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.rank-card-record {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--white-80);
+}
+.win-pct-badge {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #4ade80;
+  background: rgba(74,222,128,0.12);
+  border: 1px solid rgba(74,222,128,0.2);
+  border-radius: 100px;
+  padding: 2px 8px;
+}
+
+/* Rankings loader */
+.rankings-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
+.spinner {
+  width: 36px; height: 36px;
+  border: 3px solid var(--white-10);
   border-top-color: var(--red);
   border-radius: 50%;
-  animation: t15spin 0.7s linear infinite;
+  animation: spin 0.7s linear infinite;
 }
-@keyframes t15spin { to { transform: rotate(360deg); } }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.top15-cta {
+.rankings-footer {
   text-align: center;
-  margin-top: 36px;
+  margin-top: 48px;
 }
-.top15-cta-btn {
-  display: inline-flex;
+
+.btn-outline-red {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--red);
+  background: transparent;
+  border: 1.5px solid var(--red);
+  border-radius: var(--radius-sm);
+  padding: 13px 32px;
+  letter-spacing: 0.4px;
+  transition: color var(--transition), background var(--transition), transform var(--transition);
+  display: inline-block;
+}
+.btn-outline-red:hover {
+  color: var(--white);
+  background: var(--red);
+  transform: translateY(-2px);
+}
+
+/* =============================================
+   CTA BANNER
+   ============================================= */
+.cta-banner {
+  background: var(--red);
+  padding: 80px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 20px,
+    rgba(255,255,255,0.03) 20px,
+    rgba(255,255,255,0.03) 40px
+  );
+}
+.cta-banner-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.cta-banner h2 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: clamp(34px, 5vw, 58px);
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  line-height: 1.0;
+}
+.cta-banner p {
+  font-size: 17px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+.btn-white {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--red);
+  background: var(--white);
+  padding: 15px 36px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.4px;
+  display: inline-block;
+  transition: background var(--transition), color var(--transition), transform var(--transition), box-shadow var(--transition);
+  border: 2px solid var(--white);
+}
+.btn-white:hover {
+  background: var(--dark);
+  color: var(--white);
+  border-color: var(--dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+.footer {
+  background: var(--dark);
+  border-top: 1px solid var(--white-10);
+  padding: 56px 40px 40px;
+}
+
+.footer-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.footer-logo {
+  display: flex;
   align-items: center;
   gap: 10px;
-  background: var(--red);
-  color: white;
-  padding: 14px 32px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-family: 'Oswald', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  transition: background 0.2s, transform 0.2s;
 }
-.top15-cta-btn:hover { background: var(--red-light); transform: translateY(-2px); }
-.top15-cta-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.footer-logo-hex {
+  width: 36px; height: 36px;
+  background: var(--red);
+  clip-path: polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);
+  display: flex; align-items: center; justify-content: center;
+}
+.footer-logo-hex span {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--white);
+}
+.footer-logo-text {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--white);
+  letter-spacing: 1px;
+}
+.footer-logo-text span { color: var(--red); }
+
+.footer-stats {
+  display: flex;
+  gap: 48px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.footer-stat {
+  text-align: center;
+}
+.footer-stat-value {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  color: var(--white);
+  letter-spacing: 0.5px;
+}
+.footer-stat-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  color: var(--white-40);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 3px;
+}
+
+.footer-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--white-10);
+}
+
+.footer-copy {
+  font-size: 13px;
+  color: var(--white-40);
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 1100px) {
+  .ranked-grid { grid-template-columns: repeat(4,1fr); }
+}
+@media (max-width: 900px) {
+  .features-grid { grid-template-columns: repeat(2,1fr); }
+  .ranked-grid { grid-template-columns: repeat(3,1fr); }
+  .hero-stats { grid-template-columns: repeat(2,1fr); }
+  .hero-stats .hero-stat:nth-child(2) { border-right: none; }
+  .hero-stats .hero-stat:nth-child(3) { border-top: 1px solid var(--white-10); }
+}
+@media (max-width: 720px) {
+  .nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .features { padding: 72px 20px; }
+  .features-grid { grid-template-columns: 1fr; }
+  .rankings { padding: 72px 20px; }
+  .ranked-grid { grid-template-columns: repeat(2,1fr); }
+  .champion-photo-wrap { width: 130px; height: 160px; }
+  .champion-info { padding: 24px 20px 24px 36px; }
+  .champion-name { font-size: 26px; }
+  .cta-banner { padding: 64px 20px; }
+  .footer { padding: 48px 20px 32px; }
+  .footer-stats { gap: 28px; }
+}
 
 </style>
 </head>
 <body>
 
-<!-- Audio Element (Hidden) -->
-<audio id="bg-audio" loop>
-  <source src="/static/ufc-theme.mp3" type="audio/mpeg">
-</audio>
+<audio id="bg-audio" src="/static/ufc-theme.mp3" loop preload="auto"></audio>
 
-<!-- Audio Control Button -->
-<div class="audio-control paused" id="audio-control" onclick="toggleAudio()">
-  <div class="audio-icon" id="audio-icon">
-    <svg viewBox="0 0 24 24" id="icon-play">
-      <polygon points="5 3 19 12 5 21 5 3"></polygon>
-    </svg>
-  </div>
-  <div class="audio-bars">
-    <div class="audio-bar"></div>
-    <div class="audio-bar"></div>
-    <div class="audio-bar"></div>
-    <div class="audio-bar"></div>
-    <div class="audio-bar"></div>
-  </div>
-  <span class="audio-label" id="audio-label">Play Music</span>
-</div>
+<!-- ============================================
+     NAVIGATION
+     ============================================ -->
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-hex"><span>UFC</span></div>
+    <span class="nav-logo-text">UFC <span>Analytics</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/dashboard#sec-physical">Overview</a></li>
+    <li><a href="/dashboard#sec-fighters">Research</a></li>
+    <li><a href="/dashboard#sec-fighters">Fighters</a></li>
+    <li><a href="/dashboard#sec-compare">Compare</a></li>
+    <li><a href="#rankings">Rankings</a></li>
+  </ul>
+  <a href="/dashboard" class="nav-cta">Enter Dashboard</a>
+  <button id="mute-btn" class="mute-btn" title="Toggle sound" aria-label="Toggle sound">
+    <!-- unmuted icon -->
+    <svg id="icon-sound" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+    <!-- muted icon (hidden by default) -->
+    <svg id="icon-mute" viewBox="0 0 24 24" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+  </button>
+</nav>
 
-<!-- Hero Section with Video -->
-<section class="hero-section">
-  <div class="video-container">
-    <video autoplay muted loop playsinline id="bg-video">
-      <source src="/static/hero.mp4" type="video/mp4">
-    </video>
-    <div class="video-overlay"></div>
-  </div>
+<!-- ============================================
+     HERO SECTION
+     ============================================ -->
+<section class="hero">
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="/static/hero.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
 
-  <!-- Navigation -->
-  <nav id="navbar">
-    <a href="/dashboard" class="nav-btn">
-      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      Launch Dashboard
-    </a>
-  </nav>
-
-  <!-- Hero Content -->
   <div class="hero-content">
-    <div class="hero-grid">
-      <div class="hero-left">
-        <div class="badge">
-          <div class="badge-dot"></div>
-          <span class="badge-text">UFC Performance Analysis</span>
-        </div>
-        
-        <h1 class="hero-title">
-          UFC
-          <span class="highlight">Analytics</span>
-        </h1>
-        
-        <p class="hero-subtitle">
-          The most comprehensive UFC data analysis platform. Explore fighter statistics, performance metrics, and predictive analytics across 8,000+ fights.
-        </p>
+    <div class="hero-eyebrow">UFC Analytics Platform</div>
+    <h1 class="hero-title">
+      THE ULTIMATE<br>
+      FIGHT <span class="red">ANALYTICS</span>
+    </h1>
+    <p class="hero-subtitle">
+      Deep statistical insights on every UFC fighter — performance trends, physical profiles, career trajectories, and head-to-head comparisons all in one place.
+    </p>
+    <div class="hero-buttons">
+      <a href="/dashboard" class="btn-primary">Enter Dashboard</a>
+      <a href="#rankings" class="btn-outline">View Rankings</a>
+    </div>
+  </div>
 
-        <div class="stats-grid">
-          <div class="stat-item">
-            <div class="stat-number" data-target="4383">0</div>
-            <div class="stat-label">Fighters</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number" data-target="8355">0</div>
-            <div class="stat-label">Fights</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number" data-target="413">0</div>
-            <div class="stat-label">Events</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number" data-target="12">0</div>
-            <div class="stat-label">Divisions</div>
-          </div>
-        </div>
-
-        <div class="cta-group">
-          <a href="/dashboard" class="btn-primary">
-            <svg class="btn-icon" viewBox="0 0 24 24">
-              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-              <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-            </svg>
-            Explore Dashboard
-          </a>
-          <a href="/dashboard#sec-compare" class="btn-secondary">
-            <svg class="btn-icon" viewBox="0 0 24 24">
-              <path d="M16 3h5v5M4 20L21 3M8 20H3v-5"/>
-            </svg>
-            Compare Fighters
-          </a>
-        </div>
-      </div>
-
-      <div class="hero-right">
-        <div class="stats-card" id="stats-card">
-          <div class="card-header">
-            <span class="card-title">Dataset Highlights</span>
-            <div class="insight-badge">
-              <span>Insights</span>
-            </div>
-          </div>
-          
-          <div class="stat-row">
-            <span class="stat-row-label">KO / TKO Rate</span>
-            <div class="stat-bar-container">
-              <div class="stat-bar" data-width="32"></div>
-            </div>
-            <span class="stat-row-value">32.4%</span>
-          </div>
-          
-          <div class="stat-row">
-            <span class="stat-row-label">Submission Rate</span>
-            <div class="stat-bar-container">
-              <div class="stat-bar" data-width="19"></div>
-            </div>
-            <span class="stat-row-value">19.1%</span>
-          </div>
-          
-          <div class="stat-row">
-            <span class="stat-row-label">Decision Rate</span>
-            <div class="stat-bar-container">
-              <div class="stat-bar" data-width="47"></div>
-            </div>
-            <span class="stat-row-value">47.1%</span>
-          </div>
-          
-          <div class="stat-row">
-            <span class="stat-row-label">Strike Accuracy</span>
-            <div class="stat-bar-container">
-              <div class="stat-bar" data-width="45"></div>
-            </div>
-            <span class="stat-row-value">45.2%</span>
-          </div>
-          
-          <div class="stat-row">
-            <span class="stat-row-label">Orthodox Stance</span>
-            <div class="stat-bar-container">
-              <div class="stat-bar" data-width="67"></div>
-            </div>
-            <span class="stat-row-value">67%</span>
-          </div>
-          
-          <div class="stat-row">
-            <span class="stat-row-label">Southpaw Stance</span>
-            <div class="stat-bar-container">
-              <div class="stat-bar" data-width="24"></div>
-            </div>
-            <span class="stat-row-value">24%</span>
-          </div>
-        </div>
-      </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-value" id="stat-fighters">—</div>
+      <div class="hero-stat-label">Total Fighters</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-value" id="stat-fights">—</div>
+      <div class="hero-stat-label">Total Fights</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-value" id="stat-ko"><span class="unit">—</span></div>
+      <div class="hero-stat-label">KO Rate</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-value" id="stat-winrate"><span class="unit">—</span></div>
+      <div class="hero-stat-label">Avg Win Rate</div>
     </div>
   </div>
 </section>
 
-<!-- Features Section -->
-<section class="features-section">
-  <div class="section-container">
-    <div class="section-header">
-      <div class="section-badge">
-        <div class="section-badge-line"></div>
-        <span class="section-badge-text">Analytics Features</span>
-        <div class="section-badge-line"></div>
-      </div>
-      <h2 class="section-title">Data-Driven <span>Insights</span></h2>
+<!-- ============================================
+     FEATURES SECTION
+     ============================================ -->
+<section class="features">
+  <div class="features-inner">
+    <div class="features-header">
+      <div class="section-badge light">Analytics Features</div>
+      <h2 class="section-title">Data-Driven <span class="red">Insights</span></h2>
+      <p>Explore every dimension of UFC fighter performance — from physical attributes to finishing rates.</p>
     </div>
 
     <div class="features-grid">
-      <div class="feature-card" onclick="window.location='/dashboard#sec-physical'">
+
+      <!-- Physical Analytics -->
+      <a href="/dashboard#sec-physical" class="feature-card">
         <div class="feature-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#d20000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="7" r="4"/>
+            <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+            <path d="M4 14l2 2 4-4"/>
+          </svg>
         </div>
-        <h3 class="feature-title">Physical Attributes</h3>
-        <p class="feature-desc">Analyze how height, reach, and weight correlate with win rates and striking accuracy across all weight classes.</p>
-        <a href="/dashboard#sec-physical" class="feature-link">
-          Explore Data
-          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-
-      <div class="feature-card" onclick="window.location='/dashboard#sec-stance'">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+        <div class="feature-title">Physical Analytics</div>
+        <p class="feature-desc">Height, reach, weight class distributions — understand the physical edge across all fighters.</p>
+        <div class="feature-link">
+          Explore
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
-        <h3 class="feature-title">Stance Analysis</h3>
-        <p class="feature-desc">Compare Orthodox, Southpaw, and Switch stances to understand performance differences and strategic advantages.</p>
-        <a href="/dashboard#sec-stance" class="feature-link">
-          Explore Data
-          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-
-      <div class="feature-card" onclick="window.location='/dashboard#sec-experience'">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
-        <h3 class="feature-title">Career Experience</h3>
-        <p class="feature-desc">Track how fight count and career longevity impact performance from debut fighters to elite veterans.</p>
-        <a href="/dashboard#sec-experience" class="feature-link">
-          Explore Data
-          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-
-      <div class="feature-card" onclick="window.location='/dashboard#sec-outcomes'">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        </div>
-        <h3 class="feature-title">Fight Outcomes</h3>
-        <p class="feature-desc">Deep analysis of KO/TKO, submission, and decision rates with historical trends and patterns.</p>
-        <a href="/dashboard#sec-outcomes" class="feature-link">
-          Explore Data
-          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-
-      <div class="feature-card" onclick="window.location='/dashboard#sec-fighters'">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </div>
-        <h3 class="feature-title">Fighter Profiles</h3>
-        <p class="feature-desc">Search thousands of fighters with detailed stat cards, radar charts, and performance ratings.</p>
-        <a href="/dashboard#sec-fighters" class="feature-link">
-          Search Fighters
-          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-
-      <div class="feature-card" onclick="window.location='/dashboard#sec-compare'">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 0 1 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 0 1 9.288 0M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/></svg>
-        </div>
-        <h3 class="feature-title">Fighter Comparison</h3>
-        <p class="feature-desc">Head-to-head comparison with side-by-side statistics and data-driven win probability predictions.</p>
-        <a href="/dashboard#sec-compare" class="feature-link">
-          Compare Now
-          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- Top 15 Rankings -->
-<section class="top15-section">
-  <div class="top15-container">
-    <div class="top15-header">
-      <div class="top15-badge">
-        <div class="top15-badge-line"></div>
-          <span class="top15-badge-text">Men's Division Rankings</span>
-        <div class="top15-badge-line"></div>
-      </div>
-      <h2 class="top15-title">Champions + <span>Top 15</span></h2>
-        <p class="top15-subtitle">Explore the current official UFC men's champions and ranked fighters across each division.</p>
-    </div>
-    <div class="top15-tabs" id="landing-div-tabs">
-      <div class="top15-loader"><div class="ld-spin"></div> Loading divisions...</div>
-    </div>
-    <div class="top15-grid" id="landing-rankings-grid">
-    </div>
-    <div class="top15-cta">
-      <a href="/dashboard#sec-top15" class="top15-cta-btn">
-        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        View Full Rankings
       </a>
+
+      <!-- Stance Analysis -->
+      <a href="/dashboard#sec-stance" class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#d20000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="feature-title">Stance Analysis</div>
+        <p class="feature-desc">Orthodox vs. southpaw breakdown with win-rate comparisons across divisions and fight styles.</p>
+        <div class="feature-link">
+          Explore
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+
+      <!-- Career Experience -->
+      <a href="/dashboard#sec-experience" class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#d20000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <path d="M8 21h8M12 17v4"/>
+            <path d="M7 10h10M7 7h4"/>
+          </svg>
+        </div>
+        <div class="feature-title">Career Experience</div>
+        <p class="feature-desc">Total fights, active years, and age-performance curves to spot emerging and veteran talent.</p>
+        <div class="feature-link">
+          Explore
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+
+      <!-- Fight Outcomes -->
+      <a href="/dashboard#sec-outcomes" class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#d20000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 20V10M12 20V4M6 20v-6"/>
+          </svg>
+        </div>
+        <div class="feature-title">Fight Outcomes</div>
+        <p class="feature-desc">KO, submission, decision rates by weight class — see which divisions end fights early.</p>
+        <div class="feature-link">
+          Explore
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+
+      <!-- Fighter Profiles -->
+      <a href="/dashboard#sec-fighters" class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#d20000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="feature-title">Fighter Profiles</div>
+        <p class="feature-desc">Browse all UFC fighters with full stats, fight history, and performance metrics at a glance.</p>
+        <div class="feature-link">
+          Explore
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+
+      <!-- Fighter Comparison -->
+      <a href="/dashboard#sec-compare" class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#d20000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 3h5v5M4 20L20.2 3.8M21 16v5h-5M15 15l5.1 5.1M4 4l5 5"/>
+          </svg>
+        </div>
+        <div class="feature-title">Fighter Comparison</div>
+        <p class="feature-desc">Side-by-side head-to-head comparison of any two fighters across all statistical dimensions.</p>
+        <div class="feature-link">
+          Explore
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+
     </div>
   </div>
 </section>
 
-<!-- CTA Banner -->
-<div class="cta-banner">
-  <div class="cta-inner">
-    <div class="cta-text">
-      <h3 class="cta-title">Ready to Dive In?</h3>
-      <p class="cta-subtitle">Access comprehensive UFC analytics and make data-driven insights.</p>
+<!-- ============================================
+     TOP 15 RANKINGS SECTION
+     ============================================ -->
+<section class="rankings" id="rankings">
+  <div class="rankings-inner">
+    <div class="rankings-header">
+      <div class="section-badge dark">Men's Division Rankings</div>
+      <h2 class="section-title">Top 15 <span class="red">Per Division</span></h2>
+      <p>Current UFC rankings by weight class — champions, contenders, and rising prospects.</p>
     </div>
-    <a href="/dashboard" class="cta-btn">
-      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      Open Dashboard
-    </a>
-  </div>
-</div>
 
-<!-- Footer -->
-<footer>
+    <div class="division-tabs" id="division-tabs">
+      <!-- Populated by JS -->
+    </div>
+
+    <div id="rankings-content">
+      <div class="rankings-loader"><div class="spinner"></div></div>
+    </div>
+
+    <div class="rankings-footer">
+      <a href="/dashboard#sec-top15" class="btn-outline-red">View Full Rankings</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     CTA BANNER
+     ============================================ -->
+<section class="cta-banner">
+  <div class="cta-banner-inner">
+    <h2>Ready to Dive In?</h2>
+    <p>Access the full dashboard with every fighter, every fight, every stat — all interactive and ready to explore.</p>
+    <a href="/dashboard" class="btn-white">Open Dashboard</a>
+  </div>
+</section>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="footer">
   <div class="footer-inner">
-    <div class="footer-logo">UFC<span>Analytics</span></div>
+    <div class="footer-logo">
+      <div class="footer-logo-hex"><span>UFC</span></div>
+      <span class="footer-logo-text">UFC <span>Analytics</span></span>
+    </div>
+
     <div class="footer-stats">
       <div class="footer-stat">
-        <div class="footer-stat-num">8,355</div>
+        <div class="footer-stat-value">8,355</div>
         <div class="footer-stat-label">Fights</div>
       </div>
       <div class="footer-stat">
-        <div class="footer-stat-num">413</div>
+        <div class="footer-stat-value">413</div>
         <div class="footer-stat-label">Events</div>
       </div>
       <div class="footer-stat">
-        <div class="footer-stat-num">12</div>
+        <div class="footer-stat-value">12</div>
         <div class="footer-stat-label">Divisions</div>
       </div>
     </div>
-    <div class="footer-copyright">UFC Data Analysis Platform</div>
+
+    <div class="footer-divider"></div>
+
+    <p class="footer-copy">
+      &copy; 2025 UFC Analytics. Statistical data for research and analysis purposes only.
+    </p>
   </div>
 </footer>
 
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
 <script>
-// Audio Control
-const audio = document.getElementById('bg-audio');
-const audioControl = document.getElementById('audio-control');
-const audioIcon = document.getElementById('audio-icon');
-const audioLabel = document.getElementById('audio-label');
-let isPlaying = false;
+(function () {
+  'use strict';
 
-function toggleAudio() {
-  if (isPlaying) {
-    audio.pause();
-    audioControl.classList.add('paused');
-    audioIcon.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
-    audioLabel.textContent = 'Play Music';
-  } else {
-    audio.play().catch(e => console.log('Audio play failed:', e));
-    audioControl.classList.remove('paused');
-    audioIcon.innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
-    audioLabel.textContent = 'Pause Music';
+  /* ---- Helpers ---- */
+  function fmt(n, decimals) {
+    if (n == null || isNaN(n)) return '—';
+    return Number(n).toLocaleString('en-US', {
+      minimumFractionDigits: decimals || 0,
+      maximumFractionDigits: decimals || 0,
+    });
   }
-  isPlaying = !isPlaying;
-}
 
-// Try to autoplay (will likely be blocked by browser)
-window.addEventListener('load', () => {
-  audio.volume = 0.5;
-  // Most browsers block autoplay, so we'll just have the control ready
-});
-
-// Navigation scroll effect
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 100) {
-    navbar.classList.add('scrolled');
-  } else {
-    navbar.classList.remove('scrolled');
+  function pct(v) {
+    var n = parseFloat(v);
+    if (isNaN(n)) return '—';
+    return (n * 100).toFixed(1) + '%';
   }
-});
 
-// Animate counter numbers
-function animateCounter(el) {
-  const target = parseInt(el.dataset.target);
-  const duration = 2000;
-  const fps = 60;
-  const frames = duration / (1000 / fps);
-  let frame = 0;
-  
-  const interval = setInterval(() => {
-    frame++;
-    const eased = 1 - Math.pow(1 - frame / frames, 4);
-    el.textContent = Math.round(target * eased).toLocaleString();
-    if (frame >= frames) {
-      el.textContent = target.toLocaleString();
-      clearInterval(interval);
+  function safePct(v) {
+    var n = parseFloat(v);
+    if (isNaN(n)) return '—';
+    if (n <= 1) return (n * 100).toFixed(1) + '%';
+    return n.toFixed(1) + '%';
+  }
+
+  /* ---- Animated counter ---- */
+  function animateCounter(el, target, suffix, duration) {
+    suffix = suffix || '';
+    duration = duration || 1400;
+    var start = null;
+    var startVal = 0;
+
+    function step(ts) {
+      if (!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var current = Math.round(startVal + (target - startVal) * eased);
+      el.textContent = fmt(current) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
     }
-  }, 1000 / fps);
-}
+    requestAnimationFrame(step);
+  }
 
-// Animate stat bars
-function animateBars() {
-  document.querySelectorAll('.stat-bar').forEach(bar => {
-    const width = bar.dataset.width;
-    setTimeout(() => {
-      bar.style.width = width + '%';
-    }, 500);
-  });
-}
+  /* ---- Load hero stats ---- */
+  function loadStats() {
+    fetch('/api/stats')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var fighters = parseInt(d.fighters) || 0;
+        var fights   = parseInt(d.fights)   || 0;
+        var koRaw    = parseFloat(d.ko_rate);
+        var wrRaw    = parseFloat(d.avg_win_rate);
 
-// Intersection Observer for animations
-const observerOptions = {
-  threshold: 0.2,
-  rootMargin: '0px'
-};
+        var elF  = document.getElementById('stat-fighters');
+        var elFi = document.getElementById('stat-fights');
+        var elKO = document.getElementById('stat-ko');
+        var elWR = document.getElementById('stat-winrate');
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.style.opacity = '1';
-      entry.target.style.transform = 'translateY(0)';
+        animateCounter(elF, fighters, '', 1400);
+        animateCounter(elFi, fights, '', 1600);
+
+        /* KO rate — show as percentage */
+        var koVal = isNaN(koRaw) ? 0 : (koRaw <= 1 ? koRaw * 100 : koRaw);
+        elKO.innerHTML = '<span class="unit">' + koVal.toFixed(1) + '%</span>';
+
+        var wrVal = isNaN(wrRaw) ? 0 : (wrRaw <= 1 ? wrRaw * 100 : wrRaw);
+        elWR.innerHTML = '<span class="unit">' + wrVal.toFixed(1) + '%</span>';
+      })
+      .catch(function () { /* stats unavailable — leave dashes */ });
+  }
+
+  /* ---- Person silhouette SVG (inline fallback) ---- */
+  var PERSON_SVG =
+    '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<circle cx="40" cy="28" r="16" fill="rgba(255,255,255,0.15)"/>' +
+    '<path d="M10 72c0-16.6 13.4-30 30-30s30 13.4 30 30" fill="rgba(255,255,255,0.15)"/>' +
+    '</svg>';
+
+  /* ---- Render champion banner ---- */
+  function renderChampion(f) {
+    var record = f.W + '-' + f.L + (f.D ? '-' + f.D : '');
+    var winPct  = safePct(f.win_rate);
+    var koPct   = safePct(f.ko_rate);
+
+    var photoHtml;
+    if (f.image) {
+      photoHtml =
+        '<img src="' + f.image + '" alt="' + f.name + '" ' +
+        'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+        '<div class="photo-fallback" style="display:none;position:absolute;inset:0;">' + PERSON_SVG + '</div>';
+    } else {
+      photoHtml = '<div class="photo-fallback" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">' + PERSON_SVG + '</div>';
     }
-  });
-}, observerOptions);
 
-// Initialize animations on load
-window.addEventListener('load', () => {
-  // Animate stats
-  setTimeout(() => {
-    document.querySelectorAll('[data-target]').forEach(animateCounter);
-    animateBars();
-  }, 500);
-  
-  // Observe feature cards
-  document.querySelectorAll('.feature-card').forEach((card, i) => {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(30px)';
-    card.style.transition = `all 0.6s ease ${i * 0.1}s`;
-    observer.observe(card);
-  });
-});
+    return (
+      '<div class="champion-banner">' +
+        '<div class="champion-banner-glow"></div>' +
+        '<div class="champion-info">' +
+          '<div class="champion-badge">' +
+            '<svg viewBox="0 0 24 24" fill="#c9a227" xmlns="http://www.w3.org/2000/svg">' +
+            '<path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z"/>' +
+            '</svg>' +
+            'Champion' +
+          '</div>' +
+          '<div class="champion-name">' + f.name + '</div>' +
+          '<div class="champion-nickname">' + (f.nickname ? '"' + f.nickname + '"' : '') + '</div>' +
+          '<div class="champion-chips">' +
+            '<span class="chip chip-record">' + record + '</span>' +
+            '<span class="chip chip-win">Win ' + winPct + '</span>' +
+            '<span class="chip chip-ko">KO ' + koPct + '</span>' +
+            '<span class="chip chip-record">' + (f.total_fights || 0) + ' fights</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="champion-photo-wrap" style="position:relative;">' +
+          photoHtml +
+        '</div>' +
+      '</div>'
+    );
+  }
 
-// Parallax effect on stats card
-const statsCard = document.getElementById('stats-card');
-document.addEventListener('mousemove', (e) => {
-  if (window.innerWidth < 1024) return;
-  const x = (e.clientX / window.innerWidth - 0.5) * 10;
-  const y = (e.clientY / window.innerHeight - 0.5) * 10;
-  statsCard.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
-});
+  /* ---- Render ranked fighters grid ---- */
+  function renderRankedGrid(fighters) {
+    if (!fighters || fighters.length === 0) return '';
+    var html = '<div class="ranked-grid">';
+    fighters.forEach(function (f) {
+      var record  = f.W + '-' + f.L + (f.D ? '-' + f.D : '');
+      var winPct  = safePct(f.win_rate);
+      var rankLabel = String(f.rank);
+
+      var photoHtml;
+      if (f.image) {
+        photoHtml =
+          '<img src="' + f.image + '" alt="' + f.name + '" ' +
+          'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+          '<div class="photo-fallback" style="display:none;">' + PERSON_SVG + '</div>';
+      } else {
+        photoHtml = '<div class="photo-fallback">' + PERSON_SVG + '</div>';
+      }
+
+      html +=
+        '<div class="rank-card">' +
+          '<div class="rank-card-photo">' +
+            photoHtml +
+            '<div class="rank-badge">' + rankLabel + '</div>' +
+          '</div>' +
+          '<div class="rank-card-body">' +
+            '<div class="rank-card-name">' + f.name + '</div>' +
+            '<div class="rank-card-nickname">' + (f.nickname || '') + '</div>' +
+            '<div class="rank-card-meta">' +
+              '<span class="rank-card-record">' + record + '</span>' +
+              '<span class="win-pct-badge">' + winPct + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  /* ---- Load a division ---- */
+  function loadDivision(division) {
+    var content = document.getElementById('rankings-content');
+    content.innerHTML = '<div class="rankings-loader"><div class="spinner"></div></div>';
+
+    fetch('/api/top15/' + encodeURIComponent(division))
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var fighters = data.fighters || [];
+        var html = '';
+
+        /* Separate champion from ranked */
+        var champion = null;
+        var ranked   = [];
+        fighters.forEach(function (f) {
+          var r = String(f.rank).toUpperCase();
+          if (r === 'C' || f.belt) {
+            champion = f;
+          } else {
+            ranked.push(f);
+          }
+        });
+
+        if (champion) {
+          html += renderChampion(champion);
+        }
+        html += renderRankedGrid(ranked);
+
+        if (!html) {
+          html = '<p style="color:var(--white-60);text-align:center;padding:60px 0;">No ranking data available for this division.</p>';
+        }
+
+        content.innerHTML = html;
+      })
+      .catch(function () {
+        content.innerHTML =
+          '<p style="color:var(--white-60);text-align:center;padding:60px 0;">Could not load rankings. Please try again.</p>';
+      });
+  }
+
+  /* ---- Load divisions and build tabs ---- */
+  function loadDivisions() {
+    fetch('/api/top15')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var divisions = data.divisions || [];
+        var tabsEl    = document.getElementById('division-tabs');
+        tabsEl.innerHTML = '';
+
+        divisions.forEach(function (div, i) {
+          var btn = document.createElement('button');
+          btn.className = 'division-pill' + (i === 0 ? ' active' : '');
+          btn.textContent = div;
+          btn.dataset.division = div;
+          btn.addEventListener('click', function () {
+            document.querySelectorAll('.division-pill').forEach(function (p) {
+              p.classList.remove('active');
+            });
+            btn.classList.add('active');
+            loadDivision(div);
+          });
+          tabsEl.appendChild(btn);
+        });
+
+        if (divisions.length > 0) {
+          loadDivision(divisions[0]);
+        }
+      })
+      .catch(function () {
+        document.getElementById('division-tabs').innerHTML =
+          '<p style="color:var(--white-60);font-size:14px;">Could not load divisions.</p>';
+        document.getElementById('rankings-content').innerHTML = '';
+      });
+  }
+
+  /* ---- Init ---- */
+  loadStats();
+  loadDivisions();
+
+  /* ---- Audio autoplay ---- */
+  (function () {
+    var audio = document.getElementById('bg-audio');
+    var muteBtn = document.getElementById('mute-btn');
+    var iconSound = document.getElementById('icon-sound');
+    var iconMute  = document.getElementById('icon-mute');
+    if (!audio) return;
+
+    audio.volume = 0.35;
+
+    /* Sync icon to actual audio state (call AFTER async play resolves) */
+    function updateIcon() {
+      var playing = !audio.paused && !audio.muted;
+      if (iconSound) iconSound.style.display = playing ? '' : 'none';
+      if (iconMute)  iconMute.style.display  = playing ? 'none' : '';
+      if (muteBtn)   muteBtn.classList.toggle('muted', !playing);
+    }
+
+    /* Show unmuted icon optimistically while waiting for play() */
+    function showPlayingIcon() {
+      if (iconSound) iconSound.style.display = '';
+      if (iconMute)  iconMute.style.display  = 'none';
+      if (muteBtn)   muteBtn.classList.remove('muted');
+    }
+
+    var unlocked = false;
+
+    function tryPlay() {
+      if (unlocked) return;
+      var promise = audio.play();
+      if (promise !== undefined) {
+        promise.then(function () {
+          unlocked = true;
+          showPlayingIcon();
+          /* Remove all interaction fallbacks */
+          EVENTS.forEach(function (ev) {
+            document.removeEventListener(ev, onInteract);
+          });
+        }).catch(function () {
+          /* Autoplay blocked — keep waiting for user interaction */
+          updateIcon();
+        });
+      } else {
+        /* Old browser — assume it played */
+        unlocked = true;
+        showPlayingIcon();
+      }
+    }
+
+    /* Listen on multiple events so ANY interaction unlocks audio */
+    var EVENTS = ['click', 'touchstart', 'keydown', 'scroll'];
+    function onInteract() {
+      tryPlay();
+    }
+    EVENTS.forEach(function (ev) {
+      document.addEventListener(ev, onInteract, { passive: true });
+    });
+
+    /* Mute toggle */
+    if (muteBtn) {
+      muteBtn.addEventListener('click', function (e) {
+        e.stopPropagation(); /* Handled here; don't also trigger onInteract */
+        if (audio.paused) {
+          /* First interaction — try to play */
+          var promise = audio.play();
+          if (promise !== undefined) {
+            promise.then(function () {
+              unlocked = true;
+              showPlayingIcon();
+              EVENTS.forEach(function (ev) {
+                document.removeEventListener(ev, onInteract);
+              });
+            }).catch(function () { updateIcon(); });
+          }
+        } else {
+          /* Already playing — toggle mute */
+          audio.muted = !audio.muted;
+          updateIcon();
+        }
+      });
+    }
+
+    /* Attempt autoplay on load */
+    tryPlay();
+  })();
+
+})();
 </script>
-<script>
-// ── Top 15 Rankings (Landing Page) ──
-const SVG_SIL_LANDING = `<svg viewBox="0 0 80 110" fill="currentColor" class="t15-silhouette">
-  <ellipse cx="42" cy="13" rx="11" ry="12"/>
-  <path d="M37 24 L47 24 L49 31 L35 31 Z"/>
-  <path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/>
-  <path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/>
-  <path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/>
-  <path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/>
-  <path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/>
-</svg>`;
 
-let landingDivisions = [];
-let landingActiveDivision = '';
 
-async function initLandingTop15() {
-  const tabsEl = document.getElementById('landing-div-tabs');
-  const grid = document.getElementById('landing-rankings-grid');
-
-  try {
-    const resp = await fetch('/api/top15');
-    if (!resp.ok) throw new Error('Top 15 API not available');
-
-    const data = await resp.json();
-    landingDivisions = data.divisions || [];
-
-    if (!landingDivisions.length) {
-      if (tabsEl) tabsEl.innerHTML = '';
-      if (grid) grid.innerHTML = '<div class="top15-loader">No ranking data found</div>';
-      return;
-    }
-
-    tabsEl.innerHTML = landingDivisions.map(d =>
-      `<div class="top15-tab" onclick="loadLandingDivision('${d}')">${d}</div>`
-    ).join('');
-
-    loadLandingDivision(landingDivisions[0]);
-  } catch(e) {
-    if (tabsEl) tabsEl.innerHTML = '';
-    if (grid) grid.innerHTML = '<div class="top15-loader">Top 15 rankings will appear here when the dashboard data API is running.</div>';
-  }
-}
-
-async function loadLandingDivision(division) {
-  landingActiveDivision = division;
-  document.querySelectorAll('.top15-tab').forEach(t => {
-    t.classList.toggle('active', t.textContent === division);
-  });
-
-  const grid = document.getElementById('landing-rankings-grid');
-  grid.innerHTML = '<div class="top15-loader"><div class="ld-spin"></div> Loading ' + division + '...</div>';
-
-  try {
-    const resp = await fetch('/api/top15/' + encodeURIComponent(division));
-    if (!resp.ok) throw new Error('Division rankings not available');
-
-    const data = await resp.json();
-    renderLandingRankings(data.fighters || []);
-  } catch(e) {
-    grid.innerHTML = '<div class="top15-loader">Unable to load ' + division + ' rankings right now.</div>';
-  }
-}
-
-function escapeHTML(value) {
-  return String(value ?? '').replace(/[&<>"]/g, char => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;'
-  }[char]));
-}
-
-function renderLandingRankings(fighters) {
-  const grid = document.getElementById('landing-rankings-grid');
-  const topFighters = fighters;
-
-  if (!topFighters.length) {
-    grid.innerHTML = '<div class="top15-loader">No fighters found for this division</div>';
-    return;
-  }
-
-  grid.innerHTML = topFighters.map(f => {
-      const isChamp = f.belt === 1;
-      const fighterName = escapeHTML(f.name || 'Unknown Fighter');
-      const fighterId = escapeHTML(f.Fighter_Id || 'placeholder');
-      const imageSrc = escapeHTML(f.image || `/static/fighters/${fighterId}.jpg`);
-      const rank = f.rank || '';
-      const rankContent = isChamp
-        ? `<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
-        : escapeHTML(rank);
-    const nickname = f.nickname && f.nickname !== 'No Nickname' && f.nickname !== 'nan' && f.nickname !== 'None'
-      ? '"' + escapeHTML(f.nickname) + '"' : '';
-    const wins = escapeHTML(f.W ?? 0);
-    const losses = escapeHTML(f.L ?? 0);
-    const draws = escapeHTML(f.D ?? 0);
-    const winRate = escapeHTML(f.win_rate ?? 0);
-    const koRate = Number(f.ko_rate || 0);
-
-    return `
-      <div class="t15-card${isChamp ? ' champ' : ''}" onclick="window.location='/dashboard#sec-top15'">
-        <div class="t15-rank${isChamp ? ' gold-badge' : ''}">${rankContent}</div>
-      <div class="t15-photo">
-        <img src="${imageSrc}"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-             style="width:100%;height:100%;object-fit:cover;object-position:top center"
-             alt="${fighterName}">
-        <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center">
-          ${SVG_SIL_LANDING}
-        </div>
-      </div>
-      <div class="t15-info">
-        <div class="t15-name">${fighterName}</div>
-        <div class="t15-nickname">${nickname}</div>
-        <div class="t15-record"><strong>${wins}</strong>-${losses}-${draws}</div>
-        <div class="t15-stats">
-          <span class="t15-stat red">${winRate}% W</span>
-          ${koRate > 0 ? '<span class="t15-stat">' + escapeHTML(koRate) + '% KO</span>' : ''}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// Init on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-  initLandingTop15();
-});
-</script>
 </body>
 </html>

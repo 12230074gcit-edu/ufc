@@ -3,43 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UFC Dashboard</title>
+<title>UFC Analytics Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
+/* ── CSS Variables ── */
 :root {
-  --white:    #ffffff;
-  --white-98: #fafafa;
-  --white-95: #f5f5f5;
-  --white-90: #e8e8e8;
-  --gray-100: #f3f4f6;
-  --gray-200: #e5e7eb;
-  --gray-300: #d1d5db;
-  --gray-400: #9ca3af;
-  --gray-500: #6b7280;
-  --gray-600: #4b5563;
-  --gray-700: #374151;
-  --gray-800: #1f2937;
-  --gray-900: #111827;
-  --dark:     #0a0a0a;
-  --red:      #d20000;
-  --red-light:#ef4444;
-  --red-dark: #991b1b;
-  --red-glow: rgba(210, 0, 0, 0.15);
-  --red-bg:   rgba(210, 0, 0, 0.05);
-  --sidebar:  248px;
-  --radius:   12px;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow:   0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --white:     #ffffff;
+  --white-98:  #fafafa;
+  --gray-100:  #f3f4f6;
+  --gray-200:  #e5e7eb;
+  --gray-300:  #d1d5db;
+  --gray-400:  #9ca3af;
+  --gray-500:  #6b7280;
+  --gray-600:  #4b5563;
+  --gray-700:  #374151;
+  --gray-800:  #1f2937;
+  --gray-900:  #111827;
+  --red:       #d20000;
+  --red-light: #ef4444;
+  --red-dark:  #991b1b;
+  --red-glow:  rgba(210,0,0,0.15);
+  --red-bg:    rgba(210,0,0,0.05);
+  --sidebar:   248px;
+  --radius:    12px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow:    0 4px 6px -1px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
 }
 
+/* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { height: 100%; }
-
 body {
   font-family: 'Inter', sans-serif;
   background: var(--white-98);
@@ -48,7 +46,6 @@ body {
   display: flex;
   overflow: hidden;
 }
-
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--gray-100); }
 ::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
@@ -64,1718 +61,902 @@ body {
   flex-direction: column;
   height: 100vh;
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 10;
 }
-
 .sb-logo {
-  padding: 22px 20px;
+  padding: 20px;
   border-bottom: 1px solid var(--gray-200);
   display: flex;
   align-items: center;
   gap: 12px;
   cursor: pointer;
+  text-decoration: none;
   transition: background 0.2s;
 }
-.sb-logo:hover {
-  background: var(--gray-100);
-}
-
+.sb-logo:hover { background: var(--gray-100); }
 .sb-logo-icon {
-  width: 52px;
-  height: 52px;
+  width: 48px; height: 48px;
   background: linear-gradient(135deg, var(--red), var(--red-light));
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
   font-family: 'Oswald', sans-serif;
-  font-weight: 700;
-  font-size: 16px;
-  color: white;
-  flex-shrink: 0;
+  font-weight: 700; font-size: 15px;
+  color: white; flex-shrink: 0;
   box-shadow: 0 4px 12px var(--red-glow);
 }
-
-.sb-logo-text { 
-  font-family: 'Oswald', sans-serif; 
-  font-size: 16px; 
-  font-weight: 600; 
-  letter-spacing: 1px;
-  color: var(--gray-900);
+.sb-logo-text {
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px; font-weight: 600;
+  letter-spacing: 1px; color: var(--gray-900);
 }
-.sb-logo-sub { 
-  font-size: 11px; 
-  color: var(--gray-500); 
-  letter-spacing: 1px;
-  text-transform: uppercase;
+.sb-logo-sub {
+  font-size: 10px; color: var(--gray-500);
+  letter-spacing: 1.2px; text-transform: uppercase;
 }
-
-.sb-nav { flex: 1; padding: 18px 14px; }
-
+.sb-nav { flex: 1; padding: 16px 12px; }
 .sb-section-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  color: var(--gray-400);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; color: var(--gray-400);
   text-transform: uppercase;
-  padding: 16px 12px 8px;
+  padding: 14px 12px 6px;
 }
-
 .sb-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  cursor: pointer;
-  border-radius: 10px;
+  display: flex; align-items: center; gap: 11px;
+  padding: 11px 13px;
+  cursor: pointer; border-radius: 10px;
   transition: all 0.2s;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13.5px; font-weight: 500;
   color: var(--gray-600);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
-
-.sb-item:hover { 
-  background: var(--gray-100); 
-  color: var(--gray-900);
-}
-
-.sb-item.active { 
-  background: rgba(210, 0, 0, 0.07);
-  color: var(--red);
-  font-weight: 700;
-}
-
-.sb-item i { width: 18px; height: 18px; flex-shrink: 0; }
-
+.sb-item:hover { background: var(--gray-100); color: var(--gray-900); }
+.sb-item.active { background: var(--red-bg); color: var(--red); font-weight: 700; }
+.sb-item i { width: 17px; height: 17px; flex-shrink: 0; }
 .sb-footer {
-  padding: 16px 20px;
+  padding: 14px 18px;
   border-top: 1px solid var(--gray-200);
   background: var(--gray-100);
 }
-
-.sb-footer-stats { 
-  display: flex; 
-  justify-content: space-between; 
-  font-size: 12px; 
-  color: var(--gray-500);
-  margin-bottom: 12px;
+.sb-footer-stats {
+  display: flex; justify-content: space-between;
+  font-size: 11.5px; color: var(--gray-500);
+  margin-bottom: 10px;
 }
 .sb-footer-stats span strong { color: var(--gray-800); font-weight: 600; }
-
 .foot-link {
-  font-size: 13px;
-  color: var(--gray-600);
+  font-size: 12.5px; color: var(--gray-600);
   text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: color 0.2s;
-  font-weight: 500;
+  display: flex; align-items: center; gap: 7px;
+  transition: color 0.2s; font-weight: 500;
 }
 .foot-link:hover { color: var(--red); }
+.foot-link i { width: 14px; height: 14px; }
 
 /* ── Main ── */
 .main {
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   overflow: hidden;
   margin-left: var(--sidebar);
 }
-
 .topbar {
-  height: 68px;
-  min-height: 68px;
-  background: rgba(255,255,255,0.92);
+  height: 64px; min-height: 64px;
+  background: rgba(255,255,255,0.95);
   border-bottom: 1px solid var(--gray-200);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 0 36px;
-  gap: 20px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 36px; gap: 20px;
+  backdrop-filter: blur(8px);
 }
-
-.topbar-title { 
-  font-family: 'Oswald', sans-serif; 
-  font-size: 20px; 
-  font-weight: 600; 
-  letter-spacing: 1px;
-  color: var(--gray-900);
+.topbar-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px; font-weight: 600;
+  letter-spacing: 1px; color: var(--gray-900);
 }
 .topbar-title span { color: var(--red); }
-
-.topbar-right { display: flex; align-items: center; gap: 16px; }
-
+.topbar-right { display: flex; align-items: center; gap: 14px; }
 .search-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  display: flex; align-items: center; gap: 9px;
   background: var(--gray-100);
   border: 1px solid var(--gray-200);
   color: var(--gray-600);
-  padding: 10px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 9px 16px; border-radius: 8px;
+  cursor: pointer; font-size: 13.5px; font-weight: 500;
   transition: all 0.2s;
 }
-.search-btn:hover { 
-  border-color: var(--red);
-  color: var(--gray-800);
-  background: var(--white);
-}
-.search-btn i { width: 16px; height: 16px; }
-.search-kbd { 
-  font-size: 11px; 
-  background: var(--white); 
-  padding: 3px 8px; 
-  border-radius: 4px; 
+.search-btn:hover { border-color: var(--red); color: var(--gray-800); background: var(--white); }
+.search-btn i { width: 15px; height: 15px; }
+.search-kbd {
+  font-size: 11px; background: var(--white);
+  padding: 3px 7px; border-radius: 4px;
   color: var(--gray-500);
   border: 1px solid var(--gray-200);
-  font-family: 'SF Mono', monospace;
+  font-family: monospace;
 }
-
 .topbar-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: flex; align-items: center; gap: 7px;
   background: var(--red-bg);
-  border: 1px solid rgba(210, 0, 0, 0.2);
-  border-radius: 24px;
-  padding: 8px 16px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--red);
+  border: 1px solid rgba(210,0,0,0.2);
+  border-radius: 20px; padding: 7px 14px;
+  font-size: 12px; font-weight: 600; color: var(--red);
 }
-.topbar-badge .dot { 
-  width: 8px; 
-  height: 8px; 
-  background: var(--red); 
-  border-radius: 50%; 
+.topbar-badge .dot {
+  width: 7px; height: 7px;
+  background: var(--red); border-radius: 50%;
   animation: pulse-dot 2s infinite;
 }
-@keyframes pulse-dot { 
-  0%,100%{ opacity: 1; transform: scale(1); } 
-  50%{ opacity: 0.5; transform: scale(0.8); } 
-}
+@keyframes pulse-dot { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.5; transform:scale(0.8); } }
 
 /* ── Content ── */
-.content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 36px 48px 52px;
-}
-
-/* ── Section ── */
+.content { flex: 1; overflow-y: auto; padding: 34px 44px 52px; }
 .section { display: none; }
 .section.active { display: block; }
 
+/* ── Section header ── */
 .section-header {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 32px;
+  display: flex; align-items: center;
+  gap: 16px; margin-bottom: 30px;
 }
 .section-icon {
-  width: 52px;
-  height: 52px;
+  width: 50px; height: 50px;
   background: linear-gradient(135deg, var(--red), var(--red-light));
   border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   color: white;
   box-shadow: 0 6px 16px var(--red-glow);
+  flex-shrink: 0;
 }
-.section-icon i { width: 24px; height: 24px; }
-.section-title { 
-  font-family: 'Space Grotesk', sans-serif; 
-  font-size: 28px; 
-  font-weight: 700;
-  color: var(--gray-900);
+.section-icon i { width: 22px; height: 22px; }
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 26px; font-weight: 700; color: var(--gray-900);
 }
-.section-sub { 
-  font-size: 15px; 
-  color: var(--gray-500); 
-  margin-top: 2px;
-}
+.section-sub { font-size: 14px; color: var(--gray-500); margin-top: 2px; }
 
-/* ── Grid ── */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; }
+/* ── Grid helpers ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
 .col-span-2 { grid-column: span 2; }
 
 /* ── Card ── */
 .card {
   background: var(--white);
   border: 1px solid var(--gray-200);
-  border-radius: 16px;
-  overflow: hidden;
+  border-radius: 16px; overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
 }
-
-.card:hover {
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  border-color: var(--gray-300);
-}
-
+.card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); border-color: var(--gray-300); }
 .card-header {
-  padding: 20px 28px;
+  padding: 18px 24px;
   border-bottom: 1px solid var(--gray-100);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   background: linear-gradient(180deg, var(--white) 0%, var(--gray-100) 100%);
 }
-.card-title { 
-  font-size: 15px; 
-  font-weight: 600;
-  color: var(--gray-800);
-  display: flex; 
-  align-items: center; 
-  gap: 12px;
+.card-title {
+  font-size: 14px; font-weight: 600; color: var(--gray-800);
+  display: flex; align-items: center; gap: 10px;
 }
-.card-title i { width: 18px; height: 18px; color: var(--red); }
-.card-body { padding: 24px 28px; }
+.card-title i { width: 16px; height: 16px; color: var(--red); }
+.card-body { padding: 22px 24px; }
 
 /* ── KPI cards ── */
-.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 36px; }
-
+.kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 22px; margin-bottom: 32px; }
 .kpi {
   background: var(--white);
   border: 1px solid var(--gray-200);
-  border-radius: 16px;
-  padding: 28px;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 16px; padding: 26px;
+  position: relative; overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-
 .kpi::before {
   content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
+  position: absolute; top: 0; left: 0;
+  width: 4px; height: 100%;
   background: linear-gradient(to bottom, var(--red), var(--red-light));
 }
+.kpi:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-3px); }
+.kpi-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  color: var(--gray-500); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 7px;
+}
+.kpi-label i { width: 13px; height: 13px; color: var(--red); }
+.kpi-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 30px; font-weight: 700; color: var(--gray-900);
+}
+.kpi-value span { font-size: 15px; color: var(--gray-500); font-family: 'Inter', sans-serif; font-weight: 500; margin-left: 3px; }
+.kpi-trend {
+  font-size: 11.5px; margin-top: 8px;
+  display: flex; align-items: center; gap: 5px; color: var(--gray-500);
+}
+.kpi-trend i { width: 13px; height: 13px; }
 
-.kpi:hover { 
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  transform: translateY(-3px);
-}
-
-.kpi-label { 
-  font-size: 12px; 
-  font-weight: 600; 
-  letter-spacing: 0.5px;
-  text-transform: uppercase; 
-  color: var(--gray-500); 
-  margin-bottom: 12px; 
-  display: flex; 
-  align-items: center; 
-  gap: 8px;
-}
-.kpi-label i { width: 14px; height: 14px; color: var(--red); }
-
-.kpi-value { 
-  font-family: 'Space Grotesk', sans-serif; 
-  font-size: 32px; 
-  font-weight: 700; 
-  color: var(--gray-900);
-}
-.kpi-value span { 
-  font-size: 16px; 
-  color: var(--gray-500); 
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  margin-left: 4px;
-}
-
-.kpi-trend { 
-  font-size: 12px; 
-  margin-top: 8px; 
-  display: flex; 
-  align-items: center; 
-  gap: 6px;
-  color: var(--gray-500);
-}
-.kpi-trend i { width: 14px; height: 14px; }
-
-/* ── Chart container ── */
-.chart-wrap {
-  position: relative;
-  min-height: 360px;
-}
+/* ── Chart containers ── */
+.chart-wrap { position: relative; min-height: 360px; }
 .chart-wrap.tall { min-height: 440px; }
-
-.chart-inner {
-  width: 100%;
-  min-height: 360px;
-}
+.chart-inner { width: 100%; min-height: 360px; }
 .chart-wrap.tall .chart-inner { min-height: 440px; }
-
 .chart-loader {
-  position: absolute; 
-  inset: 0;
-  display: flex; 
-  flex-direction: column;
-  align-items: center; 
-  justify-content: center;
-  gap: 12px;
-  color: var(--gray-500);
-  font-size: 13px;
-  background: var(--white);
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px; color: var(--gray-500);
+  font-size: 13px; background: var(--white);
 }
-
 .spinner {
-  width: 36px; 
-  height: 36px;
+  width: 34px; height: 34px;
   border: 3px solid var(--gray-200);
   border-top-color: var(--red);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-.chart-error { 
-  color: var(--red); 
-  font-size: 13px; 
-  display: flex; 
-  align-items: center; 
-  gap: 8px;
+.chart-error {
+  color: var(--red); font-size: 13px;
+  display: flex; align-items: center; gap: 7px;
 }
-.chart-error i { width: 16px; height: 16px; }
+.chart-error i { width: 15px; height: 15px; }
 
 /* ── Fighter Search ── */
-.search-grid { 
-  display: grid; 
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-  gap: 20px; 
-  margin-top: 20px;
+.search-bar-wrap { display: flex; gap: 12px; align-items: center; }
+.search-input {
+  flex: 1; background: var(--white);
+  border: 1px solid var(--gray-300);
+  border-radius: 8px; padding: 13px 16px;
+  color: var(--gray-900); font-size: 14.5px;
+  font-family: 'Inter', sans-serif;
+  outline: none; transition: all 0.2s;
 }
+.search-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-glow); }
+.search-input::placeholder { color: var(--gray-400); }
+.btn-red {
+  background: linear-gradient(135deg, var(--red), var(--red-light));
+  border: none; color: white;
+  padding: 13px 22px; border-radius: 8px;
+  font-size: 13.5px; font-weight: 600;
+  cursor: pointer; display: flex;
+  align-items: center; gap: 7px;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px var(--red-glow);
+}
+.btn-red:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--red-glow); }
+.btn-red i { width: 15px; height: 15px; }
 
+/* ── Fighter cards grid ── */
+.search-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px; margin-top: 18px;
+}
 .fighter-card {
   background: var(--white);
   border: 1px solid var(--gray-200);
   border-radius: var(--radius);
-  overflow: hidden;
-  cursor: pointer;
+  overflow: hidden; cursor: pointer;
   transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   box-shadow: var(--shadow-sm);
 }
-
-.fighter-card:hover { 
-  border-color: var(--red);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
-
+.fighter-card:hover { border-color: var(--red); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 .fighter-card-img {
-  height: 140px;
-  background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
+  height: 136px;
+  background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
 }
-
-.fighter-card-img .silhouette {
-  width: 70px;
-  height: 100px;
-  color: var(--gray-300);
+.fighter-card-img .silhouette { width: 65px; height: 92px; color: var(--gray-300); }
+.fighter-card-info { padding: 16px 18px; flex: 1; }
+.fighter-card-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--gray-900); margin-bottom: 5px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-
-.fighter-card-info { padding: 18px 20px; flex: 1; }
-
-.fighter-card-name { 
-  font-family: 'Space Grotesk', sans-serif; 
-  font-size: 17px; 
-  font-weight: 700;
-  color: var(--gray-900);
-  margin-bottom: 6px; 
-  white-space: nowrap; 
-  overflow: hidden; 
-  text-overflow: ellipsis;
-}
-
-.fighter-card-record { 
-  font-size: 13px; 
-  color: var(--gray-500); 
-  margin-bottom: 12px;
-}
+.fighter-card-record { font-size: 12.5px; color: var(--gray-500); margin-bottom: 10px; }
 .fighter-card-record strong { color: var(--gray-800); font-weight: 600; }
-
-.fighter-card-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-
+.fighter-card-tags { display: flex; gap: 7px; flex-wrap: wrap; }
 .fighter-tag {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  padding: 5px 10px;
-  border-radius: 4px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  padding: 4px 9px; border-radius: 4px;
   background: var(--red-bg);
-  border: 1px solid rgba(210, 0, 0, 0.15);
+  border: 1px solid rgba(210,0,0,0.15);
   color: var(--red);
 }
+.fighter-tag.neutral { background: var(--gray-100); border-color: var(--gray-200); color: var(--gray-600); }
 
-.fighter-tag.neutral { 
-  background: var(--gray-100); 
-  border-color: var(--gray-200); 
-  color: var(--gray-600);
-}
-
-.search-bar-wrap {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.search-input {
-  flex: 1;
-  background: var(--white);
-  border: 1px solid var(--gray-300);
-  border-radius: 8px;
-  padding: 14px 18px;
-  color: var(--gray-900);
-  font-size: 15px;
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  transition: all 0.2s;
-}
-.search-input:focus { 
-  border-color: var(--red);
-  box-shadow: 0 0 0 3px var(--red-glow);
-}
-.search-input::placeholder { color: var(--gray-400); }
-
-.btn-red {
-  background: linear-gradient(135deg, var(--red), var(--red-light));
-  border: none;
-  color: white;
-  padding: 14px 24px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s;
-  box-shadow: 0 4px 12px var(--red-glow);
-}
-.btn-red:hover { 
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px var(--red-glow);
-}
-.btn-red i { width: 16px; height: 16px; }
-
-.pagination { display: flex; gap: 8px; margin-top: 28px; justify-content: center; }
-
+/* ── Pagination ── */
+.pagination { display: flex; gap: 7px; margin-top: 26px; justify-content: center; }
 .page-btn {
   background: var(--white);
   border: 1px solid var(--gray-200);
   color: var(--gray-600);
-  width: 40px; 
-  height: 40px;
+  width: 38px; height: 38px;
   border-radius: 8px;
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 13px; font-weight: 500;
   transition: all 0.2s;
 }
-.page-btn:hover, .page-btn.active { 
-  background: var(--red); 
-  border-color: var(--red); 
-  color: white;
-}
-.page-btn i { width: 16px; height: 16px; }
+.page-btn:hover, .page-btn.active { background: var(--red); border-color: var(--red); color: white; }
+.page-btn i { width: 15px; height: 15px; }
 
-/* ── Fighter Overlay - Premium Redesign ── */
+/* ── Fighter overlay ── */
 .overlay-backdrop {
-  position: fixed; 
-  inset: 0;
-  background: rgba(0,0,0,0.75);
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.72);
   backdrop-filter: blur(12px);
-  z-index: 100;
-  display: none;
-  align-items: center;
-  justify-content: center;
+  z-index: 100; display: none;
+  align-items: center; justify-content: center;
   padding: 24px;
 }
 .overlay-backdrop.open { display: flex; }
-
 .fighter-overlay {
   background: var(--white);
   border-radius: 20px;
-  width: 100%;
-  max-width: 1000px;
-  max-height: 90vh;
-  overflow-y: auto;
+  width: 100%; max-width: 1000px;
+  max-height: 90vh; overflow-y: auto;
   position: relative;
-  box-shadow: 0 25px 80px -12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 25px 80px -12px rgba(0,0,0,0.4);
 }
-
 .overlay-close {
-  position: absolute;
-  top: 20px; 
-  right: 20px;
+  position: absolute; top: 18px; right: 18px;
   background: rgba(255,255,255,0.9);
   border: 1px solid var(--gray-200);
   color: var(--gray-600);
-  width: 44px; 
-  height: 44px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-  transition: all 0.2s;
-  z-index: 2;
+  width: 42px; height: 42px;
+  border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; z-index: 2;
 }
-.overlay-close:hover { 
-  background: var(--red);
-  border-color: var(--red);
-  color: var(--white);
-}
-.overlay-close i { width: 20px; height: 20px; }
-
+.overlay-close:hover { background: var(--red); border-color: var(--red); color: white; }
+.overlay-close i { width: 18px; height: 18px; }
 .overlay-hero {
   display: grid;
   grid-template-columns: 180px 1fr;
-  gap: 32px;
-  padding: 40px;
+  gap: 30px; padding: 38px 38px 30px;
   background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 50%, var(--red-dark) 100%);
   border-radius: 20px 20px 0 0;
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
-
 .overlay-hero::before {
   content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: absolute; inset: 0;
   background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  opacity: 0.5;
 }
-
 .overlay-photo {
-  width: 180px;
-  height: 220px;
-  border-radius: 16px;
-  overflow: hidden;
-  background: linear-gradient(180deg, var(--gray-200) 0%, var(--gray-300) 100%);
+  width: 180px; height: 220px;
+  border-radius: 14px; overflow: hidden;
+  background: linear-gradient(180deg, var(--gray-200), var(--gray-300));
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 4px solid rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  border: 3px solid rgba(255,255,255,0.18);
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  position: relative;
-  z-index: 1;
+  position: relative; z-index: 1;
 }
-.overlay-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
+.overlay-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+.overlay-photo .silhouette { width: 95px; height: 135px; color: var(--gray-400); }
+.overlay-info {
+  flex: 1; display: flex; flex-direction: column;
+  justify-content: center; position: relative; z-index: 1;
 }
-.overlay-photo .silhouette { width: 100px; height: 140px; color: var(--gray-400); }
-
-.overlay-info { 
-  flex: 1; 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-}
-
-.overlay-nickname {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--red-light);
-  margin-bottom: 8px;
-}
-
 .overlay-rank-pill {
-  display: none;
-  width: fit-content;
+  display: none; width: fit-content;
   background: rgba(245,158,11,0.18);
   border: 1px solid rgba(245,158,11,0.45);
-  border-radius: 999px;
-  color: #fbbf24;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  padding: 7px 12px;
-  margin-bottom: 12px;
+  border-radius: 999px; color: #fbbf24;
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  padding: 6px 12px; margin-bottom: 10px;
 }
-
-.overlay-name { 
-  font-family: 'Oswald', sans-serif; 
-  font-size: 42px; 
-  font-weight: 700; 
-  line-height: 1;
-  color: var(--white);
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.overlay-nickname {
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--red-light); margin-bottom: 7px;
+  min-height: 18px;
 }
-
-.overlay-record { 
-  font-size: 28px; 
-  font-family: 'Space Grotesk', sans-serif; 
-  font-weight: 700; 
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.overlay-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 40px; font-weight: 700; line-height: 1;
+  color: white; margin-bottom: 10px;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.overlay-record {
+  font-size: 26px; font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; margin-bottom: 18px;
+  display: flex; align-items: center; gap: 7px;
 }
 .overlay-record .wins { color: #22c55e; }
 .overlay-record .losses { color: #ef4444; }
 .overlay-record .draws { color: var(--gray-400); }
-.overlay-record span.sep { color: rgba(255,255,255,0.3); font-size: 20px; }
-
-.overlay-attrs { 
-  display: flex; 
-  gap: 32px; 
-  flex-wrap: wrap; 
-  margin-bottom: 24px;
+.overlay-record .sep { color: rgba(255,255,255,0.3); font-size: 18px; }
+.overlay-attrs {
+  display: flex; gap: 26px; flex-wrap: wrap;
+  margin-bottom: 20px;
   background: rgba(255,255,255,0.1);
-  padding: 16px 20px;
-  border-radius: 12px;
+  padding: 14px 18px; border-radius: 10px;
   backdrop-filter: blur(10px);
 }
-
-.attr-item { display: flex; flex-direction: column; gap: 4px; }
-.attr-label { 
-  font-size: 10px; 
-  text-transform: uppercase; 
-  letter-spacing: 1.5px; 
-  color: rgba(255,255,255,0.6);
-  font-weight: 600;
-}
-.attr-value { 
-  font-size: 16px; 
-  font-weight: 700; 
-  color: var(--white);
-}
-
-.stars-grid { 
-  display: grid; 
-  grid-template-columns: repeat(5, 1fr); 
-  gap: 16px;
+.attr-item { display: flex; flex-direction: column; gap: 3px; }
+.attr-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.6); font-weight: 600; }
+.attr-value { font-size: 15px; font-weight: 700; color: white; }
+.stars-grid {
+  display: grid; grid-template-columns: repeat(5,1fr);
+  gap: 12px;
   background: rgba(255,255,255,0.05);
-  padding: 16px;
-  border-radius: 12px;
+  padding: 14px; border-radius: 10px;
 }
-
-.star-item { 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-  gap: 8px;
-}
-
-.star-label { 
-  font-size: 10px; 
-  text-transform: uppercase; 
-  letter-spacing: 0.5px; 
-  color: rgba(255,255,255,0.7); 
-  text-align: center;
-  font-weight: 600;
-}
-
+.star-item { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.star-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255,255,255,0.7); text-align: center; font-weight: 600; }
 .star-pips { display: flex; gap: 4px; }
-
 .pip {
-  width: 12px; 
-  height: 12px;
-  border-radius: 3px;
+  width: 11px; height: 11px; border-radius: 3px;
   border: 1px solid rgba(255,255,255,0.3);
   background: rgba(255,255,255,0.1);
   transition: all 0.3s;
 }
-.pip.filled { 
-  background: linear-gradient(135deg, var(--red), var(--red-light)); 
-  border-color: var(--red);
-  box-shadow: 0 0 8px var(--red-glow);
+.pip.filled { background: linear-gradient(135deg, var(--red), var(--red-light)); border-color: var(--red); box-shadow: 0 0 6px var(--red-glow); }
+.overlay-body {
+  padding: 28px 36px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20px; background: var(--white);
 }
-
-.overlay-body { 
-  padding: 32px 40px; 
-  display: grid; 
-  grid-template-columns: 1fr 1fr; 
-  gap: 24px;
+.mini-chart-card {
   background: var(--white);
-}
-
-.mini-chart-card { 
-  background: var(--white); 
-  border: 1px solid var(--gray-200); 
-  border-radius: 16px; 
-  overflow: hidden;
+  border: 1px solid var(--gray-200);
+  border-radius: 14px; overflow: hidden;
   box-shadow: var(--shadow-sm);
   transition: all 0.3s;
 }
-.mini-chart-card:hover {
-  box-shadow: var(--shadow);
-  border-color: var(--gray-300);
-}
-.mini-chart-card .card-header { 
-  padding: 16px 20px; 
-  background: var(--gray-100);
-  border-bottom: 1px solid var(--gray-200);
-}
-.mini-chart-card .card-title { font-size: 14px; font-weight: 600; }
-.mini-chart-inner { min-height: 220px; background: var(--white); padding: 12px; }
-
-.perf-bars { 
-  background: var(--white); 
-  border: 1px solid var(--gray-200); 
-  border-radius: 16px; 
-  padding: 24px;
+.mini-chart-card:hover { box-shadow: var(--shadow); border-color: var(--gray-300); }
+.mini-chart-card .card-header { padding: 14px 18px; background: var(--gray-100); border-bottom: 1px solid var(--gray-200); }
+.mini-chart-card .card-title { font-size: 13px; font-weight: 600; }
+.mini-chart-inner { min-height: 210px; background: var(--white); padding: 10px; }
+.perf-bars {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 14px; padding: 22px;
   box-shadow: var(--shadow-sm);
 }
-
-.perf-bar-title { 
-  font-size: 14px; 
-  font-weight: 600; 
-  margin-bottom: 20px;
-  color: var(--gray-800);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.perf-bar-title {
+  font-size: 13.5px; font-weight: 600;
+  margin-bottom: 18px; color: var(--gray-800);
+  display: flex; align-items: center; gap: 8px;
 }
-.perf-bar-title::before {
-  content: '';
-  width: 4px;
-  height: 16px;
-  background: var(--red);
-  border-radius: 2px;
-}
-
-.perf-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.perf-bar-title::before { content: ''; width: 4px; height: 15px; background: var(--red); border-radius: 2px; }
+.perf-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
 .perf-row:last-child { margin-bottom: 0; }
-
-.perf-label { display: flex; justify-content: space-between; font-size: 13px; }
+.perf-label { display: flex; justify-content: space-between; font-size: 12.5px; }
 .perf-label span:first-child { color: var(--gray-600); font-weight: 500; }
 .perf-label span:last-child { font-weight: 700; color: var(--gray-800); }
+.perf-track { height: 9px; background: var(--gray-200); border-radius: 5px; overflow: hidden; }
+.perf-fill { height: 100%; background: linear-gradient(90deg, var(--red), var(--red-light)); border-radius: 5px; transition: width 0.8s ease; }
 
-.perf-track { 
-  height: 10px; 
-  background: var(--gray-200); 
-  border-radius: 5px; 
-  overflow: hidden;
+/* ── Compare section ── */
+#sec-compare { max-width: 1180px; margin: 0 auto; }
+.compare-layout {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 80px minmax(0,1fr);
+  gap: 16px; align-items: stretch;
 }
-
-.perf-fill { 
-  height: 100%; 
-  background: linear-gradient(90deg, var(--red), var(--red-light)); 
-  border-radius: 5px; 
-  transition: width 0.8s ease;
-  box-shadow: 0 2px 8px var(--red-glow);
+.compare-side {
+  background: linear-gradient(180deg,#ffffff 0%,#f8fafc 100%);
+  border: 1px solid var(--gray-200);
+  border-radius: 18px; padding: 20px;
+  display: flex; flex-direction: column; gap: 14px;
+  box-shadow: 0 16px 40px rgba(15,23,42,0.06);
 }
-
-/* ── Compare Section ── */
-.compare-layout { 
-  display: grid; 
-  grid-template-columns: 1fr 100px 1fr; 
-  gap: 0; 
-  align-items: start;
-}
-
-.compare-side { display: flex; flex-direction: column; gap: 16px; }
-
-.vs-divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 60px;
-}
-
+.vs-divider { display: flex; align-items: center; justify-content: center; padding-top: 64px; }
 .vs-badge {
   font-family: 'Oswald', sans-serif;
-  font-weight: 700;
-  font-size: 24px;
-  color: var(--white);
+  font-weight: 700; font-size: 22px;
+  color: white;
   background: linear-gradient(135deg, var(--red), var(--red-light));
-  width: 60px; 
-  height: 60px;
+  width: 60px; height: 60px;
   border-radius: 50%;
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   box-shadow: 0 8px 24px var(--red-glow);
 }
-
-.compare-search {
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius);
-  padding: 20px;
-  box-shadow: var(--shadow-sm);
+.compare-search-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--gray-500); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 7px;
 }
-
-.compare-search-label { 
-  font-size: 12px; 
-  font-weight: 600; 
-  letter-spacing: 1px; 
-  text-transform: uppercase; 
-  color: var(--gray-500); 
-  margin-bottom: 12px; 
-  display: flex; 
-  align-items: center; 
-  gap: 8px;
-}
-.compare-search-label i { width: 14px; height: 14px; }
-
+.compare-search-label i { width: 13px; height: 13px; }
 .compare-input-wrap { position: relative; }
-
 .compare-input {
   width: 100%;
-  background: var(--gray-100);
-  border: 1px solid var(--gray-200);
-  border-radius: 8px;
-  padding: 12px 16px;
-  color: var(--gray-900);
-  font-size: 14px;
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  transition: all 0.2s;
-}
-.compare-input:focus { 
-  border-color: var(--red);
   background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px; padding: 13px 15px;
+  color: var(--gray-900); font-size: 13.5px;
+  font-family: 'Inter', sans-serif;
+  outline: none; transition: all 0.2s;
 }
+.compare-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-glow); }
 .compare-input::placeholder { color: var(--gray-400); }
-
 .compare-dropdown {
-  position: absolute;
-  top: 100%; 
-  left: 0; 
-  right: 0;
+  position: absolute; top: 100%; left: 0; right: 0;
   background: var(--white);
   border: 1px solid var(--gray-200);
   border-top: none;
-  border-radius: 0 0 8px 8px;
-  max-height: 220px;
-  overflow-y: auto;
-  z-index: 20;
-  display: none;
+  border-radius: 0 0 10px 10px;
+  max-height: 220px; overflow-y: auto;
+  z-index: 20; display: none;
   box-shadow: var(--shadow-lg);
 }
 .compare-dropdown.open { display: block; }
-
 .compare-opt {
-  padding: 12px 16px;
-  font-size: 13px;
-  cursor: pointer;
-  border-bottom: 1px solid var(--gray-100);
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center;
-  transition: background 0.15s;
+  padding: 11px 15px; font-size: 13px;
+  cursor: pointer; border-bottom: 1px solid var(--gray-100);
+  display: flex; justify-content: space-between;
+  align-items: center; transition: background 0.15s;
 }
 .compare-opt:hover { background: var(--red-bg); }
 .compare-opt-name { font-weight: 500; color: var(--gray-800); }
 .compare-opt-rec { color: var(--gray-500); font-size: 12px; }
-
 .compare-fighter-card {
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius);
-  padding: 24px;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  background: radial-gradient(circle at 50% 0%, rgba(210,0,0,0.12), transparent 40%), #111827;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 22px;
+  display: none; flex-direction: column;
+  align-items: center; gap: 14px;
+  text-align: center; position: relative; overflow: hidden;
+  box-shadow: 0 18px 44px rgba(17,24,39,0.18);
+  min-height: 240px;
 }
-
-.compare-fighter-card::before {
-  content: '';
-  position: absolute;
-  top: 0; 
-  left: 0; 
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--red), var(--red-light));
-}
-
 .compare-fighter-card.visible { display: flex; }
-
 .cfc-photo {
-  width: 100px; 
-  height: 120px;
-  border-radius: 10px;
-  background: var(--gray-100);
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-  border: 1px solid var(--gray-200);
+  width: 130px; height: 156px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
-.cfc-photo .silhouette { width: 55px; height: 75px; color: var(--gray-300); }
-
-.cfc-name { 
-  font-family: 'Space Grotesk', sans-serif; 
-  font-size: 20px; 
-  font-weight: 700;
-  color: var(--gray-900);
+.cfc-photo .silhouette { width: 65px; height: 90px; color: rgba(255,255,255,0.3); }
+.cfc-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 19px; font-weight: 700; color: white; margin-top: 4px;
 }
-
-.cfc-record { font-size: 14px; color: var(--gray-500); }
-.cfc-record strong { color: var(--red); font-size: 16px; }
-
-.compare-btn-row { display: flex; justify-content: center; margin-top: 12px; }
-
+.cfc-record { font-size: 13.5px; color: rgba(255,255,255,0.7); }
+.cfc-record strong { color: var(--red-light); font-size: 15px; }
+.compare-btn-row { display: flex; justify-content: center; margin-top: 14px; }
 .compare-go-btn {
   background: linear-gradient(135deg, var(--red), var(--red-light));
-  border: none;
-  color: white;
-  padding: 14px 40px;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex; 
-  align-items: center; 
-  gap: 10px;
+  border: none; color: white;
+  padding: 14px 36px; border-radius: 999px;
+  font-size: 14.5px; font-weight: 600;
+  cursor: pointer; display: flex;
+  align-items: center; gap: 9px;
   font-family: 'Space Grotesk', sans-serif;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   transition: all 0.3s;
   box-shadow: 0 6px 20px var(--red-glow);
 }
-.compare-go-btn:hover { 
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px var(--red-glow);
-}
-.compare-go-btn i { width: 18px; height: 18px; }
-
-.compare-results { margin-top: 28px; display: none; }
+.compare-go-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px var(--red-glow); }
+.compare-go-btn i { width: 17px; height: 17px; }
+.compare-results { margin-top: 26px; display: none; }
 .compare-results.visible { display: block; }
-
 .prob-section {
   background: var(--white);
   border: 1px solid var(--gray-200);
-  border-radius: var(--radius);
-  padding: 24px;
-  margin-bottom: 20px;
+  border-radius: 16px; padding: 22px;
+  margin-bottom: 18px;
   box-shadow: var(--shadow-sm);
 }
-
-.prob-label { 
-  display: flex; 
-  justify-content: space-between; 
-  font-size: 14px; 
-  font-weight: 600; 
-  margin-bottom: 12px;
-  color: var(--gray-700);
+.prob-label {
+  display: flex; justify-content: space-between;
+  font-size: 13.5px; font-weight: 600;
+  margin-bottom: 10px; color: var(--gray-700);
 }
-
 .prob-track {
-  height: 36px;
-  background: var(--gray-200);
-  border-radius: 18px;
-  overflow: hidden;
-  display: flex;
-  margin-bottom: 10px;
+  height: 40px; background: var(--gray-200);
+  border-radius: 999px; overflow: hidden;
+  display: flex; margin-bottom: 8px;
 }
-
-.prob-f1 { 
-  background: linear-gradient(90deg, var(--red), var(--red-light)); 
-  transition: width 0.8s ease; 
-  display: flex; 
-  align-items: center; 
-  justify-content: flex-end; 
-  padding-right: 14px;
-  border-radius: 18px 0 0 18px;
-}
-
-.prob-f2 { 
-  background: var(--gray-300); 
-  flex: 1; 
-  display: flex; 
-  align-items: center; 
-  padding-left: 14px;
-  border-radius: 0 18px 18px 0;
-}
-
-.prob-pct { 
-  font-family: 'Space Grotesk', sans-serif; 
-  font-size: 14px; 
-  font-weight: 700; 
-  color: white;
-}
-
-.prob-f2 .prob-pct { color: var(--gray-700); }
-
-.prob-names { 
-  display: flex; 
-  justify-content: space-between; 
-  font-size: 12px; 
-  color: var(--gray-500);
-}
-
-.stats-compare-grid {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 0;
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow-sm);
-}
-
-.stats-compare-header { 
-  text-align: center; 
-  padding: 14px; 
-  background: var(--gray-100); 
-  border-bottom: 1px solid var(--gray-200); 
-  font-size: 12px; 
-  font-weight: 700; 
-  letter-spacing: 1px; 
-  text-transform: uppercase; 
-  color: var(--gray-500);
-}
-
-.stat-row-f1, .stat-row-label, .stat-row-f2 {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--gray-100);
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-}
-
-.stat-row-f1 { justify-content: flex-end; font-weight: 600; color: var(--gray-700); }
-.stat-row-label { 
-  justify-content: center; 
-  font-size: 11px; 
-  text-transform: uppercase; 
-  letter-spacing: 0.5px; 
-  color: var(--gray-500);
-  background: var(--gray-100);
-}
-.stat-row-f2 { justify-content: flex-start; font-weight: 600; color: var(--gray-700); }
-.stat-winner { color: var(--red) !important; }
-
-.compare-radar-card {
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-}
-
-#sec-compare {
-  max-width: 1180px;
-  margin: 0 auto;
-}
-
-#sec-compare .section-header {
-  margin-bottom: 24px;
-}
-
-#sec-compare .compare-layout {
-  grid-template-columns: minmax(0, 1fr) 84px minmax(0, 1fr);
-  gap: 18px;
-  align-items: stretch;
-}
-
-#sec-compare .compare-side {
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-  border: 1px solid var(--gray-200);
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
-}
-
-#sec-compare .compare-search {
-  border: none;
-  background: transparent;
-  box-shadow: none;
-  padding: 0;
-}
-
-#sec-compare .compare-input {
-  border-radius: 14px;
-  padding: 14px 16px;
-  background: #fff;
-}
-
-#sec-compare .compare-input:focus {
-  box-shadow: 0 0 0 4px rgba(210, 0, 0, 0.08);
-}
-
-#sec-compare .compare-fighter-card {
-  margin-top: 16px;
-  min-height: 260px;
-  align-items: center;
-  text-align: center;
-  background: radial-gradient(circle at 50% 0%, rgba(210,0,0,0.10), transparent 36%), #111827;
-  border-color: rgba(255,255,255,0.08);
-  color: white;
-  border-radius: 18px;
-  box-shadow: 0 18px 44px rgba(17, 24, 39, 0.18);
-}
-
-#sec-compare .compare-fighter-card::before {
-  height: 0;
-}
-
-#sec-compare .cfc-photo {
-  width: 140px;
-  height: 164px;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-}
-
-#sec-compare .cfc-name {
-  color: white;
-  font-size: 22px;
-  margin-top: 4px;
-}
-
-#sec-compare .cfc-record {
-  color: rgba(255,255,255,0.72);
-}
-
-#sec-compare .vs-divider {
-  padding-top: 70px;
-}
-
-#sec-compare .vs-badge {
-  width: 64px;
-  height: 64px;
-  box-shadow: 0 16px 32px rgba(210,0,0,0.22);
-}
-
-#sec-compare .compare-go-btn {
-  border-radius: 999px;
-  padding: 15px 34px;
-  box-shadow: 0 16px 34px rgba(210,0,0,0.18);
-}
-
-#sec-compare .prob-section,
-#sec-compare .stats-compare-grid,
-#sec-compare .compare-radar-card {
-  border-radius: 18px;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
-}
-
-#sec-compare .prob-track {
-  height: 44px;
-  border-radius: 999px;
-}
-
-#sec-compare .prob-f1 {
+.prob-f1 {
+  background: linear-gradient(90deg, var(--red), var(--red-light));
+  transition: width 0.8s ease;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding-right: 12px;
   border-radius: 999px 0 0 999px;
 }
-
-#sec-compare .prob-f2 {
+.prob-f2 {
+  background: var(--gray-300); flex: 1;
+  display: flex; align-items: center; padding-left: 12px;
   border-radius: 0 999px 999px 0;
 }
+.prob-pct { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: white; }
+.prob-f2 .prob-pct { color: var(--gray-700); }
+.prob-names { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--gray-500); }
 
+/* Compare stats table */
+.stats-compare-table {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 16px; overflow: hidden;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.stats-compare-table table {
+  width: 100%; border-collapse: collapse;
+}
+.stats-compare-table th {
+  text-align: center; padding: 12px;
+  background: var(--gray-100);
+  border-bottom: 1px solid var(--gray-200);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--gray-500);
+}
+.stats-compare-table th:first-child { text-align: right; }
+.stats-compare-table th:last-child { text-align: left; }
+.stats-compare-table td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--gray-100);
+  font-size: 13.5px;
+}
+.stats-compare-table tr:last-child td { border-bottom: none; }
+.td-f1 { text-align: right; font-weight: 600; color: var(--gray-700); }
+.td-label { text-align: center; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-500); background: var(--gray-100); }
+.td-f2 { text-align: left; font-weight: 600; color: var(--gray-700); }
+.stat-winner { color: var(--red) !important; }
+.compare-radar-card {
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: 16px; overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
 @media (max-width: 920px) {
-  #sec-compare .compare-layout {
-    grid-template-columns: 1fr;
-  }
-
-  #sec-compare .vs-divider {
-    padding-top: 0;
-  }
+  .compare-layout { grid-template-columns: 1fr; }
+  .vs-divider { padding-top: 0; }
 }
 
 /* ── Global search overlay ── */
 .gsearch-overlay {
-  position: fixed; 
-  inset: 0;
+  position: fixed; inset: 0;
   background: rgba(0,0,0,0.6);
   backdrop-filter: blur(8px);
-  z-index: 200;
-  display: none;
-  align-items: flex-start;
-  justify-content: center;
+  z-index: 200; display: none;
+  align-items: flex-start; justify-content: center;
   padding-top: 100px;
 }
 .gsearch-overlay.open { display: flex; }
-
 .gsearch-box {
-  background: var(--white);
-  border-radius: 16px;
-  width: 100%;
-  max-width: 640px;
-  overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  background: var(--white); border-radius: 16px;
+  width: 100%; max-width: 600px; overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
 }
-
 .gsearch-input-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 20px 24px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 18px 22px;
   border-bottom: 1px solid var(--gray-200);
 }
-.gsearch-input-row i { width: 20px; height: 20px; color: var(--red); flex-shrink: 0; }
-
+.gsearch-input-row i { width: 19px; height: 19px; color: var(--red); flex-shrink: 0; }
 .gsearch-main-input {
-  flex: 1;
-  background: none;
-  border: none;
-  outline: none;
-  color: var(--gray-900);
-  font-size: 17px;
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--gray-900); font-size: 16px;
   font-family: 'Inter', sans-serif;
 }
 .gsearch-main-input::placeholder { color: var(--gray-400); }
-
-.gsearch-esc { 
-  font-size: 11px; 
-  color: var(--gray-500); 
-  background: var(--gray-100); 
-  padding: 5px 10px; 
-  border-radius: 4px; 
-  border: 1px solid var(--gray-200); 
-  cursor: pointer; 
-  flex-shrink: 0;
-  font-weight: 500;
+.gsearch-esc {
+  font-size: 11px; color: var(--gray-500);
+  background: var(--gray-100); padding: 4px 9px;
+  border-radius: 4px; border: 1px solid var(--gray-200);
+  cursor: pointer; flex-shrink: 0; font-weight: 500;
 }
-
-.gsearch-results { max-height: 400px; overflow-y: auto; }
-
+.gsearch-results { max-height: 380px; overflow-y: auto; }
 .gsearch-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 24px;
-  cursor: pointer;
+  display: flex; align-items: center; gap: 13px;
+  padding: 13px 22px; cursor: pointer;
   border-bottom: 1px solid var(--gray-100);
   transition: background 0.15s;
 }
 .gsearch-item:hover { background: var(--red-bg); }
-
 .gsearch-item-photo {
-  width: 44px; 
-  height: 56px;
-  border-radius: 6px;
-  background: var(--gray-100);
-  overflow: hidden;
-  flex-shrink: 0;
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
+  width: 42px; height: 54px;
+  border-radius: 6px; background: var(--gray-100);
+  overflow: hidden; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
   border: 1px solid var(--gray-200);
 }
-.gsearch-item-photo .silhouette { width: 26px; height: 36px; color: var(--gray-300); }
-
+.gsearch-item-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.gsearch-item-photo .silhouette { width: 24px; height: 34px; color: var(--gray-300); }
 .gsearch-item-info { flex: 1; }
-.gsearch-item-name { font-size: 15px; font-weight: 600; color: var(--gray-800); }
-.gsearch-item-sub { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
-.gsearch-item-record { font-size: 14px; font-weight: 600; color: var(--red); }
-
-.gsearch-empty { 
-  padding: 40px 24px; 
-  text-align: center; 
-  color: var(--gray-500); 
-  font-size: 14px;
-}
-
+.gsearch-item-name { font-size: 14px; font-weight: 600; color: var(--gray-800); }
+.gsearch-item-sub { font-size: 11.5px; color: var(--gray-500); margin-top: 2px; }
+.gsearch-item-record { font-size: 13.5px; font-weight: 700; color: var(--red); flex-shrink: 0; }
+.gsearch-empty { padding: 36px 22px; text-align: center; color: var(--gray-500); font-size: 13.5px; }
 
 /* ── Top 15 Rankings ── */
-#sec-top15 {
-  max-width: 1280px;
-  margin: 0 auto;
-}
-
-#sec-top15 .section-header {
-  align-items: flex-start;
-  margin-bottom: 20px;
-}
-
-.division-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 26px;
-}
+#sec-top15 { max-width: 1280px; margin: 0 auto; }
+.division-tabs { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 22px; }
 .div-tab {
-  padding: 9px 18px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  border: 1px solid var(--gray-200);
-  background: var(--white);
-  color: var(--gray-700);
-  transition: all 0.2s;
-  white-space: nowrap;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  padding: 8px 16px; border-radius: 20px;
+  font-size: 12px; font-weight: 700;
+  cursor: pointer; border: 1px solid var(--gray-200);
+  background: var(--white); color: var(--gray-700);
+  transition: all 0.2s; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.04);
 }
 .div-tab:hover { border-color: var(--red); color: var(--red); }
-.div-tab.active {
-  background: var(--red);
-  border-color: var(--red);
-  color: white;
-  box-shadow: 0 10px 20px rgba(210, 0, 0, 0.16);
-}
-
-.rankings-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
-}
-@media (max-width: 1400px) { .rankings-grid { grid-template-columns: repeat(4, 1fr); gap: 18px; } }
-@media (max-width: 1100px) { .rankings-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; } }
-
+.div-tab.active { background: var(--red); border-color: var(--red); color: white; box-shadow: 0 8px 16px rgba(210,0,0,0.18); }
+.rankings-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 18px; }
+@media (max-width:1400px) { .rankings-grid { grid-template-columns: repeat(4,1fr); } }
+@media (max-width:1100px) { .rankings-grid { grid-template-columns: repeat(3,1fr); } }
 .champion-hero-card {
-  grid-column: 1 / -1;
-  min-height: 220px;
+  grid-column: 1/-1;
+  min-height: 210px;
   background: radial-gradient(circle at 72% 20%, rgba(245,158,11,0.28), transparent 34%),
               linear-gradient(135deg, #111827 0%, #1f2937 48%, #450a0a 100%);
   border: 1px solid rgba(245,158,11,0.45);
-  border-radius: 14px;
-  overflow: hidden;
+  border-radius: 14px; overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) minmax(220px, 0.55fr);
-  position: relative;
-  cursor: pointer;
+  grid-template-columns: minmax(260px,1fr) minmax(200px,0.5fr);
+  position: relative; cursor: pointer;
   box-shadow: 0 20px 55px rgba(17,24,39,0.18);
 }
 .champion-hero-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
+  content: ''; position: absolute; inset: 0;
   background: linear-gradient(90deg, rgba(0,0,0,0.38), transparent 58%);
   pointer-events: none;
 }
 .champion-copy {
-  padding: 26px 30px;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
+  padding: 26px 28px; color: white;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; z-index: 1;
 }
 .champion-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: inline-flex; align-items: center; gap: 7px;
   width: fit-content;
   background: rgba(245,158,11,0.16);
   border: 1px solid rgba(245,158,11,0.45);
-  border-radius: 999px;
-  color: #fbbf24;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 7px 12px;
-  margin-bottom: 12px;
+  border-radius: 999px; color: #fbbf24;
+  font-size: 10.5px; font-weight: 800;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 6px 11px; margin-bottom: 10px;
 }
-.champion-title {
-  font-family: 'Oswald', sans-serif;
-  font-size: 38px;
-  line-height: 1;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.champion-subtitle {
-  color: rgba(255,255,255,0.68);
-  font-size: 13px;
-  margin-bottom: 16px;
-}
-.champion-meta {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
+.champion-title { font-family: 'Oswald', sans-serif; font-size: 36px; line-height: 1; text-transform: uppercase; margin-bottom: 7px; }
+.champion-subtitle { color: rgba(255,255,255,0.65); font-size: 12.5px; margin-bottom: 14px; }
+.champion-meta { display: flex; gap: 8px; flex-wrap: wrap; }
 .champion-chip {
-  background: rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.1);
   border: 1px solid rgba(255,255,255,0.14);
-  border-radius: 8px;
-  color: rgba(255,255,255,0.88);
-  font-size: 11px;
-  font-weight: 700;
-  padding: 6px 9px;
+  border-radius: 7px; color: rgba(255,255,255,0.88);
+  font-size: 11px; font-weight: 700; padding: 5px 9px;
 }
 .champion-media {
-  position: relative;
-  min-height: 220px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  overflow: hidden;
+  position: relative; min-height: 210px;
+  display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
 }
 .champion-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: bottom center;
-  max-height: 240px;
-  filter: drop-shadow(0 22px 36px rgba(0,0,0,0.45));
+  width: 100%; height: 100%;
+  object-fit: contain; object-position: bottom center;
+  max-height: 230px;
+  filter: drop-shadow(0 20px 32px rgba(0,0,0,0.45));
 }
 .rankings-subhead {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  margin-top: 12px;
-  margin-bottom: 2px;
-  color: var(--gray-700);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  grid-column: 1/-1;
+  display: flex; align-items: center;
+  margin-top: 10px; margin-bottom: 2px;
+  color: var(--gray-700); font-size: 11px;
+  font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
 }
 .rankings-subhead::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--gray-200);
-  margin-left: 14px;
+  content: ''; flex: 1; height: 1px;
+  background: var(--gray-200); margin-left: 12px;
 }
 .ranked-fighters-grid {
-  grid-column: 1 / -1;
+  grid-column: 1/-1;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 20px;
-  max-height: 720px;
-  overflow-y: auto;
-  padding: 8px 12px 16px 4px;
+  grid-template-columns: repeat(5,minmax(0,1fr));
+  gap: 18px;
+  max-height: 720px; overflow-y: auto;
+  padding: 6px 10px 14px 2px;
   scrollbar-gutter: stable;
 }
-@media (max-width: 1400px) { .ranked-fighters-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media (max-width: 1100px) { .ranked-fighters-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 720px) { .ranked-fighters-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 900px) {
-  .champion-hero-card { grid-template-columns: 1fr; }
-  .champion-title { font-size: 34px; }
-  .champion-copy { padding: 24px; }
-}
-
+@media (max-width:1400px) { .ranked-fighters-grid { grid-template-columns: repeat(4,minmax(0,1fr)); } }
+@media (max-width:1100px) { .ranked-fighters-grid { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media (max-width:720px) { .ranked-fighters-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width:900px) { .champion-hero-card { grid-template-columns: 1fr; } .champion-title { font-size: 30px; } }
 .rank-card {
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: 16px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: 14px; overflow: hidden; cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
   position: relative;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
 }
-.rank-card:hover {
-  border-color: var(--red);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(210, 0, 0, 0.12);
-}
-.rank-card.champ { border-color: #f59e0b; box-shadow: 0 2px 12px rgba(245,158,11,0.15); }
-.rank-card.champ:hover { border-color: #fbbf24; box-shadow: 0 16px 40px rgba(245,158,11,0.2); }
-
+.rank-card:hover { border-color: var(--red); transform: translateY(-4px); box-shadow: 0 14px 36px rgba(210,0,0,0.12); }
+.rank-card.champ { border-color: #f59e0b; box-shadow: 0 2px 10px rgba(245,158,11,0.15); }
+.rank-card.champ:hover { border-color: #fbbf24; box-shadow: 0 14px 36px rgba(245,158,11,0.2); }
 .rank-badge {
-  position: absolute;
-  top: 12px; left: 12px;
-  width: 32px; height: 32px;
-  background: var(--red);
-  color: white;
+  position: absolute; top: 10px; left: 10px;
+  width: 30px; height: 30px;
+  background: var(--red); color: white;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700;
-  font-size: 13px;
-  z-index: 2;
-  box-shadow: 0 3px 12px rgba(210,0,0,0.45);
+  font-weight: 700; font-size: 12px; z-index: 2;
+  box-shadow: 0 3px 10px rgba(210,0,0,0.45);
 }
-.rank-badge.gold {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  box-shadow: 0 2px 8px rgba(245,158,11,0.4);
-}
-.rank-badge i { width: 14px; height: 14px; }
-
+.rank-badge.gold { background: linear-gradient(135deg,#f59e0b,#d97706); box-shadow: 0 2px 8px rgba(245,158,11,0.4); }
+.rank-badge i { width: 13px; height: 13px; }
 .rank-photo {
-  height: 220px;
-  background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+  height: 210px;
+  background: linear-gradient(180deg,#1a1a1a,#0f0f0f);
   display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
-  position: relative;
+  overflow: hidden; position: relative;
 }
-.rank-photo img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: center 20%;
-}
-.rank-photo .silhouette {
-  width: 80px; height: 100px;
-  color: #3a3a3a;
-}
+.rank-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
+.rank-photo .silhouette { width: 75px; height: 95px; color: #3a3a3a; }
 .rank-photo::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 80px;
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 70px;
   background: linear-gradient(to top, #0f0f0f, transparent);
 }
-.rank-card.champ .rank-photo::after {
-  background: linear-gradient(to top, #1a1505, transparent);
-}
-.rank-card.champ .rank-photo {
-  background: linear-gradient(180deg, #2a2310 0%, #1a1505 100%);
-}
-
-.rank-info {
-  padding: 16px 18px 18px;
-  background: var(--white);
-}
-.rank-name {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--gray-900);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 2px;
-}
-.rank-nickname {
-  font-size: 12px;
-  color: var(--gray-500);
-  font-style: italic;
-  margin-bottom: 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.rank-record {
-  font-size: 14px;
-  color: var(--gray-600);
-  margin-bottom: 10px;
-}
-.rank-record strong { color: var(--red); font-size: 16px; font-weight: 700; }
-.rank-stats {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.rank-stat {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: var(--gray-100);
-  color: var(--gray-600);
-}
-.rank-stat.red {
-  background: var(--red-bg);
-  color: var(--red);
-}
-.rank-stat.gold-bg { background: #fef3c7; color: #92400e; }
-.belt-icon { color: #f59e0b; margin-left: 4px; }
-
+.rank-card.champ .rank-photo { background: linear-gradient(180deg,#2a2310,#1a1505); }
+.rank-card.champ .rank-photo::after { background: linear-gradient(to top,#1a1505,transparent); }
+.rank-info { padding: 14px 16px 16px; background: var(--white); }
+.rank-name { font-size: 14px; font-weight: 700; color: var(--gray-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+.rank-nickname { font-size: 11.5px; color: var(--gray-500); font-style: italic; margin-bottom: 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rank-record { font-size: 13px; color: var(--gray-600); margin-bottom: 8px; }
+.rank-record strong { color: var(--red); font-size: 15px; font-weight: 700; }
+.rank-stats { display: flex; gap: 6px; flex-wrap: wrap; }
+.rank-stat { font-size: 10.5px; font-weight: 600; padding: 4px 8px; border-radius: 5px; background: var(--gray-100); color: var(--gray-600); }
+.rank-stat.red { background: var(--red-bg); color: var(--red); }
 .div-loading {
-  grid-column: 1 / -1;
+  grid-column: 1/-1;
   display: flex; align-items: center; justify-content: center;
-  padding: 60px;
-  color: var(--gray-400);
-  gap: 12px;
-  font-size: 14px;
+  padding: 56px; color: var(--gray-400); gap: 12px; font-size: 13.5px;
 }
-.div-loading .spinner {
-  width: 28px; height: 28px;
-  border: 2px solid var(--gray-200);
-  border-top-color: var(--red);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-
+.div-loading .spinner { width: 26px; height: 26px; border-width: 2px; }
 </style>
 </head>
 <body>
 
 <!-- Sidebar -->
 <aside class="sidebar">
-  <a href="/" class="sb-logo" style="text-decoration:none">
+  <a href="/" class="sb-logo">
     <div class="sb-logo-icon">UFC</div>
     <div>
       <div class="sb-logo-text">Dashboard</div>
       <div class="sb-logo-sub">Analytics</div>
     </div>
   </a>
-
   <nav class="sb-nav">
     <div class="sb-section-label">Analytics</div>
-    <div class="sb-item active" onclick="showSection('overview',this)">
-      <i data-lucide="layout-dashboard"></i> Overview
-    </div>
-    <div class="sb-item" onclick="showSection('physical',this)">
-      <i data-lucide="ruler"></i> Physical Attributes
-    </div>
-    <div class="sb-item" onclick="showSection('stance',this)">
-      <i data-lucide="shield"></i> Stance Analysis
-    </div>
-    <div class="sb-item" onclick="showSection('experience',this)">
-      <i data-lucide="star"></i> Experience
-    </div>
-    <div class="sb-item" onclick="showSection('outcomes',this)">
-      <i data-lucide="target"></i> Fight Outcomes
-    </div>
-    <div class="sb-item" onclick="showSection('weight',this)">
-      <i data-lucide="scale"></i> Weight Classes
-    </div>
-    <div class="sb-item" onclick="showSection('trends',this)">
-      <i data-lucide="trending-up"></i> Trends
-    </div>
+    <div class="sb-item active" onclick="showSection('overview',this)"><i data-lucide="layout-dashboard"></i> Overview</div>
+    <div class="sb-item" onclick="showSection('physical',this)"><i data-lucide="ruler"></i> Physical Attributes</div>
+    <div class="sb-item" onclick="showSection('stance',this)"><i data-lucide="shield"></i> Stance Analysis</div>
+    <div class="sb-item" onclick="showSection('experience',this)"><i data-lucide="star"></i> Experience</div>
+    <div class="sb-item" onclick="showSection('outcomes',this)"><i data-lucide="target"></i> Fight Outcomes</div>
+    <div class="sb-item" onclick="showSection('weight',this)"><i data-lucide="scale"></i> Weight Classes</div>
+    <div class="sb-item" onclick="showSection('trends',this)"><i data-lucide="trending-up"></i> Trends</div>
     <div class="sb-section-label">Rankings</div>
-    <div class="sb-item" onclick="showSection('top15',this)" id="top15-nav-item">
-        <i data-lucide="trophy"></i> Champions + Rankings
-    </div>
+    <div class="sb-item" id="nav-top15" onclick="showSection('top15',this)"><i data-lucide="trophy"></i> Top 15 Rankings</div>
     <div class="sb-section-label">Fighters</div>
-    <div class="sb-item" onclick="showSection('fighters',this)">
-      <i data-lucide="users"></i> Fighter Search
-    </div>
-    <div class="sb-item" onclick="showSection('compare',this)" id="compare-nav-item">
-      <i data-lucide="git-compare"></i> Compare Fighters
-    </div>
+    <div class="sb-item" id="nav-fighters" onclick="showSection('fighters',this)"><i data-lucide="users"></i> Fighter Search</div>
+    <div class="sb-item" id="nav-compare" onclick="showSection('compare',this)"><i data-lucide="git-compare"></i> Compare Fighters</div>
   </nav>
-
   <div class="sb-footer">
     <div class="sb-footer-stats">
       <span>Fighters <strong id="total-fighters">--</strong></span>
       <span>Fights <strong id="total-fights">--</strong></span>
     </div>
+    <a href="/" class="foot-link"><i data-lucide="home"></i> Back to Home</a>
   </div>
 </aside>
 
 <!-- Main -->
 <div class="main">
-  <!-- Topbar -->
   <div class="topbar">
+    <div class="topbar-title">UFC <span>Analytics</span></div>
     <div class="topbar-right">
       <button class="search-btn" onclick="openGSearch()">
         <i data-lucide="search"></i>
@@ -1789,7 +970,6 @@ body {
     </div>
   </div>
 
-  <!-- Content -->
   <div class="content" id="content">
 
     <!-- Overview -->
@@ -1810,7 +990,7 @@ body {
         <div class="kpi">
           <div class="kpi-label"><i data-lucide="zap"></i> Total Fights</div>
           <div class="kpi-value" id="kpi-fights">--</div>
-          <div class="kpi-trend"><i data-lucide="activity"></i> Recorded</div>
+          <div class="kpi-trend"><i data-lucide="activity"></i> Recorded bouts</div>
         </div>
         <div class="kpi">
           <div class="kpi-label"><i data-lucide="percent"></i> Avg Win Rate</div>
@@ -1825,9 +1005,7 @@ body {
       </div>
       <div class="grid-2">
         <div class="card">
-          <div class="card-header">
-            <div class="card-title"><i data-lucide="grid-3x3"></i> Correlation Heatmap</div>
-          </div>
+          <div class="card-header"><div class="card-title"><i data-lucide="grid-3x3"></i> Correlation Heatmap</div></div>
           <div class="card-body">
             <div class="chart-wrap" id="wrap-overview-heatmap">
               <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
@@ -1836,9 +1014,7 @@ body {
           </div>
         </div>
         <div class="card">
-          <div class="card-header">
-            <div class="card-title"><i data-lucide="pie-chart"></i> Fight Result Distribution</div>
-          </div>
+          <div class="card-header"><div class="card-title"><i data-lucide="pie-chart"></i> Fight Result Distribution</div></div>
           <div class="card-body">
             <div class="chart-wrap" id="wrap-overview-pie">
               <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
@@ -1849,7 +1025,7 @@ body {
       </div>
     </div>
 
-    <!-- Physical -->
+    <!-- Physical Attributes -->
     <div class="section" id="sec-physical">
       <div class="section-header">
         <div class="section-icon"><i data-lucide="ruler"></i></div>
@@ -1860,9 +1036,7 @@ body {
       </div>
       <div class="grid-2">
         <div class="card">
-          <div class="card-header">
-            <div class="card-title"><i data-lucide="bar-chart-2"></i> Physical vs Win Rate</div>
-          </div>
+          <div class="card-header"><div class="card-title"><i data-lucide="bar-chart-2"></i> Physical vs Win Rate</div></div>
           <div class="card-body">
             <div class="chart-wrap tall" id="wrap-physical">
               <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
@@ -1871,9 +1045,7 @@ body {
           </div>
         </div>
         <div class="card">
-          <div class="card-header">
-            <div class="card-title"><i data-lucide="scatter-chart"></i> Physical vs Strike Accuracy</div>
-          </div>
+          <div class="card-header"><div class="card-title"><i data-lucide="scatter-chart"></i> Physical vs Strike Accuracy</div></div>
           <div class="card-body">
             <div class="chart-wrap tall" id="wrap-physical2">
               <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
@@ -1884,7 +1056,7 @@ body {
       </div>
     </div>
 
-    <!-- Stance -->
+    <!-- Stance Analysis -->
     <div class="section" id="sec-stance">
       <div class="section-header">
         <div class="section-icon"><i data-lucide="shield"></i></div>
@@ -1913,7 +1085,7 @@ body {
           </div>
         </div>
         <div class="card col-span-2">
-          <div class="card-header"><div class="card-title"><i data-lucide="box"></i> Win Rate Distribution by Stance</div></div>
+          <div class="card-header"><div class="card-title"><i data-lucide="box-select"></i> Win Rate Distribution by Stance</div></div>
           <div class="card-body">
             <div class="chart-wrap" id="wrap-stance-box">
               <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
@@ -1955,7 +1127,7 @@ body {
       </div>
     </div>
 
-    <!-- Outcomes -->
+    <!-- Fight Outcomes -->
     <div class="section" id="sec-outcomes">
       <div class="section-header">
         <div class="section-icon"><i data-lucide="target"></i></div>
@@ -1968,18 +1140,18 @@ body {
         <div class="card">
           <div class="card-header"><div class="card-title"><i data-lucide="bar-chart-2"></i> Performance by Win Method</div></div>
           <div class="card-body">
-            <div class="chart-wrap tall" id="wrap-outcomes-multi">
+            <div class="chart-wrap tall" id="wrap-outcomes-metrics">
               <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
-              <div class="chart-inner" id="chart-outcomes-multi"></div>
+              <div class="chart-inner" id="chart-outcomes-metrics"></div>
             </div>
           </div>
         </div>
         <div class="card">
           <div class="card-header"><div class="card-title"><i data-lucide="layers"></i> Win Methods Over Time</div></div>
           <div class="card-body">
-            <div class="chart-wrap" id="wrap-outcomes-stacked">
+            <div class="chart-wrap" id="wrap-outcomes-time">
               <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
-              <div class="chart-inner" id="chart-outcomes-stacked"></div>
+              <div class="chart-inner" id="chart-outcomes-time"></div>
             </div>
           </div>
         </div>
@@ -1995,13 +1167,13 @@ body {
           <div class="section-sub">Physical and performance breakdown by division</div>
         </div>
       </div>
-      <div class="grid-2" style="margin-bottom:16px">
+      <div class="grid-2" style="margin-bottom:22px">
         <div class="card">
           <div class="card-header"><div class="card-title"><i data-lucide="ruler"></i> Physical Stats by Division</div></div>
           <div class="card-body">
-            <div class="chart-wrap" id="wrap-wc-phys">
+            <div class="chart-wrap" id="wrap-wc-physical">
               <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
-              <div class="chart-inner" id="chart-wc-phys"></div>
+              <div class="chart-inner" id="chart-wc-physical"></div>
             </div>
           </div>
         </div>
@@ -2018,9 +1190,9 @@ body {
       <div class="card">
         <div class="card-header"><div class="card-title"><i data-lucide="crosshair"></i> Strike Accuracy by Division</div></div>
         <div class="card-body">
-          <div class="chart-wrap" id="wrap-wc-str">
+          <div class="chart-wrap" id="wrap-wc-strike">
             <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
-            <div class="chart-inner" id="chart-wc-str"></div>
+            <div class="chart-inner" id="chart-wc-strike"></div>
           </div>
         </div>
       </div>
@@ -2046,7 +1218,22 @@ body {
       </div>
     </div>
 
-    <!-- Fighters -->
+    <!-- Top 15 Rankings -->
+    <div class="section" id="sec-top15">
+      <div class="section-header">
+        <div class="section-icon"><i data-lucide="trophy"></i></div>
+        <div>
+          <div class="section-title">Top 15 Rankings</div>
+          <div class="section-sub">Official UFC division champions and rankings</div>
+        </div>
+      </div>
+      <div class="division-tabs" id="div-tabs"></div>
+      <div class="rankings-grid" id="rankings-grid">
+        <div class="div-loading"><div class="spinner"></div> Select a division above</div>
+      </div>
+    </div>
+
+    <!-- Fighter Search -->
     <div class="section" id="sec-fighters">
       <div class="section-header">
         <div class="section-icon"><i data-lucide="users"></i></div>
@@ -2055,8 +1242,8 @@ body {
           <div class="section-sub">Browse and search all fighters in the database</div>
         </div>
       </div>
-      <div class="search-bar-wrap" style="margin-bottom:20px">
-        <input type="text" class="search-input" id="fighter-search-input" placeholder="Search by name, stance, or weight class..." oninput="filterFighters(this.value)">
+      <div class="search-bar-wrap" style="margin-bottom:18px">
+        <input type="text" class="search-input" id="fighter-search-input" placeholder="Search by name or stance..." oninput="filterFighters(this.value)">
         <button class="btn-red" onclick="filterFighters(document.getElementById('fighter-search-input').value)">
           <i data-lucide="search"></i> Search
         </button>
@@ -2065,7 +1252,7 @@ body {
       <div class="pagination" id="pagination"></div>
     </div>
 
-    <!-- Compare -->
+    <!-- Compare Fighters -->
     <div class="section" id="sec-compare">
       <div class="section-header">
         <div class="section-icon"><i data-lucide="git-compare"></i></div>
@@ -2078,7 +1265,7 @@ body {
       <div class="compare-layout">
         <!-- Fighter 1 -->
         <div class="compare-side">
-          <div class="compare-search">
+          <div>
             <div class="compare-search-label"><i data-lucide="user"></i> Fighter 1</div>
             <div class="compare-input-wrap">
               <input type="text" class="compare-input" id="cmp-input-1" placeholder="Search fighter..." oninput="searchCompare(1,this.value)" autocomplete="off">
@@ -2087,29 +1274,17 @@ body {
           </div>
           <div class="compare-fighter-card" id="cmp-card-1">
             <div class="cfc-photo" id="cmp-photo-1">
-              <svg viewBox="0 0 80 110" fill="currentColor" class="silhouette">
-                <ellipse cx="42" cy="13" rx="11" ry="12"/>
-                <path d="M37 24 L47 24 L49 31 L35 31 Z"/>
-                <path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/>
-                <path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/>
-                <path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/>
-                <path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/>
-                <path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/>
-              </svg>
+              <svg viewBox="0 0 80 110" fill="currentColor" class="silhouette"><ellipse cx="42" cy="13" rx="11" ry="12"/><path d="M37 24 L47 24 L49 31 L35 31 Z"/><path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/><path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/><path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/><path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/><path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/></svg>
             </div>
             <div class="cfc-name" id="cmp-name-1">Fighter 1</div>
             <div class="cfc-record" id="cmp-record-1"><strong>0</strong>-0-0</div>
           </div>
         </div>
-
         <!-- VS -->
-        <div class="vs-divider">
-          <div class="vs-badge">VS</div>
-        </div>
-
+        <div class="vs-divider"><div class="vs-badge">VS</div></div>
         <!-- Fighter 2 -->
         <div class="compare-side">
-          <div class="compare-search">
+          <div>
             <div class="compare-search-label"><i data-lucide="user"></i> Fighter 2</div>
             <div class="compare-input-wrap">
               <input type="text" class="compare-input" id="cmp-input-2" placeholder="Search fighter..." oninput="searchCompare(2,this.value)" autocomplete="off">
@@ -2118,15 +1293,7 @@ body {
           </div>
           <div class="compare-fighter-card" id="cmp-card-2">
             <div class="cfc-photo" id="cmp-photo-2">
-              <svg viewBox="0 0 80 110" fill="currentColor" class="silhouette">
-                <ellipse cx="42" cy="13" rx="11" ry="12"/>
-                <path d="M37 24 L47 24 L49 31 L35 31 Z"/>
-                <path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/>
-                <path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/>
-                <path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/>
-                <path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/>
-                <path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/>
-              </svg>
+              <svg viewBox="0 0 80 110" fill="currentColor" class="silhouette"><ellipse cx="42" cy="13" rx="11" ry="12"/><path d="M37 24 L47 24 L49 31 L35 31 Z"/><path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/><path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/><path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/><path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/><path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/></svg>
             </div>
             <div class="cfc-name" id="cmp-name-2">Fighter 2</div>
             <div class="cfc-record" id="cmp-record-2"><strong>0</strong>-0-0</div>
@@ -2136,12 +1303,12 @@ body {
 
       <div class="compare-btn-row">
         <button class="compare-go-btn" onclick="runCompare()">
-          <i data-lucide="zap"></i>
-          Compare Fighters
+          <i data-lucide="zap"></i> Analyze Matchup
         </button>
       </div>
 
       <div class="compare-results" id="cmp-results">
+        <!-- Probability bar -->
         <div class="prob-section">
           <div class="prob-label">
             <span id="prob-name-f1">Fighter 1</span>
@@ -2161,15 +1328,21 @@ body {
           </div>
         </div>
 
-        <div class="stats-compare-grid">
-          <div class="stats-compare-header" id="cmp-header-f1">Fighter 1</div>
-          <div class="stats-compare-header">Stat</div>
-          <div class="stats-compare-header" id="cmp-header-f2">Fighter 2</div>
-          <div id="cmp-stat-rows"></div>
-          <div id="cmp-stat-labels"></div>
-          <div id="cmp-stat-rows2"></div>
+        <!-- Stats comparison table -->
+        <div class="stats-compare-table">
+          <table>
+            <thead>
+              <tr>
+                <th id="cmp-header-f1" style="text-align:right">Fighter 1</th>
+                <th>Stat</th>
+                <th id="cmp-header-f2" style="text-align:left">Fighter 2</th>
+              </tr>
+            </thead>
+            <tbody id="cmp-stat-body"></tbody>
+          </table>
         </div>
 
+        <!-- Radar chart -->
         <div class="compare-radar-card">
           <div class="card-header"><div class="card-title"><i data-lucide="radar"></i> Comparison Radar</div></div>
           <div class="card-body">
@@ -2182,23 +1355,8 @@ body {
       </div>
     </div>
 
-    <!-- Champions + Top 15 Rankings -->
-    <div class="section" id="sec-top15">
-      <div class="section-header">
-        <div class="section-icon"><i data-lucide="trophy"></i></div>
-        <div>
-            <div class="section-title">Official Men's UFC Champions + Rankings</div>
-            <div class="section-sub">Current official UFC men's champions and division rankings</div>
-        </div>
-      </div>
-      <div class="division-tabs" id="div-tabs"></div>
-      <div class="rankings-grid" id="rankings-grid">
-        <div class="div-loading"><div class="spinner"></div> Select a division above</div>
-      </div>
-    </div>
-
-  </div>
-</div>
+  </div><!-- /content -->
+</div><!-- /main -->
 
 <!-- Fighter Overlay -->
 <div class="overlay-backdrop" id="fighter-overlay">
@@ -2206,16 +1364,8 @@ body {
     <button class="overlay-close" onclick="closeOverlay()"><i data-lucide="x"></i></button>
     <div class="overlay-hero">
       <div class="overlay-photo" id="ov-photo">
-        <img src="" alt="" style="display:none">
-        <svg viewBox="0 0 80 110" fill="currentColor" class="silhouette">
-          <ellipse cx="42" cy="13" rx="11" ry="12"/>
-          <path d="M37 24 L47 24 L49 31 L35 31 Z"/>
-          <path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/>
-          <path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/>
-          <path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/>
-          <path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/>
-          <path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/>
-        </svg>
+        <img src="" alt="" id="ov-photo-img" style="display:none">
+        <svg viewBox="0 0 80 110" fill="currentColor" class="silhouette" id="ov-photo-sil"><ellipse cx="42" cy="13" rx="11" ry="12"/><path d="M37 24 L47 24 L49 31 L35 31 Z"/><path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/><path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/><path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/><path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/><path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/></svg>
       </div>
       <div class="overlay-info">
         <div class="overlay-rank-pill" id="ov-rank-pill"></div>
@@ -2238,7 +1388,7 @@ body {
         <div class="mini-chart-inner" id="ov-chart-methods"></div>
       </div>
       <div class="mini-chart-card">
-        <div class="card-header"><div class="card-title"><i data-lucide="radar"></i> Ability Radar</div></div>
+        <div class="card-header"><div class="card-title"><i data-lucide="pentagon"></i> Ability Radar</div></div>
         <div class="mini-chart-inner" id="ov-chart-radar"></div>
       </div>
       <div class="perf-bars">
@@ -2247,13 +1397,13 @@ body {
       </div>
       <div class="mini-chart-card">
         <div class="card-header"><div class="card-title"><i data-lucide="bar-chart-2"></i> Fight History</div></div>
-        <div class="mini-chart-inner" id="ov-chart-wl"></div>
+        <div class="mini-chart-inner" id="ov-chart-wins"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Global search overlay -->
+<!-- Global Search Overlay -->
 <div class="gsearch-overlay" id="gsearch-overlay">
   <div class="gsearch-box">
     <div class="gsearch-input-row">
@@ -2268,67 +1418,54 @@ body {
 </div>
 
 <script>
-// ── Silhouette SVG ──
-const SVG_SIL = `<svg viewBox="0 0 80 110" fill="currentColor" class="silhouette">
-  <ellipse cx="42" cy="13" rx="11" ry="12"/>
-  <path d="M37 24 L47 24 L49 31 L35 31 Z"/>
-  <path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/>
-  <path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/>
-  <path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/>
-  <path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/>
-  <path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/>
-</svg>`;
+/* ── Silhouette SVG ── */
+const SVG_SIL = `<svg viewBox="0 0 80 110" fill="currentColor" class="silhouette"><ellipse cx="42" cy="13" rx="11" ry="12"/><path d="M37 24 L47 24 L49 31 L35 31 Z"/><path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/><path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/><path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/><path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/><path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/></svg>`;
+const CHART_COLORS = ['#d20000','#ef4444','#f87171','#fca5a5','#6b7280','#9ca3af'];
 
-// ── Premium Chart Theme ──
-const CHART_COLORS = ['#d20000', '#ef4444', '#f87171', '#fca5a5', '#6b7280', '#9ca3af'];
-
-// ── Section navigation ──
+/* ── Section navigation ── */
 const loaded = new Set();
+
 function showSection(id, el) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-  document.getElementById('sec-' + id).classList.add('active');
+  const sec = document.getElementById('sec-' + id);
+  if (sec) sec.classList.add('active');
   if (el) el.classList.add('active');
+  window.location.hash = id;
   if (!loaded.has(id)) {
     loaded.add(id);
     loadSection(id);
   }
 }
 
-// ── Chart renderer with premium white theme ──
+/* ── Chart renderer ── */
 function renderChart(elId, fig, height) {
   const f = typeof fig === 'string' ? JSON.parse(fig) : fig;
-  const wrap = document.getElementById('wrap-' + elId.replace('chart-', ''));
+  const wrapId = 'wrap-' + elId.replace('chart-', '');
+  const wrap = document.getElementById(wrapId);
   const loader = wrap ? wrap.querySelector('.chart-loader') : null;
   if (loader) loader.style.display = 'none';
 
-  const layout = f.layout || {};
-  
-  // Premium white theme
+  const layout = Object.assign({}, f.layout || {});
   layout.paper_bgcolor = '#ffffff';
-  layout.plot_bgcolor = '#ffffff';
+  layout.plot_bgcolor = '#f9fafb';
   layout.font = { color: '#374151', family: 'Inter, sans-serif', size: 12 };
   layout.margin = layout.margin || { t: 40, r: 30, b: 60, l: 60 };
   layout.height = height || layout.height || 360;
-  
-  // Axis styling
+
   const axisStyle = {
     gridcolor: '#e5e7eb',
     linecolor: '#d1d5db',
     tickfont: { color: '#6b7280', size: 11 },
     titlefont: { color: '#374151', size: 12 }
   };
-  
   if (layout.xaxis) Object.assign(layout.xaxis, axisStyle);
   if (layout.yaxis) Object.assign(layout.yaxis, axisStyle);
-  
-  // Style multiple axes if present
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 2; i <= 6; i++) {
     if (layout['xaxis' + i]) Object.assign(layout['xaxis' + i], axisStyle);
     if (layout['yaxis' + i]) Object.assign(layout['yaxis' + i], axisStyle);
   }
 
-  // Update trace colors for premium look
   if (f.data) {
     f.data.forEach((trace, idx) => {
       if (trace.type === 'bar' && !trace.marker?.color) {
@@ -2342,22 +1479,21 @@ function renderChart(elId, fig, height) {
     });
   }
 
-  Plotly.react(elId, f.data || [], layout, {
-    responsive: true,
-    displayModeBar: false,
-    staticPlot: false
-  });
+  Plotly.react(elId, f.data || [], layout, { responsive: true, displayModeBar: false });
 }
 
 function showError(wrapId) {
   const wrap = document.getElementById(wrapId);
   if (!wrap) return;
   const loader = wrap.querySelector('.chart-loader');
-  if (loader) loader.innerHTML = '<span class="chart-error"><i data-lucide="alert-circle"></i> Failed to load chart</span>';
-  lucide.createIcons();
+  if (loader) {
+    loader.style.display = 'flex';
+    loader.innerHTML = '<span class="chart-error"><i data-lucide="alert-circle"></i> Failed to load chart</span>';
+    lucide.createIcons({ el: loader });
+  }
 }
 
-// ── Generic chart loader ──
+/* ── Generic chart loader ── */
 async function loadCharts(url, pairs) {
   try {
     const resp = await fetch(url);
@@ -2372,7 +1508,7 @@ async function loadCharts(url, pairs) {
   }
 }
 
-// ── Physical special handler ──
+/* ── Physical ── */
 async function loadPhysical() {
   try {
     const resp = await fetch('/api/charts/physical');
@@ -2388,7 +1524,7 @@ async function loadPhysical() {
   }
 }
 
-// ── Overview stats ──
+/* ── Overview ── */
 async function loadOverview() {
   try {
     const resp = await fetch('/api/stats');
@@ -2396,8 +1532,8 @@ async function loadOverview() {
     const d = await resp.json();
     animNum('kpi-fighters', 0, d.fighters || 0, 1200);
     animNum('kpi-fights',   0, d.fights   || 0, 1200);
-    animDec('kpi-winrate', d.avg_win_rate || 0, 1200);
-    animDec('kpi-ko',      d.ko_rate      || 0, 1200);
+    animDec('kpi-winrate',  d.avg_win_rate || 0, 1200);
+    animDec('kpi-ko',       d.ko_rate      || 0, 1200);
     const tf = document.getElementById('total-fighters');
     const tft = document.getElementById('total-fights');
     if (tf) tf.textContent = (d.fighters || '--').toLocaleString();
@@ -2413,14 +1549,11 @@ function animNum(id, from, to, ms) {
   const el = document.getElementById(id);
   if (!el) return;
   const suffix = el.querySelector('span') ? el.querySelector('span').outerHTML : '';
-  const frames = 50;
-  let i = 0;
+  const frames = 50; let i = 0;
   const iv = setInterval(() => {
     i++;
-    const f = i / frames;
-    const eased = 1 - Math.pow(1 - f, 4);
-    const val = Math.round(from + (to - from) * eased);
-    el.innerHTML = val.toLocaleString() + suffix;
+    const eased = 1 - Math.pow(1 - i/frames, 4);
+    el.innerHTML = Math.round(from + (to - from) * eased).toLocaleString() + suffix;
     if (i >= frames) clearInterval(iv);
   }, ms / frames);
 }
@@ -2429,31 +1562,29 @@ function animDec(id, to, ms) {
   const el = document.getElementById(id);
   if (!el) return;
   const suffix = el.querySelector('span') ? el.querySelector('span').outerHTML : '';
-  const frames = 50;
-  let i = 0;
+  const frames = 50; let i = 0;
   const iv = setInterval(() => {
     i++;
-    const f = i / frames;
-    const eased = 1 - Math.pow(1 - f, 4);
+    const eased = 1 - Math.pow(1 - i/frames, 4);
     el.innerHTML = (to * eased).toFixed(1) + suffix;
     if (i >= frames) clearInterval(iv);
   }, ms / frames);
 }
 
-// ── Section loader dispatch ──
+/* ── Section loader dispatch ── */
 function loadSection(id) {
   if (id === 'overview')   return loadOverview();
   if (id === 'physical')   return loadPhysical();
-  if (id === 'stance')     return loadCharts('/api/charts/stance',    [['chart-stance-bar','bar'],['chart-stance-pie','pie'],['chart-stance-box','box']]);
+  if (id === 'stance')     return loadCharts('/api/charts/stance',     [['chart-stance-bar','bar'],['chart-stance-pie','pie'],['chart-stance-box','box']]);
   if (id === 'experience') return loadCharts('/api/charts/experience', [['chart-exp-bar','bar'],['chart-exp-scatter','scatter']]);
-  if (id === 'outcomes')   return loadCharts('/api/charts/outcomes',  [['chart-outcomes-multi','metrics'],['chart-outcomes-stacked','time']]);
-  if (id === 'weight')     return loadCharts('/api/charts/weight',    [['chart-wc-phys','physical'],['chart-wc-rates','rates'],['chart-wc-str','strike']]);
-  if (id === 'trends')     return loadCharts('/api/charts/trends',    [['chart-trends','trends']]);
+  if (id === 'outcomes')   return loadCharts('/api/charts/outcomes',   [['chart-outcomes-metrics','metrics'],['chart-outcomes-time','time']]);
+  if (id === 'weight')     return loadCharts('/api/charts/weight',     [['chart-wc-physical','physical'],['chart-wc-rates','rates'],['chart-wc-strike','strike']]);
+  if (id === 'trends')     return loadCharts('/api/charts/trends',     [['chart-trends','trends']]);
   if (id === 'top15')      return initTop15();
   if (id === 'fighters')   return initFighters();
 }
 
-// ── Top 15 Rankings ──
+/* ── Top 15 Rankings ── */
 let top15Divisions = [];
 let top15ActiveDiv = '';
 let currentRankingFighters = [];
@@ -2465,7 +1596,7 @@ async function initTop15() {
     top15Divisions = data.divisions || [];
     const tabs = document.getElementById('div-tabs');
     tabs.innerHTML = top15Divisions.map(d =>
-      `<div class="div-tab" onclick="loadDivision('${d}')">${d}</div>`
+      `<div class="div-tab" onclick="loadDivision('${esc(d)}')">${esc(d)}</div>`
     ).join('');
     if (top15Divisions.length > 0) loadDivision(top15Divisions[0]);
   } catch(e) {
@@ -2475,12 +1606,11 @@ async function initTop15() {
 
 async function loadDivision(division) {
   top15ActiveDiv = division;
-  // Update tabs
   document.querySelectorAll('.div-tab').forEach(t => {
     t.classList.toggle('active', t.textContent === division);
   });
   const grid = document.getElementById('rankings-grid');
-  grid.innerHTML = '<div class="div-loading"><div class="spinner"></div> Loading ' + division + '...</div>';
+  grid.innerHTML = '<div class="div-loading"><div class="spinner"></div> Loading ' + esc(division) + '...</div>';
   try {
     const resp = await fetch('/api/top15/' + encodeURIComponent(division));
     const data = await resp.json();
@@ -2490,98 +1620,87 @@ async function loadDivision(division) {
   }
 }
 
-function fighterImgHTML(fid, classes) {
-  return `<img src="/static/fighters/${fid}.jpg" class="${classes}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" alt="">
-          <span style="display:none">${SVG_SIL}</span>`;
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function escapeHTML(value) {
-  return String(value ?? '').replace(/[&<>"]/g, char => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;'
-  }[char]));
-}
-
-function rankingImage(f) {
+function rankingImgSrc(f) {
   return f.image || (f.Fighter_Id ? `/static/fighters/${f.Fighter_Id}.jpg` : '');
 }
 
 function openRankedFighter(index) {
-  const fighter = currentRankingFighters[index];
-  if (!fighter) return;
-  openFighter(fighter.Fighter_Id || '', fighter);
+  const f = currentRankingFighters[index];
+  if (f) openFighter(f.Fighter_Id || '', f);
 }
 
 function renderRankings(fighters) {
   const grid = document.getElementById('rankings-grid');
   if (!fighters.length) {
-    grid.innerHTML = '<div class="div-loading">No fighters found for this division</div>';
+    grid.innerHTML = '<div class="div-loading">No fighters found</div>';
     return;
   }
   currentRankingFighters = fighters;
   const champion = fighters.find(f => f.belt === 1);
-  const ranked = fighters.filter(f => f.belt !== 1);
+  const ranked   = fighters.filter(f => f.belt !== 1);
 
-  const championHTML = champion ? (() => {
+  let html = '';
+
+  if (champion) {
     const idx = fighters.indexOf(champion);
-    const nickname = champion.nickname && champion.nickname !== 'No Nickname' && champion.nickname !== 'nan'
-      ? `"${escapeHTML(champion.nickname)}"` : '';
-    return `
+    const nick = champion.nickname && champion.nickname !== 'No Nickname' && champion.nickname !== 'nan'
+      ? `"${esc(champion.nickname)}"` : '';
+    html += `
     <div class="champion-hero-card" onclick="openRankedFighter(${idx})">
       <div class="champion-copy">
-        <div class="champion-kicker"><i data-lucide="crown"></i> ${escapeHTML(top15ActiveDiv)} Champion</div>
-        <div class="champion-title">${escapeHTML(champion.name)}</div>
-        <div class="champion-subtitle">${nickname || 'Official UFC division champion'}</div>
+        <div class="champion-kicker"><i data-lucide="crown"></i> ${esc(top15ActiveDiv)} Champion</div>
+        <div class="champion-title">${esc(champion.name)}</div>
+        <div class="champion-subtitle">${nick || 'Official UFC division champion'}</div>
         <div class="champion-meta">
-          <span class="champion-chip">Record ${escapeHTML(champion.W)}-${escapeHTML(champion.L)}-${escapeHTML(champion.D)}</span>
-          <span class="champion-chip">${escapeHTML(champion.win_rate)}% wins</span>
-          ${Number(champion.ko_rate || 0) > 0 ? `<span class="champion-chip">${escapeHTML(champion.ko_rate)}% KO</span>` : ''}
-          <span class="champion-chip">${escapeHTML(champion.total_fights)} fights</span>
+          <span class="champion-chip">Record ${esc(champion.W)}-${esc(champion.L)}-${esc(champion.D)}</span>
+          <span class="champion-chip">${esc(champion.win_rate)}% wins</span>
+          ${Number(champion.ko_rate||0)>0 ? `<span class="champion-chip">${esc(champion.ko_rate)}% KO</span>` : ''}
+          <span class="champion-chip">${esc(champion.total_fights)} fights</span>
         </div>
       </div>
       <div class="champion-media">
-        <img src="${escapeHTML(rankingImage(champion))}" alt="${escapeHTML(champion.name)}">
+        <img src="${esc(rankingImgSrc(champion))}" alt="${esc(champion.name)}"
+             onerror="this.style.display='none'">
       </div>
     </div>
-    <div class="rankings-subhead">${escapeHTML(top15ActiveDiv)} Ranked Fighters</div>`;
-  })() : '';
+    <div class="rankings-subhead">${esc(top15ActiveDiv)} Ranked Fighters</div>`;
+  }
 
   const rankedHTML = ranked.map(f => {
-      const idx = fighters.indexOf(f);
-      const imageSrc = rankingImage(f);
-    const nickname = f.nickname && f.nickname !== 'No Nickname' && f.nickname !== 'nan'
-      ? `"${escapeHTML(f.nickname)}"` : '';
+    const idx = fighters.indexOf(f);
+    const nick = f.nickname && f.nickname !== 'No Nickname' && f.nickname !== 'nan'
+      ? `<div class="rank-nickname">"${esc(f.nickname)}"</div>` : '';
     return `
     <div class="rank-card" onclick="openRankedFighter(${idx})">
-        <div class="rank-badge">${escapeHTML(f.rank)}</div>
+      <div class="rank-badge">${esc(f.rank)}</div>
       <div class="rank-photo">
-        <img src="${escapeHTML(imageSrc)}"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-             style="width:100%;height:100%;object-fit:cover;object-position:center 25%"
-             alt="${escapeHTML(f.name)}">
-        <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center">
-          ${SVG_SIL}
-        </div>
+        <img src="${esc(rankingImgSrc(f))}" alt="${esc(f.name)}"
+             style="width:100%;height:100%;object-fit:cover;object-position:center 20%"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center">${SVG_SIL}</div>
       </div>
       <div class="rank-info">
-        <div class="rank-name">${escapeHTML(f.name)}</div>
-        ${nickname ? `<div class="rank-nickname">${nickname}</div>` : ''}
-        <div class="rank-record"><strong>${escapeHTML(f.W)}</strong>-${escapeHTML(f.L)}-${escapeHTML(f.D)}</div>
+        <div class="rank-name">${esc(f.name)}</div>
+        ${nick}
+        <div class="rank-record"><strong>${esc(f.W)}</strong>-${esc(f.L)}-${esc(f.D)}</div>
         <div class="rank-stats">
-          <span class="rank-stat red">${escapeHTML(f.win_rate)}% W</span>
-          ${Number(f.ko_rate || 0) > 0 ? `<span class="rank-stat">KO ${escapeHTML(f.ko_rate)}%</span>` : ''}
-          <span class="rank-stat">${escapeHTML(f.total_fights)} fights</span>
+          <span class="rank-stat red">${esc(f.win_rate)}% W</span>
+          ${Number(f.ko_rate||0)>0 ? `<span class="rank-stat">KO ${esc(f.ko_rate)}%</span>` : ''}
+          <span class="rank-stat">${esc(f.total_fights)} fights</span>
         </div>
       </div>
     </div>`;
   }).join('');
-  grid.innerHTML = championHTML + `<div class="ranked-fighters-grid">${rankedHTML}</div>`;
+
+  grid.innerHTML = html + `<div class="ranked-fighters-grid">${rankedHTML}</div>`;
   lucide.createIcons({ el: grid });
 }
 
-// ── Fighter Search ──
+/* ── Fighter Search ── */
 let allFighters = [], filteredFighters = [], page = 1, perPage = 12;
 
 async function initFighters() {
@@ -2591,12 +1710,16 @@ async function initFighters() {
     allFighters = data.results || [];
     filteredFighters = allFighters;
     renderFighters();
-  } catch(e) {}
+  } catch(e) {
+    document.getElementById('fighter-grid').innerHTML = '<p style="color:var(--gray-500);padding:20px">Failed to load fighters.</p>';
+  }
 }
 
 function filterFighters(q) {
   const ql = q.toLowerCase().trim();
-  filteredFighters = ql ? allFighters.filter(f => (f['Full Name']||'').toLowerCase().includes(ql) || (f.Stance||'').toLowerCase().includes(ql)) : allFighters;
+  filteredFighters = ql
+    ? allFighters.filter(f => (f['Full Name']||'').toLowerCase().includes(ql) || (f.Stance||'').toLowerCase().includes(ql))
+    : allFighters;
   page = 1;
   renderFighters();
 }
@@ -2610,6 +1733,7 @@ function renderFighters() {
 
   grid.innerHTML = slice.map(f => {
     const name = f['Full Name'] || 'Unknown';
+    const fid  = f.Fighter_Id || '';
     const w = f.W || 0, l = f.L || 0, d = f.D || 0;
     const stance = f.Stance || '';
     let winRate = '';
@@ -2618,21 +1742,18 @@ function renderFighters() {
       winRate = rate.toFixed(0) + '% wins';
     }
     return `
-    <div class="fighter-card" onclick="openFighter('${f.Fighter_Id}')">
+    <div class="fighter-card" onclick="openFighter('${esc(fid)}')">
       <div class="fighter-card-img">
-        <img src="/static/fighters/${f.Fighter_Id}.jpg"
+        <img src="/static/fighters/${esc(fid)}.jpg"
              style="width:100%;height:100%;object-fit:cover;object-position:top center"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-             alt="${name}">
-        <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center">
-          ${SVG_SIL}
-        </div>
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" alt="${esc(name)}">
+        <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center">${SVG_SIL}</div>
       </div>
       <div class="fighter-card-info">
-        <div class="fighter-card-name">${name}</div>
+        <div class="fighter-card-name">${esc(name)}</div>
         <div class="fighter-card-record">Record: <strong>${w}-${l}-${d}</strong></div>
         <div class="fighter-card-tags">
-          ${stance ? `<span class="fighter-tag">${stance}</span>` : ''}
+          ${stance ? `<span class="fighter-tag">${esc(stance)}</span>` : ''}
           ${winRate ? `<span class="fighter-tag neutral">${winRate}</span>` : ''}
         </div>
       </div>
@@ -2645,9 +1766,9 @@ function renderFighters() {
       const b = document.createElement('div');
       b.className = 'page-btn' + (active ? ' active' : '');
       b.innerHTML = icon ? `<i data-lucide="${icon}"></i>` : label;
-      if (p) b.onclick = () => { page = p; renderFighters(); };
+      if (p) b.onclick = () => { page = p; renderFighters(); document.getElementById('sec-fighters').scrollIntoView({block:'start'}); };
       pgn.appendChild(b);
-      lucide.createIcons({ el: b });
+      if (icon) lucide.createIcons({ el: b });
     };
     if (page > 1) addBtn('', 'chevron-left', page - 1, false);
     for (let p2 = Math.max(1, page-2); p2 <= Math.min(totalPages, page+2); p2++) {
@@ -2658,57 +1779,62 @@ function renderFighters() {
   lucide.createIcons({ el: grid });
 }
 
-// ── Fighter Overlay ──
-async function openFighter(fid, rankingContext = null) {
+/* ── Fighter Overlay ── */
+async function openFighter(fid, rankCtx) {
   document.getElementById('fighter-overlay').classList.add('open');
-  try {
-    const hasFighterId = Boolean(fid);
-    const chartIds = ['ov-chart-methods', 'ov-chart-radar', 'ov-chart-wl'];
-    chartIds.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.innerHTML = '';
-    });
+  document.body.style.overflow = 'hidden';
 
-    let info = rankingContext ? { ...rankingContext } : {};
+  // Reset mini charts
+  ['ov-chart-methods','ov-chart-radar','ov-chart-wins'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '';
+  });
+
+  try {
+    let info = rankCtx ? { ...rankCtx } : {};
     let charts = {};
 
-    if (hasFighterId) {
+    if (fid) {
       const [infoResp, chartResp] = await Promise.all([
-        fetch('/api/fighter/' + fid),
-        fetch('/api/fighter/' + fid + '/charts')
+        fetch('/api/fighter/' + encodeURIComponent(fid)),
+        fetch('/api/fighter/' + encodeURIComponent(fid) + '/charts')
       ]);
-      const apiInfo = await infoResp.json();
-      charts = await chartResp.json();
-      info = { ...apiInfo, ...info };
+      if (infoResp.ok) {
+        const apiInfo = await infoResp.json();
+        info = { ...info, ...apiInfo };
+      }
+      if (chartResp.ok) charts = await chartResp.json();
     }
 
-    const photo = document.getElementById('ov-photo');
-    const imgEl = photo.querySelector('img');
-    const silEl = photo.querySelector('.silhouette');
-    const fidClean = (info['Fighter_Id'] || info.Fighter_Id || '').toString();
-    const imageSrc = info.image || (fidClean ? '/static/fighters/' + fidClean + '.jpg' : '');
-    if (imageSrc && imgEl) {
-      imgEl.src = imageSrc;
+    // Photo
+    const imgEl  = document.getElementById('ov-photo-img');
+    const silEl  = document.getElementById('ov-photo-sil');
+    const imgSrc = info.image || (fid ? `/static/fighters/${fid}.jpg` : '');
+    if (imgSrc && imgEl) {
+      imgEl.src = imgSrc;
       imgEl.style.display = '';
       if (silEl) silEl.style.display = 'none';
-      imgEl.onerror = () => { imgEl.style.display = 'none'; if(silEl) silEl.style.display = ''; };
+      imgEl.onerror = () => { imgEl.style.display = 'none'; if (silEl) silEl.style.display = ''; };
     } else {
       if (imgEl) imgEl.style.display = 'none';
       if (silEl) silEl.style.display = '';
     }
 
+    // Rank pill
     const rankPill = document.getElementById('ov-rank-pill');
     if (rankPill) {
-      const rankText = info.belt === 1 ? `${top15ActiveDiv} Champion` : (info.rank_label || (info.rank ? `${top15ActiveDiv} #${info.rank}` : ''));
+      const rankText = info.belt === 1
+        ? `${top15ActiveDiv} Champion`
+        : (info.rank_label || (info.rank && info.rank !== 'C' ? `${top15ActiveDiv} #${info.rank}` : ''));
       rankPill.textContent = rankText;
       rankPill.style.display = rankText ? 'inline-flex' : 'none';
     }
 
-    // Set nickname if available
-    const nicknameEl = document.getElementById('ov-nickname');
-    if (nicknameEl) {
-      const nickname = info.Nickname || info.nickname;
-      nicknameEl.textContent = nickname && nickname !== 'No Nickname' && nickname !== 'nan' ? `"${nickname}"` : '';
+    // Nickname
+    const nickEl = document.getElementById('ov-nickname');
+    if (nickEl) {
+      const nick = info.Nickname || info.nickname;
+      nickEl.textContent = nick && nick !== 'No Nickname' && nick !== 'nan' ? `"${nick}"` : '';
     }
 
     document.getElementById('ov-name').textContent = info['Full Name'] || info.name || fid;
@@ -2716,100 +1842,81 @@ async function openFighter(fid, rankingContext = null) {
     document.getElementById('ov-l').textContent = info.L || 0;
     document.getElementById('ov-d').textContent = info.D || 0;
 
-    // Physical attributes with better formatting
-    const attrs = document.getElementById('ov-attrs');
-    const heightCm = info.height_cm || info['Ht.'];
-    const weightKg = info.weight_kg || info['Wt.'];
-    const reachCm = info.reach_cm || info['Reach'];
+    // Attributes
+    const totalFights = info.Total_Fights || info.total_fights
+      || ((Number(info.W)||0) + (Number(info.L)||0) + (Number(info.D)||0));
     const weightClass = info.Weight_Class_Std || info.Weight_Class || top15ActiveDiv || 'N/A';
-    const totalFights = info.Total_Fights || info.total_fights || ((Number(info.W) || 0) + (Number(info.L) || 0) + (Number(info.D) || 0));
-    const rankingFallbackStats = rankingContext ? [
+    const attrs = [
+      ['Height',   info.height_cm ? Math.round(info.height_cm) + ' cm' : 'N/A'],
+      ['Weight',   info.weight_kg ? Math.round(info.weight_kg) + ' kg' : 'N/A'],
+      ['Reach',    info.reach_cm  ? Math.round(info.reach_cm)  + ' cm' : 'N/A'],
+      ['Stance',   info.Stance || 'N/A'],
       ['Division', weightClass],
-      ['Rank', info.rank_label || (info.belt === 1 ? 'Champion' : (info.rank ? '#' + info.rank : 'N/A'))],
-      ['Fights', totalFights || 'N/A'],
-      ['Win Rate', info.win_rate != null ? info.win_rate + '%' : 'N/A'],
-      ['KO Rate', info.ko_rate != null ? info.ko_rate + '%' : 'N/A'],
-      ['Sig Str', info.sig_str != null ? info.sig_str + '%' : 'N/A'],
-    ] : null;
-
-    const detailStats = [
-      ['Height', heightCm ? Math.round(heightCm) + ' cm' : null],
-      ['Weight', weightKg ? Math.round(weightKg) + ' kg' : null],
-      ['Reach', reachCm ? Math.round(reachCm) + ' cm' : null],
-      ['Stance', info.Stance || null],
-      ['Division', weightClass],
-      ['Fights', totalFights || 'N/A'],
+      ['Fights',   totalFights || 'N/A'],
     ];
-
-    attrs.innerHTML = (rankingFallbackStats || detailStats).map(([lbl, val]) =>
-      `<div class="attr-item"><div class="attr-label">${lbl}</div><div class="attr-value">${val || 'N/A'}</div></div>`
-    ).join('');
+    document.getElementById('ov-attrs').innerHTML = attrs
+      .map(([lbl, val]) => `<div class="attr-item"><div class="attr-label">${lbl}</div><div class="attr-value">${esc(String(val))}</div></div>`)
+      .join('');
 
     // Star ratings
-    const starsGrid = document.getElementById('ov-stars');
     const ratings = info.stars || {};
-    if (rankingContext && !info.stars) {
-      ratings.striking = Math.max(1, Math.min(5, Math.round((Number(info.sig_str) || 0) / 20)));
-      ratings.ko_power = Math.max(1, Math.min(5, Math.round((Number(info.ko_rate) || 0) / 20)));
-      ratings.grappling = 3;
-      ratings.win_rate = Math.max(1, Math.min(5, Math.round((Number(info.win_rate) || 0) / 20)));
-      ratings.experience = Math.max(1, Math.min(5, Math.round((Number(totalFights) || 0) / 8)));
+    if (rankCtx && !info.stars) {
+      ratings.striking   = Math.max(1, Math.min(5, Math.round((Number(info.sig_str)||0) / 20)));
+      ratings.ko_power   = Math.max(1, Math.min(5, Math.round((Number(info.ko_rate)||0) / 20)));
+      ratings.grappling  = 3;
+      ratings.win_rate   = Math.max(1, Math.min(5, Math.round((Number(info.win_rate)||0) / 20)));
+      ratings.experience = Math.max(1, Math.min(5, Math.round((Number(totalFights)||0) / 8)));
     }
-    const starKeys = [
-      ['striking',   'Striking'],
-      ['ko_power',   'KO Power'],
-      ['grappling',  'Grappling'],
-      ['win_rate',   'Win Rate'],
-      ['experience', 'Experience']
-    ];
-    starsGrid.innerHTML = starKeys.map(([key, label]) => {
+    const starKeys = [['striking','Striking'],['ko_power','KO Power'],['grappling','Grappling'],['win_rate','Win Rate'],['experience','Experience']];
+    document.getElementById('ov-stars').innerHTML = starKeys.map(([key, label]) => {
       const val = ratings[key] || 0;
-      const pips = [1,2,3,4,5].map(n => `<div class="pip${n <= val ? ' filled' : ''}"></div>`).join('');
+      const pips = [1,2,3,4,5].map(n => `<div class="pip${n<=val?' filled':''}"></div>`).join('');
       return `<div class="star-item"><div class="star-pips">${pips}</div><div class="star-label">${label}</div></div>`;
     }).join('');
 
-    // Render charts with proper sizing
+    // Mini charts
     if (charts.methods) renderChart('ov-chart-methods', charts.methods, 200);
-    else document.getElementById('ov-chart-methods').innerHTML = '<div class="div-loading">No chart data</div>';
+    else document.getElementById('ov-chart-methods').innerHTML = '<div style="color:var(--gray-400);padding:20px;text-align:center;font-size:13px">No data</div>';
     if (charts.radar) renderChart('ov-chart-radar', charts.radar, 200);
-    else document.getElementById('ov-chart-radar').innerHTML = '<div class="div-loading">No chart data</div>';
-    if (charts.wins) renderChart('ov-chart-wl', charts.wins, 200);
-    else document.getElementById('ov-chart-wl').innerHTML = '<div class="div-loading">No chart data</div>';
+    else document.getElementById('ov-chart-radar').innerHTML = '<div style="color:var(--gray-400);padding:20px;text-align:center;font-size:13px">No data</div>';
+    if (charts.wins) renderChart('ov-chart-wins', charts.wins, 200);
+    else document.getElementById('ov-chart-wins').innerHTML = '<div style="color:var(--gray-400);padding:20px;text-align:center;font-size:13px">No data</div>';
 
-    // Performance bars with actual data
-    const perf = document.getElementById('ov-perf-bars');
+    // Performance bars
     const wins = Number(info.W) || 0;
-    const total = totalFights || ((Number(info.W) || 0) + (Number(info.L) || 0) + (Number(info.D) || 0));
-    const wr = info.win_rate != null ? Number(info.win_rate) : (total > 0 ? (wins / total * 100) : 0);
-    
-    // Get actual rates if available, otherwise use star ratings
-    const strikeAcc = info.Strike_Acc ? (info.Strike_Acc <= 1 ? info.Strike_Acc * 100 : info.Strike_Acc) : (info.sig_str != null ? Number(info.sig_str) : (ratings.striking || 0) / 5 * 100);
-    const koRate = info.KO_Rate ? (info.KO_Rate <= 1 ? info.KO_Rate * 100 : info.KO_Rate) : (info.ko_rate != null ? Number(info.ko_rate) : (ratings.ko_power || 0) / 5 * 100);
-    const subRate = info.Sub_Rate ? (info.Sub_Rate <= 1 ? info.Sub_Rate * 100 : info.Sub_Rate) : (ratings.grappling || 0) / 5 * 100;
-    
-    perf.innerHTML = [
-      ['Win Rate', wr.toFixed(1) + '%', wr],
-      ['Strike Accuracy', strikeAcc.toFixed(1) + '%', strikeAcc],
-      ['KO Rate', koRate.toFixed(1) + '%', Math.min(koRate, 100)],
-      ['Submission Rate', subRate.toFixed(1) + '%', Math.min(subRate, 100)],
-    ].map(([lbl, val, pct]) => `
+    const total = Number(totalFights) || 1;
+    const wr   = info.win_rate != null ? Number(info.win_rate) : (wins / total * 100);
+    const koR  = info.ko_rate  != null ? Number(info.ko_rate)  : (ratings.ko_power || 0) / 5 * 100;
+    const grap = info.sub_rate != null ? Number(info.sub_rate) : (ratings.grappling || 0) / 5 * 100;
+    const str  = info.sig_str  != null ? Number(info.sig_str)  : (ratings.striking  || 0) / 5 * 100;
+    document.getElementById('ov-perf-bars').innerHTML = [
+      ['Win Rate',        wr,   wr],
+      ['KO Power',        koR,  koR],
+      ['Grappling',       grap, grap],
+      ['Experience',      Math.min((Number(totalFights)||0)/30*100, 100), Math.min((Number(totalFights)||0)/30*100,100)],
+    ].map(([lbl, pct]) => `
       <div class="perf-row">
-        <div class="perf-label"><span>${lbl}</span><span>${val}</span></div>
-        <div class="perf-track"><div class="perf-fill" style="width:${Math.min(pct, 100)}%"></div></div>
+        <div class="perf-label"><span>${lbl}</span><span>${pct.toFixed(1)}%</span></div>
+        <div class="perf-track"><div class="perf-fill" style="width:${Math.min(Math.max(pct,0),100)}%"></div></div>
       </div>`).join('');
 
   } catch(e) {
-    console.error('Error loading fighter:', e);
+    console.error('openFighter error:', e);
     document.getElementById('ov-name').textContent = 'Error loading fighter';
   }
-  lucide.createIcons();
+  lucide.createIcons({ el: document.getElementById('fighter-overlay') });
 }
 
 function closeOverlay() {
   document.getElementById('fighter-overlay').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
-// ── Global Search ──
+document.getElementById('fighter-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeOverlay();
+});
+
+/* ── Global Search ── */
 function openGSearch() {
   document.getElementById('gsearch-overlay').classList.add('open');
   setTimeout(() => document.getElementById('gsearch-input').focus(), 50);
@@ -2825,7 +1932,6 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openGSearch(); }
   if (e.key === 'Escape') { closeGSearch(); closeOverlay(); }
 });
-
 document.getElementById('gsearch-overlay').addEventListener('click', function(e) {
   if (e.target === this) closeGSearch();
 });
@@ -2846,23 +1952,30 @@ async function doGSearch(q) {
     const data = await resp.json();
     const results = data.results || [];
     if (!results.length) {
-      document.getElementById('gsearch-results').innerHTML = '<div class="gsearch-empty">No fighters found for "' + q + '"</div>';
+      document.getElementById('gsearch-results').innerHTML = `<div class="gsearch-empty">No fighters found for "${esc(q)}"</div>`;
       return;
     }
-    document.getElementById('gsearch-results').innerHTML = results.slice(0, 8).map(f => `
-      <div class="gsearch-item" onclick="closeGSearch();openFighter('${f.Fighter_Id}')">
-        <div class="gsearch-item-photo">${SVG_SIL}</div>
-        <div class="gsearch-item-info">
-          <div class="gsearch-item-name">${f['Full Name'] || 'Unknown'}</div>
-          <div class="gsearch-item-sub">${f.Stance || ''}</div>
+    document.getElementById('gsearch-results').innerHTML = results.slice(0, 10).map(f => {
+      const fid = f.Fighter_Id || '';
+      return `
+      <div class="gsearch-item" onclick="closeGSearch();openFighter('${esc(fid)}')">
+        <div class="gsearch-item-photo">
+          <img src="/static/fighters/${esc(fid)}.jpg" alt=""
+               style="width:100%;height:100%;object-fit:cover;object-position:top"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <span style="display:none">${SVG_SIL}</span>
         </div>
-        <div class="gsearch-item-record">${f.W || 0}-${f.L || 0}-${f.D || 0}</div>
-      </div>`).join('');
-    lucide.createIcons({ el: document.getElementById('gsearch-results') });
+        <div class="gsearch-item-info">
+          <div class="gsearch-item-name">${esc(f['Full Name'] || 'Unknown')}</div>
+          <div class="gsearch-item-sub">${esc(f.Stance || '')}</div>
+        </div>
+        <div class="gsearch-item-record">${f.W||0}-${f.L||0}-${f.D||0}</div>
+      </div>`;
+    }).join('');
   } catch(e) {}
 }
 
-// ── Compare Fighters ──
+/* ── Compare Fighters ── */
 let cmpFighters = { 1: null, 2: null };
 
 async function searchCompare(side, q) {
@@ -2871,13 +1984,14 @@ async function searchCompare(side, q) {
   try {
     const resp = await fetch('/api/search?q=' + encodeURIComponent(q));
     const data = await resp.json();
-    const results = (data.results || []).slice(0, 6);
+    const results = (data.results || []).slice(0, 8);
     if (!results.length) { drop.classList.remove('open'); return; }
-    drop.innerHTML = results.map(f => `
-      <div class="compare-opt" onclick="selectCompare(${side}, '${f.Fighter_Id}', '${(f['Full Name']||'').replace(/'/g,"\\'")}', ${f.W||0}, ${f.L||0}, ${f.D||0})">
-        <span class="compare-opt-name">${f['Full Name'] || 'Unknown'}</span>
+    drop.innerHTML = results.map(f =>
+      `<div class="compare-opt" onclick="selectCompare(${side},'${esc(f.Fighter_Id)}','${(f['Full Name']||'').replace(/'/g,"\\'")}',${f.W||0},${f.L||0},${f.D||0})">
+        <span class="compare-opt-name">${esc(f['Full Name'] || 'Unknown')}</span>
         <span class="compare-opt-rec">${f.W||0}-${f.L||0}-${f.D||0}</span>
-      </div>`).join('');
+      </div>`
+    ).join('');
     drop.classList.add('open');
   } catch(e) {}
 }
@@ -2886,16 +2000,14 @@ function selectCompare(side, fid, name, w, l, d) {
   cmpFighters[side] = { id: fid, name, w, l, d };
   document.getElementById('cmp-input-' + side).value = name;
   document.getElementById('cmp-drop-' + side).classList.remove('open');
-
   const card = document.getElementById('cmp-card-' + side);
   card.classList.add('visible');
   document.getElementById('cmp-name-' + side).textContent = name;
   document.getElementById('cmp-record-' + side).innerHTML = `<strong>${w}</strong>-${l}-${d}`;
   document.getElementById('cmp-photo-' + side).innerHTML = `
-    <img src="/static/fighters/${fid}.jpg"
+    <img src="/static/fighters/${esc(fid)}.jpg"
          style="width:100%;height:100%;object-fit:cover;object-position:center 18%"
-         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-         alt="${name}">
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" alt="${esc(name)}">
     <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center">${SVG_SIL}</div>`;
 }
 
@@ -2910,101 +2022,82 @@ async function runCompare() {
     alert('Please select both fighters first.');
     return;
   }
-
   const results = document.getElementById('cmp-results');
   results.classList.add('visible');
 
   const wrap = document.getElementById('wrap-cmp-radar');
   const loader = wrap ? wrap.querySelector('.chart-loader') : null;
-  if (loader) {
-    loader.style.display = 'flex';
-    loader.innerHTML = '<div class="spinner"></div>Loading comparison...';
-  }
+  if (loader) { loader.style.display = 'flex'; loader.innerHTML = '<div class="spinner"></div>Analyzing...'; }
 
   try {
     const resp = await fetch(`/api/compare?f1=${encodeURIComponent(cmpFighters[1].id)}&f2=${encodeURIComponent(cmpFighters[2].id)}`);
-    if (!resp.ok) throw new Error('Comparison API failed: ' + resp.status);
-
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const data = await resp.json();
     if (data.error) throw new Error(data.error);
 
     const f1 = data.fighter1;
     const f2 = data.fighter2;
-
-    const p1 = f1.win_prob || 0;
-    const p2 = f2.win_prob || 0;
+    const p1 = Math.round(Number(data.prob1 || f1.win_prob || 50));
+    const p2 = 100 - p1;
 
     document.getElementById('prob-name-f1').textContent = f1.name;
     document.getElementById('prob-name-f2').textContent = f2.name;
-    document.getElementById('prob-pct-f1').textContent = p1 + '%';
-    document.getElementById('prob-pct-f2').textContent = p2 + '%';
-    document.getElementById('prob-bar-f1').style.width = p1 + '%';
+    document.getElementById('prob-pct-f1').textContent  = p1 + '%';
+    document.getElementById('prob-pct-f2').textContent  = p2 + '%';
+    document.getElementById('prob-bar-f1').style.width  = p1 + '%';
+    document.getElementById('cmp-header-f1').textContent = f1.name;
+    document.getElementById('cmp-header-f2').textContent = f2.name;
 
     const statDefs = [
-      ['Win Rate', 'win_rate', '%'],
-      ['KO Rate', 'ko_rate', '%'],
-      ['Sub Rate', 'sub_rate', '%'],
-      ['Sig Str %', 'sig_str', '%'],
-      ['Total Fights', 'total_fights', ''],
+      ['Win Rate',      'win_rate',     true],
+      ['KO Rate',       'ko_rate',      true],
+      ['Sub Rate',      'sub_rate',     true],
+      ['Sig Str %',     'sig_str_pct',  true],
+      ['Total Fights',  'fights',       false],
     ];
 
-    const rowsLeft = document.getElementById('cmp-stat-rows');
-    const rowsMid = document.getElementById('cmp-stat-labels');
-    const rowsRight = document.getElementById('cmp-stat-rows2');
+    const fmt = (v, isPct) => v != null ? (isPct ? (Number(v)*100).toFixed(1)+'%' : v) : 'N/A';
+    const tbody = document.getElementById('cmp-stat-body');
+    tbody.innerHTML = statDefs.map(([label, key, isPct]) => {
+      const raw1 = f1[key]; const raw2 = f2[key];
+      const v1 = fmt(raw1, isPct); const v2 = fmt(raw2, isPct);
+      const win1 = raw1 != null && raw2 != null && Number(raw1) > Number(raw2);
+      const win2 = raw1 != null && raw2 != null && Number(raw2) > Number(raw1);
+      return `<tr>
+        <td class="td-f1 ${win1 ? 'stat-winner' : ''}">${v1}</td>
+        <td class="td-label">${label}</td>
+        <td class="td-f2 ${win2 ? 'stat-winner' : ''}">${v2}</td>
+      </tr>`;
+    }).join('');
 
-    rowsLeft.innerHTML = '';
-    rowsMid.innerHTML = '';
-    rowsRight.innerHTML = '';
+    if (data.radar) renderChart('chart-cmp-radar', data.radar, 360);
+    else if (loader) loader.style.display = 'none';
 
-    statDefs.forEach(([label, key, unit]) => {
-      const raw1 = f1[key];
-      const raw2 = f2[key];
-
-      const v1 = raw1 != null
-        ? unit === '%'
-          ? (raw1 * 100).toFixed(1) + '%'
-          : raw1
-        : 'N/A';
-
-      const v2 = raw2 != null
-        ? unit === '%'
-          ? (raw2 * 100).toFixed(1) + '%'
-          : raw2
-        : 'N/A';
-
-      const win1 = raw1 != null && raw2 != null && raw1 > raw2;
-      const win2 = raw1 != null && raw2 != null && raw2 > raw1;
-
-      rowsLeft.innerHTML += `<div class="stat-row-f1 ${win1 ? 'stat-winner' : ''}">${v1}</div>`;
-      rowsMid.innerHTML += `<div class="stat-row-label">${label}</div>`;
-      rowsRight.innerHTML += `<div class="stat-row-f2 ${win2 ? 'stat-winner' : ''}">${v2}</div>`;
-    });
-
-    if (data.radar) {
-      renderChart('chart-cmp-radar', data.radar, 360);
-    } else if (loader) {
-      loader.style.display = 'none';
-    }
-
-  } catch (e) {
-    console.error('Comparison error:', e);
+  } catch(e) {
+    console.error('Compare error:', e);
     if (loader) {
-      loader.innerHTML = '<span class="chart-error"><i data-lucide="alert-circle"></i> Failed to load comparison</span>';
+      loader.style.display = 'flex';
+      loader.innerHTML = '<span class="chart-error"><i data-lucide="alert-circle"></i> Comparison failed</span>';
+      lucide.createIcons({ el: loader });
     }
-    lucide.createIcons();
   }
-
   results.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ── Init ──
+/* ── Init ── */
 document.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
-  loadSection('overview');
 
-  if (window.location.hash === '#compare' || window.location.hash === '#sec-compare') {
-    const nav = document.getElementById('compare-nav-item');
-    showSection('compare', nav);
+  // Hash navigation
+  const hash = (window.location.hash || '').replace('#', '').replace('sec-', '');
+  const validSections = ['overview','physical','stance','experience','outcomes','weight','trends','top15','fighters','compare'];
+  if (hash && validSections.includes(hash)) {
+    const navId = { top15: 'nav-top15', fighters: 'nav-fighters', compare: 'nav-compare' }[hash];
+    const navEl = navId ? document.getElementById(navId) : document.querySelector(`.sb-item[onclick*="'${hash}'"]`);
+    showSection(hash, navEl);
+  } else {
+    loaded.add('overview');
+    loadSection('overview');
   }
 });
 </script>
