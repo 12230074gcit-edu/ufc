@@ -625,14 +625,18 @@ def fighter_charts(fid):
     sr = fighter_stats_df[fighter_stats_df['Fighter_Id']==fid]
     radar_vals = []
     radar_lbls = ['Striking','Power','Grappling','Win Rate','Experience']
-    cols_r = ['Sig. Str. %','KO Rate','SUB Rate','Win_Rate','Total_Fights']
+    cols_r = ['Strike_Acc','KO_Rate','Sub_Rate','Win_Rate','Total_Fights']
     for col in cols_r:
         val = sr[col].values[0] if not sr.empty and col in sr.columns else 0.5
         try:
             v = float(val)
-            if col == 'Total_Fights': v = min(v/40,1)*100
-            else: v = v*100
-            radar_vals.append(round(v,1))
+            if col == 'Total_Fights': 
+                v = min(v/40,1)*100
+            elif v > 1:  # If stored as percentage, convert
+                v = v  # Already in percentage form
+            else:
+                v = v*100  # Convert from decimal to percentage
+            radar_vals.append(round(min(v, 100),1))
         except Exception:
             radar_vals.append(50)
 
