@@ -501,8 +501,7 @@ def ch_physical():
         fig = make_subplots(
             1,
             3,
-            subplot_titles=[f"{al}" for _, al in attrs],
-            horizontal_spacing=0.12
+            horizontal_spacing=0.08
         )
 
         for i, (ac, al) in enumerate(attrs, 1):
@@ -563,22 +562,20 @@ def ch_physical():
 
         fig.update_layout(**L(
             title=f"Physical Attributes vs {metric_lbl}",
-            height=420,
+            height=380,
             showlegend=True,
-            margin=dict(t=70, r=100, b=55, l=60),
+            margin=dict(t=60, r=90, b=50, l=55),
             legend=dict(
                 bgcolor="rgba(255,255,255,0.95)",
-                font=dict(color="#374151", size=11),
-                x=1.0,
-                y=1.0,
+                font=dict(color="#374151", size=10),
+                x=0.98,
+                y=0.98,
                 xanchor="right",
                 yanchor="top",
-                orientation="h",
-                bordercolor="rgba(0,0,0,0.1)",
+                bordercolor="rgba(0,0,0,0.08)",
                 borderwidth=1
             )
         ))
-        fig.update_annotations(font=dict(size=11, color="#374151"), yshift=0)
 
         charts.append(jfig(fig))
 

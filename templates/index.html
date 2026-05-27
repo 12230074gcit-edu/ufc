@@ -1584,22 +1584,22 @@ body {
 }
 
 .rank-card {
-  background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
-  border: 2px solid #2a2a2a;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 .rank-card:hover {
   border-color: var(--red);
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(210, 0, 0, 0.25);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(210, 0, 0, 0.12);
 }
-.rank-card.champ { border-color: #f59e0b; }
-.rank-card.champ:hover { border-color: #fbbf24; box-shadow: 0 20px 40px rgba(245,158,11,0.3); }
+.rank-card.champ { border-color: #f59e0b; box-shadow: 0 2px 12px rgba(245,158,11,0.15); }
+.rank-card.champ:hover { border-color: #fbbf24; box-shadow: 0 16px 40px rgba(245,158,11,0.2); }
 
 .rank-badge {
   position: absolute;
@@ -1621,8 +1621,8 @@ body {
 .rank-badge i { width: 14px; height: 14px; }
 
 .rank-photo {
-  height: 280px;
-  background: linear-gradient(180deg, #1f1f1f 0%, #141414 100%);
+  height: 220px;
+  background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
   position: relative;
@@ -1630,18 +1630,18 @@ body {
 .rank-photo img {
   width: 100%; height: 100%;
   object-fit: cover;
-  object-position: center 25%;
+  object-position: center 20%;
 }
 .rank-photo .silhouette {
-  width: 90px; height: 120px;
+  width: 80px; height: 100px;
   color: #3a3a3a;
 }
 .rank-photo::after {
   content: '';
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 100px;
-  background: linear-gradient(to top, #0d0d0d, transparent);
+  height: 80px;
+  background: linear-gradient(to top, #0f0f0f, transparent);
 }
 .rank-card.champ .rank-photo::after {
   background: linear-gradient(to top, #1a1505, transparent);
@@ -1651,51 +1651,50 @@ body {
 }
 
 .rank-info {
-  padding: 18px 20px 20px;
-  background: linear-gradient(180deg, #0d0d0d 0%, #0a0a0a 100%);
+  padding: 16px 18px 18px;
+  background: var(--white);
 }
 .rank-name {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--gray-900);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .rank-nickname {
-  font-size: 13px;
-  color: #9ca3af;
+  font-size: 12px;
+  color: var(--gray-500);
   font-style: italic;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .rank-record {
-  font-size: 15px;
-  color: #d1d5db;
-  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--gray-600);
+  margin-bottom: 10px;
 }
-.rank-record strong { color: #ffffff; font-size: 18px; font-weight: 700; }
+.rank-record strong { color: var(--red); font-size: 16px; font-weight: 700; }
 .rank-stats {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 .rank-stat {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 6px;
-  background: #262626;
-  color: #9ca3af;
+  background: var(--gray-100);
+  color: var(--gray-600);
 }
 .rank-stat.red {
-  background: rgba(210, 0, 0, 0.2);
-  color: #ef4444;
+  background: var(--red-bg);
+  color: var(--red);
 }
-.rank-stat.red { background: var(--red-bg); color: var(--red); }
 .rank-stat.gold-bg { background: #fef3c7; color: #92400e; }
 .belt-icon { color: #f59e0b; margin-left: 4px; }
 
