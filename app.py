@@ -7,7 +7,7 @@ import plotly.io as pio
 import json, os, warnings
 warnings.filterwarnings('ignore')
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 
@@ -76,39 +76,40 @@ def star_rating(value, col):
 
 print("Data ready.")
 
-# ── Chart Theme ────────────────────────────────────────────────────────────────
-PAL  = ['#d20000', '#ff4444', '#cccccc', '#888888', '#cc4400', '#ff8800', '#aa0000', '#ff6666']
-GRID = 'rgba(255,255,255,0.05)'
+# ── Premium White Chart Theme ─────────────────────────────────────────────────
+PAL  = ['#d20000', '#ef4444', '#f87171', '#fca5a5', '#6b7280', '#9ca3af', '#374151', '#4b5563']
+GRID = '#e5e7eb'
 FILL = {
-    '#d20000': 'rgba(210,0,0,0.15)', '#ff4444': 'rgba(255,68,68,0.12)',
-    '#cccccc': 'rgba(204,204,204,0.08)', '#888888': 'rgba(136,136,136,0.10)',
-    '#cc4400': 'rgba(204,68,0,0.12)', '#ff8800': 'rgba(255,136,0,0.12)',
-    '#aa0000': 'rgba(170,0,0,0.12)', '#ff6666': 'rgba(255,102,102,0.12)',
+    '#d20000': 'rgba(210,0,0,0.10)', '#ef4444': 'rgba(239,68,68,0.10)',
+    '#f87171': 'rgba(248,113,113,0.08)', '#fca5a5': 'rgba(252,165,165,0.08)',
+    '#6b7280': 'rgba(107,114,128,0.08)', '#9ca3af': 'rgba(156,163,175,0.08)',
+    '#374151': 'rgba(55,65,81,0.08)', '#4b5563': 'rgba(75,85,99,0.08)',
 }
 
 def L(height=None, title=None, **kw):
     d = dict(
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(10,10,10,1)',
-        font=dict(color='#999999', family='Inter, sans-serif', size=12),
-        hoverlabel=dict(bgcolor='#1a1a1a', bordercolor='rgba(210,0,0,0.5)',
-                        font=dict(color='#ffffff', size=12)),
+        paper_bgcolor='#ffffff',
+        plot_bgcolor='#ffffff',
+        font=dict(color='#374151', family='Inter, sans-serif', size=12),
+        hoverlabel=dict(bgcolor='#ffffff', bordercolor='#d20000',
+                        font=dict(color='#111827', size=12)),
         margin=dict(t=55, r=20, b=45, l=60),
-        legend=dict(bgcolor='rgba(0,0,0,0)', font=dict(color='#999999'),
-                    bordercolor='rgba(210,0,0,0.2)'),
+        legend=dict(bgcolor='rgba(255,255,255,0.9)', font=dict(color='#374151'),
+                    bordercolor='#e5e7eb', borderwidth=1),
     )
     if title:
-        d['title'] = dict(text=title, font=dict(size=15, color='#ffffff',
-                          family='Oswald, sans-serif'), x=0.01)
+        d['title'] = dict(text=title, font=dict(size=15, color='#111827',
+                          family='Inter, sans-serif', weight=600), x=0.01)
     if height:
         d['height'] = height
     d.update(kw)
     return d
 
 def ax(**kw):
-    d = dict(gridcolor=GRID, linecolor='rgba(210,0,0,0.15)',
-             zerolinecolor='rgba(210,0,0,0.1)',
-             tickfont=dict(size=11, color='#888888'))
+    d = dict(gridcolor=GRID, linecolor='#d1d5db',
+             zerolinecolor='#e5e7eb',
+             tickfont=dict(size=11, color='#6b7280'),
+             titlefont=dict(size=12, color='#374151'))
     d.update(kw)
     return d
 
@@ -156,19 +157,20 @@ def ch_overview():
     disp = [labels.get(c, c) for c in corr.columns]
     hm = go.Figure(go.Heatmap(
         z=z, x=disp, y=disp,
-        colorscale=[[0,'#4a9eff'], [0.5,'rgba(5,15,35,1)'], [1,'#00d4ff']],
+        colorscale=[[0,'#3b82f6'], [0.5,'#f3f4f6'], [1,'#d20000']],
         zmid=0,
-        text=z, texttemplate='%{text:.2f}', textfont=dict(size=10, color='white'),
-        colorbar=dict(title=dict(text='r', font=dict(color='#6a9ec0')),
-                      tickfont=dict(color='#6a9ec0')),
+        text=z, texttemplate='%{text:.2f}', textfont=dict(size=10, color='#374151'),
+        colorbar=dict(title=dict(text='r', font=dict(color='#374151')),
+                      tickfont=dict(color='#6b7280')),
     ))
     hm.update_layout(**L(title='Correlation Matrix — Physical Attributes vs Performance Metrics',
                           height=460, xaxis=ax(tickangle=-35), yaxis=ax()))
     mc  = fights_df['Win_Method'].value_counts()
     pie = go.Figure(go.Pie(
         labels=mc.index, values=mc.values, hole=0.44,
-        marker=dict(colors=PAL[:len(mc)], line=dict(color='rgba(0,0,0,0.3)', width=2)),
-        textfont=dict(color='white', size=13), textinfo='label+percent',
+        marker=dict(colors=['#d20000', '#ef4444', '#6b7280', '#9ca3af'][:len(mc)], 
+                    line=dict(color='#ffffff', width=2)),
+        textfont=dict(color='#374151', size=13), textinfo='label+percent',
     ))
     pie.update_layout(**L(title='Overall Win Method Distribution', height=360))
     return jsonify({'heatmap': jfig(hm), 'pie': jfig(pie)})
@@ -196,10 +198,10 @@ def ch_physical():
             except Exception: pass
             fig.add_trace(go.Scatter(x=da[ac], y=da[metric_col], mode='markers',
                 marker=dict(size=5, color=da[metric_col],
-                    colorscale=[[0,'#4a9eff'],[0.5,'#00d4ff'],[1,'#22c55e']],
+                    colorscale=[[0,'#3b82f6'],[0.5,'#8b5cf6'],[1,'#d20000']],
                     opacity=0.65, showscale=(i==3),
-                    colorbar=dict(title=dict(text=metric_lbl, font=dict(color='#6a9ec0',size=10)),
-                                  tickfont=dict(color='#6a9ec0',size=10), x=1.02,
+                    colorbar=dict(title=dict(text=metric_lbl, font=dict(color='#374151',size=10)),
+                                  tickfont=dict(color='#6b7280',size=10), x=1.02,
                                   tickformat='.0%') if i==3 else None),
                 text=da['Full Name'],
                 hovertemplate=f'<b>%{{text}}</b><br>{al}: %{{x:.1f}}<br>{metric_lbl}: %{{y:.1%}}<extra></extra>',
@@ -221,8 +223,8 @@ def ch_stance():
         KO_Rate=('KO Rate','mean'), Sub_Rate=('SUB Rate','mean'),
         Strike_Acc=('Sig. Str. %','mean')).reset_index()
     bar = go.Figure()
-    for col, lbl, color in [('Win_Rate','Win Rate','#22c55e'),('KO_Rate','KO Rate','#00d4ff'),
-                              ('Sub_Rate','Sub Rate','#8b5cf6'),('Strike_Acc','Strike Acc','#4a9eff')]:
+    for col, lbl, color in [('Win_Rate','Win Rate','#d20000'),('KO_Rate','KO Rate','#ef4444'),
+                              ('Sub_Rate','Sub Rate','#8b5cf6'),('Strike_Acc','Strike Acc','#3b82f6')]:
         bar.add_trace(go.Bar(name=lbl, x=ss['Stance'], y=ss[col], marker_color=color,
             text=ss[col].apply(lambda v: f'{v:.1%}'), textposition='outside',
             textfont=dict(color='white', size=11)))
@@ -232,11 +234,11 @@ def ch_stance():
         yaxis=ax(title='Rate', tickformat='.0%', range=[0, max_val*1.22])))
     sc = df['Stance'].value_counts()
     pie = go.Figure(go.Pie(labels=sc.index, values=sc.values, hole=0.44,
-        marker=dict(colors=['#00d4ff','#4a9eff','#22c55e'], line=dict(color='rgba(0,0,0,0.3)',width=2)),
-        textfont=dict(color='white', size=13), textinfo='label+percent'))
+        marker=dict(colors=['#d20000','#ef4444','#f87171'], line=dict(color='#ffffff',width=2)),
+        textfont=dict(color='#374151', size=13), textinfo='label+percent'))
     pie.update_layout(**L(title='Fighter Distribution by Stance', height=360))
     box = go.Figure()
-    for stance, color in zip(MAIN, ['#00d4ff','#4a9eff','#22c55e']):
+    for stance, color in zip(MAIN, ['#d20000','#ef4444','#f87171']):
         sdf = df[df['Stance']==stance]
         box.add_trace(go.Box(y=sdf['Win_Rate'], name=stance, marker=dict(color=color,size=4),
             line=dict(color=color), boxmean=True))
@@ -275,10 +277,10 @@ def ch_experience():
     except Exception: pass
     sc.add_trace(go.Scatter(x=df['Total_Fights'], y=df['Win_Rate'], mode='markers',
         marker=dict(size=5, color=df['Win_Rate'],
-            colorscale=[[0,'#4a9eff'],[0.5,'#00d4ff'],[1,'#22c55e']],
+            colorscale=[[0,'#3b82f6'],[0.5,'#8b5cf6'],[1,'#d20000']],
             opacity=0.6, showscale=True,
-            colorbar=dict(title=dict(text='Win Rate',font=dict(color='#6a9ec0')),
-                          tickfont=dict(color='#6a9ec0'), tickformat='.0%')),
+            colorbar=dict(title=dict(text='Win Rate',font=dict(color='#374151')),
+                          tickfont=dict(color='#6b7280'), tickformat='.0%')),
         text=df['Full Name'],
         hovertemplate='<b>%{text}</b><br>Fights: %{x}<br>Win Rate: %{y:.1%}<extra></extra>',
         showlegend=False))
@@ -334,25 +336,25 @@ def ch_weight():
     wc    = wc.sort_values('Weight_Class_Std')
     wlbls = wc['Weight_Class_Std'].astype(str).tolist()
     phys = go.Figure()
-    for attr,color,lbl in [('height','#4a9eff','Height (cm)'),('reach','#00d4ff','Reach (cm)'),('weight','#22c55e','Weight (kg)')]:
+    for attr,color,lbl in [('height','#3b82f6','Height (cm)'),('reach','#8b5cf6','Reach (cm)'),('weight','#d20000','Weight (kg)')]:
         phys.add_trace(go.Scatter(x=wlbls, y=wc[attr], mode='lines+markers', name=lbl,
             line=dict(color=color,width=2.5), marker=dict(size=9,color=color,line=dict(color='white',width=1.5))))
     phys.update_layout(**L(title='Average Physical Attributes by Weight Class', height=390,
         showlegend=True, xaxis=ax(title='Weight Class',tickangle=-30), yaxis=ax(title='Measurement')))
     rates = go.Figure()
-    for col,color,lbl in [('win_rate','#22c55e','Win Rate'),('ko_rate','#00d4ff','KO Rate'),('sub_rate','#8b5cf6','Sub Rate')]:
+    for col,color,lbl in [('win_rate','#d20000','Win Rate'),('ko_rate','#ef4444','KO Rate'),('sub_rate','#8b5cf6','Sub Rate')]:
         rates.add_trace(go.Bar(name=lbl, x=wlbls, y=wc[col], marker_color=color))
     rates.update_layout(**L(title='Win / KO / Submission Rates by Weight Class', height=390,
         barmode='group', showlegend=True, xaxis=ax(title='Weight Class',tickangle=-30),
         yaxis=ax(title='Rate', tickformat='.0%')))
     sa = go.Figure(go.Bar(x=wlbls, y=wc['strike_acc'],
         marker=dict(color=wc['strike_acc'],
-            colorscale=[[0,'#4a9eff'],[0.5,'#00d4ff'],[1,'#22c55e']],
+            colorscale=[[0,'#3b82f6'],[0.5,'#8b5cf6'],[1,'#d20000']],
             showscale=True,
-            colorbar=dict(title=dict(text='Strike Acc.',font=dict(color='#6a9ec0')),
-                          tickfont=dict(color='#6a9ec0'), tickformat='.0%')),
+            colorbar=dict(title=dict(text='Strike Acc.',font=dict(color='#374151')),
+                          tickfont=dict(color='#6b7280'), tickformat='.0%')),
         text=wc['strike_acc'].apply(lambda v: f'{v:.1%}'),
-        textposition='outside', textfont=dict(color='white')))
+        textposition='outside', textfont=dict(color='#374151')))
     sa.update_layout(**L(title='Striking Accuracy by Weight Class', height=370,
         xaxis=ax(title='Weight Class',tickangle=-30), yaxis=ax(title='Strike Accuracy',tickformat='.0%')))
     return jsonify({'physical': jfig(phys), 'rates': jfig(rates), 'strike': jfig(sa)})
@@ -368,9 +370,9 @@ def ch_trends():
     yr['Year'] = yr['Year'].astype(int)
     yr = yr.sort_values('Year')
     mets = [
-        ('KD','#00d4ff','Avg Knockdowns / Fight'), ('TD','#4a9eff','Avg Takedowns / Fight'),
-        ('SA','#f5a623','Striking Accuracy'),       ('Ctrl','#14b8a6','Avg Control Time (s)'),
-        ('Total','#8b5cf6','Total Fights / Year'),  ('SUB','#22c55e','Avg Sub Attempts / Fight'),
+        ('KD','#d20000','Avg Knockdowns / Fight'), ('TD','#ef4444','Avg Takedowns / Fight'),
+        ('SA','#f87171','Striking Accuracy'),       ('Ctrl','#8b5cf6','Avg Control Time (s)'),
+        ('Total','#3b82f6','Total Fights / Year'),  ('SUB','#6b7280','Avg Sub Attempts / Fight'),
     ]
     fig = make_subplots(2,3, subplot_titles=[m[2] for m in mets],
                         vertical_spacing=0.22, horizontal_spacing=0.09)
@@ -390,10 +392,13 @@ def ch_trends():
 @app.route('/api/search')
 def search():
     q = request.args.get('q','').strip().lower()
-    if len(q) < 2: return jsonify([])
+    if not q:
+        # Return all fighters for initial load
+        cols = ['Fighter_Id','Full Name','Stance','height_cm','weight_kg','reach_cm','W','L','D','Win_Rate']
+        return jsonify({'results': fighters_df[cols].head(100).fillna('N/A').to_dict('records')})
     mask = fighters_df['Full Name'].str.lower().str.contains(q, na=False)
     cols = ['Fighter_Id','Full Name','Stance','height_cm','weight_kg','reach_cm','W','L','D','Win_Rate']
-    return jsonify(fighters_df[mask][cols].head(15).fillna('N/A').to_dict('records'))
+    return jsonify({'results': fighters_df[mask][cols].head(50).fillna('N/A').to_dict('records')})
 
 # ── Fighter Detail (with star ratings) ────────────────────────────────────────
 @app.route('/api/fighter/<fid>')
@@ -464,17 +469,17 @@ def fighter_charts(fid):
     # 1) Fights per year (wins vs losses)
     wins_fig = go.Figure()
     wins_fig.add_trace(go.Bar(x=yr['Year'], y=yr['Wins'], name='Wins',
-        marker_color='#00d4ff', marker_line_width=0))
+        marker_color='#d20000', marker_line_width=0))
     wins_fig.add_trace(go.Bar(x=yr['Year'], y=yr['Losses'], name='Losses',
-        marker_color='rgba(255,100,100,0.6)', marker_line_width=0))
+        marker_color='#6b7280', marker_line_width=0))
     wins_fig.update_layout(**L(title='Fights Per Year', height=220, barmode='group',
         showlegend=True, margin=dict(t=40,r=10,b=30,l=40),
-        legend=dict(font=dict(size=10,color='#6a9ec0'), orientation='h', x=0, y=1.15),
+        legend=dict(font=dict(size=10,color='#374151'), orientation='h', x=0, y=1.15),
         xaxis=ax(title=''), yaxis=ax(title='Fights')))
 
     # 2) Strikes per fight by year
     str_fig = go.Figure(go.Bar(x=yr['Year'], y=yr['STR'], name='Avg Strikes',
-        marker=dict(color=yr['STR'], colorscale=[[0,'#4a9eff'],[1,'#00d4ff']], showscale=False),
+        marker=dict(color=yr['STR'], colorscale=[[0,'#3b82f6'],[1,'#d20000']], showscale=False),
         marker_line_width=0))
     str_fig.update_layout(**L(title='Avg Strikes / Fight', height=220,
         margin=dict(t=40,r=10,b=30,l=40),
@@ -484,11 +489,11 @@ def fighter_charts(fid):
     if wm:
         wm_keys = list(wm.keys())
         wm_vals = [wm[k] for k in wm_keys]
-        wm_colors = [{'KO/TKO':'#00d4ff','Submission':'#8b5cf6',
-                       'Decision':'#22c55e','Other':'#f5a623'}.get(k,'#6a9ec0') for k in wm_keys]
+        wm_colors = [{'KO/TKO':'#d20000','Submission':'#8b5cf6',
+                       'Decision':'#3b82f6','Other':'#6b7280'}.get(k,'#9ca3af') for k in wm_keys]
         method_fig = go.Figure(go.Pie(labels=wm_keys, values=wm_vals, hole=0.5,
-            marker=dict(colors=wm_colors, line=dict(color='rgba(0,0,0,0.3)',width=1)),
-            textfont=dict(color='white', size=11), textinfo='label+percent'))
+            marker=dict(colors=wm_colors, line=dict(color='#ffffff',width=2)),
+            textfont=dict(color='#374151', size=11), textinfo='label+percent'))
         method_fig.update_layout(**L(title='Win Methods', height=220,
             margin=dict(t=40,r=10,b=10,l=10), showlegend=False))
     else:
@@ -513,20 +518,20 @@ def fighter_charts(fid):
     rv = radar_vals + [radar_vals[0]]
     rl = radar_lbls + [radar_lbls[0]]
     radar_fig = go.Figure(go.Scatterpolar(r=rv, theta=rl, fill='toself',
-        fillcolor='rgba(0,212,255,0.12)',
-        line=dict(color='#00d4ff', width=2),
-        marker=dict(color='#4a9eff', size=6)))
+        fillcolor='rgba(210,0,0,0.10)',
+        line=dict(color='#d20000', width=2),
+        marker=dict(color='#d20000', size=6)))
     radar_fig.update_layout(
-        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-        polar=dict(bgcolor='rgba(0,212,255,0.02)',
-            radialaxis=dict(visible=True, color='rgba(0,212,255,0.2)',
-                            tickfont=dict(color='#4a7a9b',size=9), range=[0,100]),
-            angularaxis=dict(color='rgba(0,212,255,0.2)',
-                             tickfont=dict(color='#a0d4f0',size=11))),
-        font=dict(color='#6a9ec0', family='Inter, sans-serif'),
+        paper_bgcolor='#ffffff', plot_bgcolor='#ffffff',
+        polar=dict(bgcolor='#fafafa',
+            radialaxis=dict(visible=True, color='#e5e7eb',
+                            tickfont=dict(color='#9ca3af',size=9), range=[0,100]),
+            angularaxis=dict(color='#d1d5db',
+                             tickfont=dict(color='#374151',size=11))),
+        font=dict(color='#374151', family='Inter, sans-serif'),
         margin=dict(t=40,r=30,b=30,l=30), height=220,
-        title=dict(text='Ability Radar', font=dict(size=13,color='#e0f4ff',
-                   family='Oswald, sans-serif'), x=0.05),
+        title=dict(text='Ability Radar', font=dict(size=13,color='#111827',
+                   family='Inter, sans-serif'), x=0.05),
         showlegend=False)
 
     return jsonify({
@@ -621,8 +626,8 @@ def compare():
 
     radar_fig = go.Figure()
     for rv, name, lc, fc in [
-        (r1, n1, '#d20000', 'rgba(210,0,0,0.15)'),
-        (r2, n2, '#cccccc', 'rgba(200,200,200,0.08)')
+        (r1, n1, '#d20000', 'rgba(210,0,0,0.12)'),
+        (r2, n2, '#3b82f6', 'rgba(59,130,246,0.10)')
     ]:
         rl = lbls + [lbls[0]]
         rv2 = rv + [rv[0]]
@@ -632,19 +637,19 @@ def compare():
             marker=dict(color=lc, size=6)))
 
     radar_fig.update_layout(
-        paper_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='#ffffff',
         polar=dict(
-            bgcolor='rgba(10,10,10,1)',
-            radialaxis=dict(visible=True, color='rgba(255,255,255,0.12)',
-                            tickfont=dict(color='#666', size=8), range=[0, 100]),
-            angularaxis=dict(color='rgba(255,255,255,0.12)',
-                             tickfont=dict(color='#cccccc', size=11))),
-        font=dict(color='#aaaaaa', family='Inter, sans-serif'),
-        legend=dict(bgcolor='rgba(0,0,0,0)', font=dict(color='#cccccc', size=11),
-                    orientation='h', x=0.5, xanchor='center', y=-0.05),
+            bgcolor='#fafafa',
+            radialaxis=dict(visible=True, color='#e5e7eb',
+                            tickfont=dict(color='#9ca3af', size=8), range=[0, 100]),
+            angularaxis=dict(color='#d1d5db',
+                             tickfont=dict(color='#374151', size=11))),
+        font=dict(color='#374151', family='Inter, sans-serif'),
+        legend=dict(bgcolor='rgba(255,255,255,0.9)', font=dict(color='#374151', size=11),
+                    orientation='h', x=0.5, xanchor='center', y=-0.05, bordercolor='#e5e7eb', borderwidth=1),
         margin=dict(t=20, r=30, b=30, l=30), height=320, showlegend=True)
 
     return jsonify({'fighter1': fmt(s1, p1), 'fighter2': fmt(s2, p2), 'radar': jfig(radar_fig)})
 
 if __name__ == '__main__':
-    app.run(debug=False, port=5050, host='127.0.0.1')
+    app.run(debug=True, port=5000, host='0.0.0.0')
