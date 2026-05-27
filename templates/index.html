@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UFC Analytics Dashboard | Premium Intelligence</title>
+<title>UFC Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
   --red-dark: #991b1b;
   --red-glow: rgba(210, 0, 0, 0.15);
   --red-bg:   rgba(210, 0, 0, 0.05);
-  --sidebar:  260px;
+  --sidebar:  248px;
   --radius:   12px;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow:   0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -69,7 +69,7 @@ body {
 }
 
 .sb-logo {
-  padding: 24px 20px;
+  padding: 22px 20px;
   border-bottom: 1px solid var(--gray-200);
   display: flex;
   align-items: center;
@@ -77,16 +77,16 @@ body {
 }
 
 .sb-logo-icon {
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   background: linear-gradient(135deg, var(--red), var(--red-light));
-  border-radius: 10px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Oswald', sans-serif;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 16px;
   color: white;
   flex-shrink: 0;
   box-shadow: 0 4px 12px var(--red-glow);
@@ -106,7 +106,7 @@ body {
   text-transform: uppercase;
 }
 
-.sb-nav { flex: 1; padding: 16px 12px; }
+.sb-nav { flex: 1; padding: 18px 14px; }
 
 .sb-section-label {
   font-size: 10px;
@@ -121,9 +121,9 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 12px 14px;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.2s;
   font-size: 14px;
   font-weight: 500;
@@ -137,9 +137,9 @@ body {
 }
 
 .sb-item.active { 
-  background: var(--red-bg);
+  background: rgba(210, 0, 0, 0.07);
   color: var(--red);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .sb-item i { width: 18px; height: 18px; flex-shrink: 0; }
@@ -181,14 +181,14 @@ body {
 }
 
 .topbar {
-  height: 70px;
-  min-height: 70px;
-  background: var(--white);
+  height: 68px;
+  min-height: 68px;
+  background: rgba(255,255,255,0.92);
   border-bottom: 1px solid var(--gray-200);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 32px;
+  justify-content: flex-end;
+  padding: 0 36px;
   gap: 20px;
 }
 
@@ -261,7 +261,7 @@ body {
 .content {
   flex: 1;
   overflow-y: auto;
-  padding: 32px;
+  padding: 30px 40px 44px;
 }
 
 /* ── Section ── */
@@ -272,11 +272,11 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 .section-icon {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   background: linear-gradient(135deg, var(--red), var(--red-light));
   border-radius: 12px;
   display: flex;
@@ -288,7 +288,7 @@ body {
 .section-icon i { width: 22px; height: 22px; }
 .section-title { 
   font-family: 'Space Grotesk', sans-serif; 
-  font-size: 24px; 
+  font-size: 26px; 
   font-weight: 700;
   color: var(--gray-900);
 }
@@ -408,12 +408,13 @@ body {
   position: relative;
   min-height: 360px;
 }
-.chart-wrap.tall { min-height: 480px; }
+.chart-wrap.tall { min-height: 560px; }
 
 .chart-inner {
   width: 100%;
   min-height: 360px;
 }
+.chart-wrap.tall .chart-inner { min-height: 560px; }
 
 .chart-loader {
   position: absolute; 
@@ -684,6 +685,12 @@ body {
   position: relative;
   z-index: 1;
 }
+.overlay-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
 .overlay-photo .silhouette { width: 100px; height: 140px; color: var(--gray-400); }
 
 .overlay-info { 
@@ -702,6 +709,21 @@ body {
   text-transform: uppercase;
   color: var(--red-light);
   margin-bottom: 8px;
+}
+
+.overlay-rank-pill {
+  display: none;
+  width: fit-content;
+  background: rgba(245,158,11,0.18);
+  border: 1px solid rgba(245,158,11,0.45);
+  border-radius: 999px;
+  color: #fbbf24;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  margin-bottom: 12px;
 }
 
 .overlay-name { 
@@ -1166,6 +1188,126 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
+#sec-compare {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+#sec-compare .section-header {
+  margin-bottom: 24px;
+}
+
+#sec-compare .compare-layout {
+  grid-template-columns: minmax(0, 1fr) 84px minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+#sec-compare .compare-side {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid var(--gray-200);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+}
+
+#sec-compare .compare-search {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+#sec-compare .compare-input {
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: #fff;
+}
+
+#sec-compare .compare-input:focus {
+  box-shadow: 0 0 0 4px rgba(210, 0, 0, 0.08);
+}
+
+#sec-compare .compare-fighter-card {
+  margin-top: 16px;
+  min-height: 260px;
+  align-items: center;
+  text-align: center;
+  background: radial-gradient(circle at 50% 0%, rgba(210,0,0,0.10), transparent 36%), #111827;
+  border-color: rgba(255,255,255,0.08);
+  color: white;
+  border-radius: 18px;
+  box-shadow: 0 18px 44px rgba(17, 24, 39, 0.18);
+}
+
+#sec-compare .compare-fighter-card::before {
+  height: 0;
+}
+
+#sec-compare .cfc-photo {
+  width: 140px;
+  height: 164px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+#sec-compare .cfc-name {
+  color: white;
+  font-size: 22px;
+  margin-top: 4px;
+}
+
+#sec-compare .cfc-record {
+  color: rgba(255,255,255,0.72);
+}
+
+#sec-compare .vs-divider {
+  padding-top: 70px;
+}
+
+#sec-compare .vs-badge {
+  width: 64px;
+  height: 64px;
+  box-shadow: 0 16px 32px rgba(210,0,0,0.22);
+}
+
+#sec-compare .compare-go-btn {
+  border-radius: 999px;
+  padding: 15px 34px;
+  box-shadow: 0 16px 34px rgba(210,0,0,0.18);
+}
+
+#sec-compare .prob-section,
+#sec-compare .stats-compare-grid,
+#sec-compare .compare-radar-card {
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+}
+
+#sec-compare .prob-track {
+  height: 44px;
+  border-radius: 999px;
+}
+
+#sec-compare .prob-f1 {
+  border-radius: 999px 0 0 999px;
+}
+
+#sec-compare .prob-f2 {
+  border-radius: 0 999px 999px 0;
+}
+
+@media (max-width: 920px) {
+  #sec-compare .compare-layout {
+    grid-template-columns: 1fr;
+  }
+
+  #sec-compare .vs-divider {
+    padding-top: 0;
+  }
+}
+
 /* ── Global search overlay ── */
 .gsearch-overlay {
   position: fixed; 
@@ -1260,6 +1402,307 @@ body {
   font-size: 14px;
 }
 
+
+/* ── Top 15 Rankings ── */
+#sec-top15 {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+#sec-top15 .section-header {
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.division-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+.div-tab {
+  padding: 9px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--gray-200);
+  background: var(--white);
+  color: var(--gray-700);
+  transition: all 0.2s;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+.div-tab:hover { border-color: var(--red); color: var(--red); }
+.div-tab.active {
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+  box-shadow: 0 10px 20px rgba(210, 0, 0, 0.16);
+}
+
+.rankings-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+}
+@media (max-width: 1400px) { .rankings-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 1100px) { .rankings-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.champion-hero-card {
+  grid-column: 1 / -1;
+  min-height: 220px;
+  background: radial-gradient(circle at 72% 20%, rgba(245,158,11,0.28), transparent 34%),
+              linear-gradient(135deg, #111827 0%, #1f2937 48%, #450a0a 100%);
+  border: 1px solid rgba(245,158,11,0.45);
+  border-radius: 14px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(220px, 0.55fr);
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 20px 55px rgba(17,24,39,0.18);
+}
+.champion-hero-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,0.38), transparent 58%);
+  pointer-events: none;
+}
+.champion-copy {
+  padding: 26px 30px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+.champion-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  background: rgba(245,158,11,0.16);
+  border: 1px solid rgba(245,158,11,0.45);
+  border-radius: 999px;
+  color: #fbbf24;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  margin-bottom: 12px;
+}
+.champion-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 38px;
+  line-height: 1;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.champion-subtitle {
+  color: rgba(255,255,255,0.68);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.champion-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.champion-chip {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.88);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 9px;
+}
+.champion-media {
+  position: relative;
+  min-height: 220px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+.champion-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  max-height: 240px;
+  filter: drop-shadow(0 22px 36px rgba(0,0,0,0.45));
+}
+.rankings-subhead {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+  margin-bottom: 2px;
+  color: var(--gray-700);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.rankings-subhead::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gray-200);
+  margin-left: 14px;
+}
+.ranked-fighters-grid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  max-height: 52vh;
+  min-height: 340px;
+  overflow-y: auto;
+  padding: 4px 10px 12px 2px;
+  scrollbar-gutter: stable;
+}
+@media (max-width: 1400px) { .ranked-fighters-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 1100px) { .ranked-fighters-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .ranked-fighters-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) {
+  .champion-hero-card { grid-template-columns: 1fr; }
+  .champion-title { font-size: 34px; }
+  .champion-copy { padding: 24px; }
+}
+
+.rank-card {
+  background: linear-gradient(180deg, #ffffff 0%, #fbfbfc 100%);
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+.rank-card:hover {
+  border-color: var(--red);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(210, 0, 0, 0.12);
+}
+.rank-card.champ { border-color: #f59e0b; }
+.rank-card.champ:hover { border-color: #f59e0b; box-shadow: 0 8px 24px rgba(245,158,11,0.2); }
+
+.rank-badge {
+  position: absolute;
+  top: 10px; left: 10px;
+  width: 28px; height: 28px;
+  background: var(--red);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(210,0,0,0.4);
+}
+.rank-badge.gold {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 2px 8px rgba(245,158,11,0.4);
+}
+.rank-badge i { width: 14px; height: 14px; }
+
+.rank-photo {
+  height: 225px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+.rank-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+}
+.rank-photo .silhouette {
+  width: 70px; height: 95px;
+  color: var(--gray-400);
+}
+.rank-photo::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 50px;
+  background: linear-gradient(to top, var(--white), transparent);
+}
+.rank-card.champ .rank-photo::after {
+  background: linear-gradient(to top, #fffbeb, transparent);
+}
+.rank-card.champ .rank-photo {
+  background: linear-gradient(180deg, #fef3c7 0%, #fde68a 100%);
+}
+
+.rank-info {
+  padding: 12px 14px 14px;
+}
+.rank-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gray-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+.rank-nickname {
+  font-size: 11px;
+  color: var(--gray-500);
+  font-style: italic;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rank-record {
+  font-size: 12px;
+  color: var(--gray-600);
+  margin-bottom: 8px;
+}
+.rank-record strong { color: var(--red); font-size: 14px; }
+.rank-stats {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.rank-stat {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: var(--gray-100);
+  color: var(--gray-600);
+}
+.rank-stat.red { background: var(--red-bg); color: var(--red); }
+.rank-stat.gold-bg { background: #fef3c7; color: #92400e; }
+.belt-icon { color: #f59e0b; margin-left: 4px; }
+
+.div-loading {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; justify-content: center;
+  padding: 60px;
+  color: var(--gray-400);
+  gap: 12px;
+  font-size: 14px;
+}
+.div-loading .spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--gray-200);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
 </style>
 </head>
 <body>
@@ -1269,8 +1712,8 @@ body {
   <div class="sb-logo">
     <div class="sb-logo-icon">UFC</div>
     <div>
-      <div class="sb-logo-text">ANALYTICS</div>
-      <div class="sb-logo-sub">Dashboard</div>
+      <div class="sb-logo-text">Dashboard</div>
+      <div class="sb-logo-sub">Analytics</div>
     </div>
   </div>
 
@@ -1297,6 +1740,10 @@ body {
     <div class="sb-item" onclick="showSection('trends',this)">
       <i data-lucide="trending-up"></i> Trends
     </div>
+    <div class="sb-section-label">Rankings</div>
+    <div class="sb-item" onclick="showSection('top15',this)" id="top15-nav-item">
+        <i data-lucide="trophy"></i> Champions + Rankings
+    </div>
     <div class="sb-section-label">Fighters</div>
     <div class="sb-item" onclick="showSection('fighters',this)">
       <i data-lucide="users"></i> Fighter Search
@@ -1321,7 +1768,6 @@ body {
 <div class="main">
   <!-- Topbar -->
   <div class="topbar">
-    <div class="topbar-title">UFC <span>Analytics</span></div>
     <div class="topbar-right">
       <button class="search-btn" onclick="openGSearch()">
         <i data-lucide="search"></i>
@@ -1541,9 +1987,9 @@ body {
           <div class="section-sub">Physical and performance breakdown by division</div>
         </div>
       </div>
-      <div class="grid-3">
+      <div class="grid-2" style="margin-bottom:16px">
         <div class="card">
-          <div class="card-header"><div class="card-title"><i data-lucide="ruler"></i> Physical Stats</div></div>
+          <div class="card-header"><div class="card-title"><i data-lucide="ruler"></i> Physical Stats by Division</div></div>
           <div class="card-body">
             <div class="chart-wrap" id="wrap-wc-phys">
               <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
@@ -1552,7 +1998,7 @@ body {
           </div>
         </div>
         <div class="card">
-          <div class="card-header"><div class="card-title"><i data-lucide="percent"></i> Win/KO Rates</div></div>
+          <div class="card-header"><div class="card-title"><i data-lucide="percent"></i> Win &amp; KO Rates</div></div>
           <div class="card-body">
             <div class="chart-wrap" id="wrap-wc-rates">
               <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
@@ -1560,13 +2006,13 @@ body {
             </div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title"><i data-lucide="crosshair"></i> Strike Accuracy</div></div>
-          <div class="card-body">
-            <div class="chart-wrap" id="wrap-wc-str">
-              <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
-              <div class="chart-inner" id="chart-wc-str"></div>
-            </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i data-lucide="crosshair"></i> Strike Accuracy by Division</div></div>
+        <div class="card-body">
+          <div class="chart-wrap" id="wrap-wc-str">
+            <div class="chart-loader"><div class="spinner"></div>Loading chart...</div>
+            <div class="chart-inner" id="chart-wc-str"></div>
           </div>
         </div>
       </div>
@@ -1728,6 +2174,21 @@ body {
       </div>
     </div>
 
+    <!-- Champions + Top 15 Rankings -->
+    <div class="section" id="sec-top15">
+      <div class="section-header">
+        <div class="section-icon"><i data-lucide="trophy"></i></div>
+        <div>
+            <div class="section-title">Official Men's UFC Champions + Rankings</div>
+            <div class="section-sub">Current official UFC men's champions and division rankings</div>
+        </div>
+      </div>
+      <div class="division-tabs" id="div-tabs"></div>
+      <div class="rankings-grid" id="rankings-grid">
+        <div class="div-loading"><div class="spinner"></div> Select a division above</div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1737,6 +2198,7 @@ body {
     <button class="overlay-close" onclick="closeOverlay()"><i data-lucide="x"></i></button>
     <div class="overlay-hero">
       <div class="overlay-photo" id="ov-photo">
+        <img src="" alt="" style="display:none">
         <svg viewBox="0 0 80 110" fill="currentColor" class="silhouette">
           <ellipse cx="42" cy="13" rx="11" ry="12"/>
           <path d="M37 24 L47 24 L49 31 L35 31 Z"/>
@@ -1748,6 +2210,7 @@ body {
         </svg>
       </div>
       <div class="overlay-info">
+        <div class="overlay-rank-pill" id="ov-rank-pill"></div>
         <div class="overlay-nickname" id="ov-nickname"></div>
         <div class="overlay-name" id="ov-name">Fighter Name</div>
         <div class="overlay-record">
@@ -1838,7 +2301,7 @@ function renderChart(elId, fig, height) {
   layout.plot_bgcolor = '#ffffff';
   layout.font = { color: '#374151', family: 'Inter, sans-serif', size: 12 };
   layout.margin = layout.margin || { t: 40, r: 30, b: 60, l: 60 };
-  layout.height = height || 360;
+  layout.height = height || layout.height || 360;
   
   // Axis styling
   const axisStyle = {
@@ -1907,9 +2370,9 @@ async function loadPhysical() {
     const resp = await fetch('/api/charts/physical');
     if (!resp.ok) throw new Error(resp.status);
     const data = await resp.json();
-    if (data.charts && data.charts[0]) renderChart('chart-physical',  data.charts[0], 440);
+    if (data.charts && data.charts[0]) renderChart('chart-physical',  data.charts[0], 560);
     else showError('wrap-physical');
-    if (data.charts && data.charts[1]) renderChart('chart-physical2', data.charts[1], 440);
+    if (data.charts && data.charts[1]) renderChart('chart-physical2', data.charts[1], 560);
     else showError('wrap-physical2');
   } catch(e) {
     showError('wrap-physical');
@@ -1978,7 +2441,136 @@ function loadSection(id) {
   if (id === 'outcomes')   return loadCharts('/api/charts/outcomes',  [['chart-outcomes-multi','metrics'],['chart-outcomes-stacked','time']]);
   if (id === 'weight')     return loadCharts('/api/charts/weight',    [['chart-wc-phys','physical'],['chart-wc-rates','rates'],['chart-wc-str','strike']]);
   if (id === 'trends')     return loadCharts('/api/charts/trends',    [['chart-trends','trends']]);
+  if (id === 'top15')      return initTop15();
   if (id === 'fighters')   return initFighters();
+}
+
+// ── Top 15 Rankings ──
+let top15Divisions = [];
+let top15ActiveDiv = '';
+let currentRankingFighters = [];
+
+async function initTop15() {
+  try {
+    const resp = await fetch('/api/top15');
+    const data = await resp.json();
+    top15Divisions = data.divisions || [];
+    const tabs = document.getElementById('div-tabs');
+    tabs.innerHTML = top15Divisions.map(d =>
+      `<div class="div-tab" onclick="loadDivision('${d}')">${d}</div>`
+    ).join('');
+    if (top15Divisions.length > 0) loadDivision(top15Divisions[0]);
+  } catch(e) {
+    document.getElementById('rankings-grid').innerHTML = '<div class="div-loading">Failed to load divisions</div>';
+  }
+}
+
+async function loadDivision(division) {
+  top15ActiveDiv = division;
+  // Update tabs
+  document.querySelectorAll('.div-tab').forEach(t => {
+    t.classList.toggle('active', t.textContent === division);
+  });
+  const grid = document.getElementById('rankings-grid');
+  grid.innerHTML = '<div class="div-loading"><div class="spinner"></div> Loading ' + division + '...</div>';
+  try {
+    const resp = await fetch('/api/top15/' + encodeURIComponent(division));
+    const data = await resp.json();
+    renderRankings(data.fighters || []);
+  } catch(e) {
+    grid.innerHTML = '<div class="div-loading">Failed to load rankings</div>';
+  }
+}
+
+function fighterImgHTML(fid, classes) {
+  return `<img src="/static/fighters/${fid}.jpg" class="${classes}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" alt="">
+          <span style="display:none">${SVG_SIL}</span>`;
+}
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"]/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;'
+  }[char]));
+}
+
+function rankingImage(f) {
+  return f.image || (f.Fighter_Id ? `/static/fighters/${f.Fighter_Id}.jpg` : '');
+}
+
+function openRankedFighter(index) {
+  const fighter = currentRankingFighters[index];
+  if (!fighter) return;
+  openFighter(fighter.Fighter_Id || '', fighter);
+}
+
+function renderRankings(fighters) {
+  const grid = document.getElementById('rankings-grid');
+  if (!fighters.length) {
+    grid.innerHTML = '<div class="div-loading">No fighters found for this division</div>';
+    return;
+  }
+  currentRankingFighters = fighters;
+  const champion = fighters.find(f => f.belt === 1);
+  const ranked = fighters.filter(f => f.belt !== 1);
+
+  const championHTML = champion ? (() => {
+    const idx = fighters.indexOf(champion);
+    const nickname = champion.nickname && champion.nickname !== 'No Nickname' && champion.nickname !== 'nan'
+      ? `"${escapeHTML(champion.nickname)}"` : '';
+    return `
+    <div class="champion-hero-card" onclick="openRankedFighter(${idx})">
+      <div class="champion-copy">
+        <div class="champion-kicker"><i data-lucide="crown"></i> ${escapeHTML(top15ActiveDiv)} Champion</div>
+        <div class="champion-title">${escapeHTML(champion.name)}</div>
+        <div class="champion-subtitle">${nickname || 'Official UFC division champion'}</div>
+        <div class="champion-meta">
+          <span class="champion-chip">Record ${escapeHTML(champion.W)}-${escapeHTML(champion.L)}-${escapeHTML(champion.D)}</span>
+          <span class="champion-chip">${escapeHTML(champion.win_rate)}% wins</span>
+          ${Number(champion.ko_rate || 0) > 0 ? `<span class="champion-chip">${escapeHTML(champion.ko_rate)}% KO</span>` : ''}
+          <span class="champion-chip">${escapeHTML(champion.total_fights)} fights</span>
+        </div>
+      </div>
+      <div class="champion-media">
+        <img src="${escapeHTML(rankingImage(champion))}" alt="${escapeHTML(champion.name)}">
+      </div>
+    </div>
+    <div class="rankings-subhead">${escapeHTML(top15ActiveDiv)} Ranked Fighters</div>`;
+  })() : '';
+
+  const rankedHTML = ranked.map(f => {
+      const idx = fighters.indexOf(f);
+      const imageSrc = rankingImage(f);
+    const nickname = f.nickname && f.nickname !== 'No Nickname' && f.nickname !== 'nan'
+      ? `"${escapeHTML(f.nickname)}"` : '';
+    return `
+    <div class="rank-card" onclick="openRankedFighter(${idx})">
+        <div class="rank-badge">${escapeHTML(f.rank)}</div>
+      <div class="rank-photo">
+        <img src="${escapeHTML(imageSrc)}"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+             style="width:100%;height:100%;object-fit:cover;object-position:center 18%"
+             alt="${escapeHTML(f.name)}">
+        <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center">
+          ${SVG_SIL}
+        </div>
+      </div>
+      <div class="rank-info">
+        <div class="rank-name">${escapeHTML(f.name)}</div>
+        ${nickname ? `<div class="rank-nickname">${nickname}</div>` : ''}
+        <div class="rank-record"><strong>${escapeHTML(f.W)}</strong>-${escapeHTML(f.L)}-${escapeHTML(f.D)}</div>
+        <div class="rank-stats">
+          <span class="rank-stat red">${escapeHTML(f.win_rate)}% W</span>
+          ${Number(f.ko_rate || 0) > 0 ? `<span class="rank-stat">KO ${escapeHTML(f.ko_rate)}%</span>` : ''}
+          <span class="rank-stat">${escapeHTML(f.total_fights)} fights</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  grid.innerHTML = championHTML + `<div class="ranked-fighters-grid">${rankedHTML}</div>`;
+  lucide.createIcons({ el: grid });
 }
 
 // ── Fighter Search ──
@@ -2012,7 +2604,6 @@ function renderFighters() {
     const name = f['Full Name'] || 'Unknown';
     const w = f.W || 0, l = f.L || 0, d = f.D || 0;
     const stance = f.Stance || '';
-    // Handle win rate - ensure it's a proper percentage
     let winRate = '';
     if (f.Win_Rate != null) {
       const rate = f.Win_Rate <= 1 ? f.Win_Rate * 100 : f.Win_Rate;
@@ -2021,7 +2612,13 @@ function renderFighters() {
     return `
     <div class="fighter-card" onclick="openFighter('${f.Fighter_Id}')">
       <div class="fighter-card-img">
-        ${SVG_SIL}
+        <img src="/static/fighters/${f.Fighter_Id}.jpg"
+             style="width:100%;height:100%;object-fit:cover;object-position:top center"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+             alt="${name}">
+        <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center">
+          ${SVG_SIL}
+        </div>
       </div>
       <div class="fighter-card-info">
         <div class="fighter-card-name">${name}</div>
@@ -2054,23 +2651,56 @@ function renderFighters() {
 }
 
 // ── Fighter Overlay ──
-async function openFighter(fid) {
+async function openFighter(fid, rankingContext = null) {
   document.getElementById('fighter-overlay').classList.add('open');
   try {
-    const [infoResp, chartResp] = await Promise.all([
-      fetch('/api/fighter/' + fid),
-      fetch('/api/fighter/' + fid + '/charts')
-    ]);
-    const info   = await infoResp.json();
-    const charts = await chartResp.json();
+    const hasFighterId = Boolean(fid);
+    const chartIds = ['ov-chart-methods', 'ov-chart-radar', 'ov-chart-wl'];
+    chartIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = '';
+    });
+
+    let info = rankingContext ? { ...rankingContext } : {};
+    let charts = {};
+
+    if (hasFighterId) {
+      const [infoResp, chartResp] = await Promise.all([
+        fetch('/api/fighter/' + fid),
+        fetch('/api/fighter/' + fid + '/charts')
+      ]);
+      const apiInfo = await infoResp.json();
+      charts = await chartResp.json();
+      info = { ...apiInfo, ...info };
+    }
 
     const photo = document.getElementById('ov-photo');
-    photo.innerHTML = SVG_SIL;
+    const imgEl = photo.querySelector('img');
+    const silEl = photo.querySelector('.silhouette');
+    const fidClean = (info['Fighter_Id'] || info.Fighter_Id || '').toString();
+    const imageSrc = info.image || (fidClean ? '/static/fighters/' + fidClean + '.jpg' : '');
+    if (imageSrc && imgEl) {
+      imgEl.src = imageSrc;
+      imgEl.style.display = '';
+      if (silEl) silEl.style.display = 'none';
+      imgEl.onerror = () => { imgEl.style.display = 'none'; if(silEl) silEl.style.display = ''; };
+    } else {
+      if (imgEl) imgEl.style.display = 'none';
+      if (silEl) silEl.style.display = '';
+    }
+
+    const rankPill = document.getElementById('ov-rank-pill');
+    if (rankPill) {
+      const rankText = info.belt === 1 ? `${top15ActiveDiv} Champion` : (info.rank_label || (info.rank ? `${top15ActiveDiv} #${info.rank}` : ''));
+      rankPill.textContent = rankText;
+      rankPill.style.display = rankText ? 'inline-flex' : 'none';
+    }
 
     // Set nickname if available
     const nicknameEl = document.getElementById('ov-nickname');
     if (nicknameEl) {
-      nicknameEl.textContent = info.Nickname && info.Nickname !== 'No Nickname' ? `"${info.Nickname}"` : '';
+      const nickname = info.Nickname || info.nickname;
+      nicknameEl.textContent = nickname && nickname !== 'No Nickname' && nickname !== 'nan' ? `"${nickname}"` : '';
     }
 
     document.getElementById('ov-name').textContent = info['Full Name'] || info.name || fid;
@@ -2083,20 +2713,40 @@ async function openFighter(fid) {
     const heightCm = info.height_cm || info['Ht.'];
     const weightKg = info.weight_kg || info['Wt.'];
     const reachCm = info.reach_cm || info['Reach'];
-    const weightClass = info.Weight_Class_Std || info.Weight_Class || 'N/A';
-    
-    attrs.innerHTML = [
-      ['Height', heightCm ? Math.round(heightCm) + ' cm' : 'N/A'],
-      ['Weight', weightKg ? Math.round(weightKg) + ' kg' : 'N/A'],
-      ['Reach', reachCm ? Math.round(reachCm) + ' cm' : 'N/A'],
-      ['Stance', info.Stance || 'N/A'],
+    const weightClass = info.Weight_Class_Std || info.Weight_Class || top15ActiveDiv || 'N/A';
+    const totalFights = info.Total_Fights || info.total_fights || ((Number(info.W) || 0) + (Number(info.L) || 0) + (Number(info.D) || 0));
+    const rankingFallbackStats = rankingContext ? [
       ['Division', weightClass],
-      ['Fights', info.Total_Fights || ((info.W || 0) + (info.L || 0) + (info.D || 0))],
-    ].map(([lbl, val]) => `<div class="attr-item"><div class="attr-label">${lbl}</div><div class="attr-value">${val}</div></div>`).join('');
+      ['Rank', info.rank_label || (info.belt === 1 ? 'Champion' : (info.rank ? '#' + info.rank : 'N/A'))],
+      ['Fights', totalFights || 'N/A'],
+      ['Win Rate', info.win_rate != null ? info.win_rate + '%' : 'N/A'],
+      ['KO Rate', info.ko_rate != null ? info.ko_rate + '%' : 'N/A'],
+      ['Sig Str', info.sig_str != null ? info.sig_str + '%' : 'N/A'],
+    ] : null;
+
+    const detailStats = [
+      ['Height', heightCm ? Math.round(heightCm) + ' cm' : null],
+      ['Weight', weightKg ? Math.round(weightKg) + ' kg' : null],
+      ['Reach', reachCm ? Math.round(reachCm) + ' cm' : null],
+      ['Stance', info.Stance || null],
+      ['Division', weightClass],
+      ['Fights', totalFights || 'N/A'],
+    ];
+
+    attrs.innerHTML = (rankingFallbackStats || detailStats).map(([lbl, val]) =>
+      `<div class="attr-item"><div class="attr-label">${lbl}</div><div class="attr-value">${val || 'N/A'}</div></div>`
+    ).join('');
 
     // Star ratings
     const starsGrid = document.getElementById('ov-stars');
     const ratings = info.stars || {};
+    if (rankingContext && !info.stars) {
+      ratings.striking = Math.max(1, Math.min(5, Math.round((Number(info.sig_str) || 0) / 20)));
+      ratings.ko_power = Math.max(1, Math.min(5, Math.round((Number(info.ko_rate) || 0) / 20)));
+      ratings.grappling = 3;
+      ratings.win_rate = Math.max(1, Math.min(5, Math.round((Number(info.win_rate) || 0) / 20)));
+      ratings.experience = Math.max(1, Math.min(5, Math.round((Number(totalFights) || 0) / 8)));
+    }
     const starKeys = [
       ['striking',   'Striking'],
       ['ko_power',   'KO Power'],
@@ -2112,18 +2762,21 @@ async function openFighter(fid) {
 
     // Render charts with proper sizing
     if (charts.methods) renderChart('ov-chart-methods', charts.methods, 200);
-    if (charts.radar)   renderChart('ov-chart-radar',   charts.radar,   200);
-    if (charts.wins)    renderChart('ov-chart-wl',      charts.wins,    200);
+    else document.getElementById('ov-chart-methods').innerHTML = '<div class="div-loading">No chart data</div>';
+    if (charts.radar) renderChart('ov-chart-radar', charts.radar, 200);
+    else document.getElementById('ov-chart-radar').innerHTML = '<div class="div-loading">No chart data</div>';
+    if (charts.wins) renderChart('ov-chart-wl', charts.wins, 200);
+    else document.getElementById('ov-chart-wl').innerHTML = '<div class="div-loading">No chart data</div>';
 
     // Performance bars with actual data
     const perf = document.getElementById('ov-perf-bars');
-    const wins = info.W || 0;
-    const total = (info.W || 0) + (info.L || 0) + (info.D || 0);
-    const wr = total > 0 ? (wins / total * 100) : 0;
+    const wins = Number(info.W) || 0;
+    const total = totalFights || ((Number(info.W) || 0) + (Number(info.L) || 0) + (Number(info.D) || 0));
+    const wr = info.win_rate != null ? Number(info.win_rate) : (total > 0 ? (wins / total * 100) : 0);
     
     // Get actual rates if available, otherwise use star ratings
-    const strikeAcc = info.Strike_Acc ? (info.Strike_Acc <= 1 ? info.Strike_Acc * 100 : info.Strike_Acc) : (ratings.striking || 0) / 5 * 100;
-    const koRate = info.KO_Rate ? (info.KO_Rate <= 1 ? info.KO_Rate * 100 : info.KO_Rate) : (ratings.ko_power || 0) / 5 * 100;
+    const strikeAcc = info.Strike_Acc ? (info.Strike_Acc <= 1 ? info.Strike_Acc * 100 : info.Strike_Acc) : (info.sig_str != null ? Number(info.sig_str) : (ratings.striking || 0) / 5 * 100);
+    const koRate = info.KO_Rate ? (info.KO_Rate <= 1 ? info.KO_Rate * 100 : info.KO_Rate) : (info.ko_rate != null ? Number(info.ko_rate) : (ratings.ko_power || 0) / 5 * 100);
     const subRate = info.Sub_Rate ? (info.Sub_Rate <= 1 ? info.Sub_Rate * 100 : info.Sub_Rate) : (ratings.grappling || 0) / 5 * 100;
     
     perf.innerHTML = [
@@ -2230,6 +2883,12 @@ function selectCompare(side, fid, name, w, l, d) {
   card.classList.add('visible');
   document.getElementById('cmp-name-' + side).textContent = name;
   document.getElementById('cmp-record-' + side).innerHTML = `<strong>${w}</strong>-${l}-${d}`;
+  document.getElementById('cmp-photo-' + side).innerHTML = `
+    <img src="/static/fighters/${fid}.jpg"
+         style="width:100%;height:100%;object-fit:cover;object-position:center 18%"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+         alt="${name}">
+    <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center">${SVG_SIL}</div>`;
 }
 
 document.addEventListener('click', e => {
@@ -2243,58 +2902,90 @@ async function runCompare() {
     alert('Please select both fighters first.');
     return;
   }
+
   const results = document.getElementById('cmp-results');
   results.classList.add('visible');
+
   const wrap = document.getElementById('wrap-cmp-radar');
-  const loader = wrap.querySelector('.chart-loader');
-  if (loader) loader.style.display = 'flex';
+  const loader = wrap ? wrap.querySelector('.chart-loader') : null;
+  if (loader) {
+    loader.style.display = 'flex';
+    loader.innerHTML = '<div class="spinner"></div>Loading comparison...';
+  }
 
   try {
-    const resp = await fetch(`/api/compare?f1=${cmpFighters[1].id}&f2=${cmpFighters[2].id}`);
+    const resp = await fetch(`/api/compare?f1=${encodeURIComponent(cmpFighters[1].id)}&f2=${encodeURIComponent(cmpFighters[2].id)}`);
+    if (!resp.ok) throw new Error('Comparison API failed: ' + resp.status);
+
     const data = await resp.json();
     if (data.error) throw new Error(data.error);
 
-    const f1 = data.fighter1, f2 = data.fighter2;
-    const p1 = data.prob1, p2 = data.prob2;
+    const f1 = data.fighter1;
+    const f2 = data.fighter2;
+
+    const p1 = f1.win_prob || 0;
+    const p2 = f2.win_prob || 0;
 
     document.getElementById('prob-name-f1').textContent = f1.name;
     document.getElementById('prob-name-f2').textContent = f2.name;
-    document.getElementById('prob-pct-f1').textContent  = p1 + '%';
-    document.getElementById('prob-pct-f2').textContent  = p2 + '%';
-    document.getElementById('prob-bar-f1').style.width  = p1 + '%';
+    document.getElementById('prob-pct-f1').textContent = p1 + '%';
+    document.getElementById('prob-pct-f2').textContent = p2 + '%';
+    document.getElementById('prob-bar-f1').style.width = p1 + '%';
 
     const statDefs = [
-      ['Win Rate',      'win_rate',    '%'],
-      ['KO Rate',       'ko_rate',     '%'],
-      ['Sub Rate',      'sub_rate',    '%'],
-      ['Sig Str %',     'sig_str_pct', '%'],
-      ['Total Fights',  'fights',      ''],
+      ['Win Rate', 'win_rate', '%'],
+      ['KO Rate', 'ko_rate', '%'],
+      ['Sub Rate', 'sub_rate', '%'],
+      ['Sig Str %', 'sig_str', '%'],
+      ['Total Fights', 'total_fights', ''],
     ];
 
-    const rowsLeft  = document.getElementById('cmp-stat-rows');
-    const rowsMid   = document.getElementById('cmp-stat-labels');
+    const rowsLeft = document.getElementById('cmp-stat-rows');
+    const rowsMid = document.getElementById('cmp-stat-labels');
     const rowsRight = document.getElementById('cmp-stat-rows2');
-    rowsLeft.innerHTML  = '';
-    rowsMid.innerHTML   = '';
+
+    rowsLeft.innerHTML = '';
+    rowsMid.innerHTML = '';
     rowsRight.innerHTML = '';
 
     statDefs.forEach(([label, key, unit]) => {
-      const v1 = f1[key] != null ? (unit === '%' ? (f1[key]*100).toFixed(1) + '%' : f1[key]) : 'N/A';
-      const v2 = f2[key] != null ? (unit === '%' ? (f2[key]*100).toFixed(1) + '%' : f2[key]) : 'N/A';
-      const win1 = f1[key] != null && f2[key] != null && f1[key] > f2[key];
-      const win2 = f1[key] != null && f2[key] != null && f2[key] > f1[key];
-      rowsLeft.innerHTML  += `<div class="stat-row-f1 ${win1 ? 'stat-winner' : ''}">${v1}</div>`;
-      rowsMid.innerHTML   += `<div class="stat-row-label">${label}</div>`;
+      const raw1 = f1[key];
+      const raw2 = f2[key];
+
+      const v1 = raw1 != null
+        ? unit === '%'
+          ? (raw1 * 100).toFixed(1) + '%'
+          : raw1
+        : 'N/A';
+
+      const v2 = raw2 != null
+        ? unit === '%'
+          ? (raw2 * 100).toFixed(1) + '%'
+          : raw2
+        : 'N/A';
+
+      const win1 = raw1 != null && raw2 != null && raw1 > raw2;
+      const win2 = raw1 != null && raw2 != null && raw2 > raw1;
+
+      rowsLeft.innerHTML += `<div class="stat-row-f1 ${win1 ? 'stat-winner' : ''}">${v1}</div>`;
+      rowsMid.innerHTML += `<div class="stat-row-label">${label}</div>`;
       rowsRight.innerHTML += `<div class="stat-row-f2 ${win2 ? 'stat-winner' : ''}">${v2}</div>`;
     });
 
-    if (data.radar) renderChart('chart-cmp-radar', data.radar, 360);
-    else if (loader) loader.style.display = 'none';
+    if (data.radar) {
+      renderChart('chart-cmp-radar', data.radar, 360);
+    } else if (loader) {
+      loader.style.display = 'none';
+    }
 
-  } catch(e) {
-    if (loader) loader.innerHTML = '<span class="chart-error"><i data-lucide="alert-circle"></i> Failed to load comparison</span>';
+  } catch (e) {
+    console.error('Comparison error:', e);
+    if (loader) {
+      loader.innerHTML = '<span class="chart-error"><i data-lucide="alert-circle"></i> Failed to load comparison</span>';
+    }
     lucide.createIcons();
   }
+
   results.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 

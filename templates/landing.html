@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UFC Analytics | Premium Data Intelligence Platform</title>
+<title>UFC Analytics | Fighter Performance Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -159,7 +159,7 @@ nav {
   height: 80px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   background: transparent;
   transition: all 0.4s ease;
 }
@@ -169,56 +169,6 @@ nav.scrolled {
   backdrop-filter: blur(20px);
   box-shadow: 0 2px 40px rgba(0,0,0,0.08);
 }
-
-nav.scrolled .nav-logo { color: var(--dark); }
-nav.scrolled .nav-logo span { color: var(--red); }
-nav.scrolled .nav-links a { color: var(--dark); }
-nav.scrolled .nav-links a:hover { color: var(--red); }
-
-.nav-logo {
-  font-family: 'Oswald', sans-serif;
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  color: var(--white);
-  text-decoration: none;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.nav-logo span { color: var(--red); }
-
-.nav-links {
-  display: flex;
-  gap: 40px;
-  list-style: none;
-}
-
-.nav-links a {
-  color: var(--white-80);
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--red);
-  transition: width 0.3s ease;
-}
-
-.nav-links a:hover::after { width: 100%; }
 
 .nav-btn {
   padding: 14px 32px;
@@ -485,6 +435,23 @@ nav.scrolled .nav-btn {
   font-weight: 700;
   letter-spacing: 1px;
   color: var(--white);
+}
+
+.insight-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--red);
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+.insight-badge span {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--white);
+  text-transform: uppercase;
 }
 
 .live-dot {
@@ -825,7 +792,6 @@ footer {
 
 @media (max-width: 768px) {
   nav { padding: 0 24px; }
-  .nav-links { display: none; }
   .hero-content { padding: 100px 24px 60px; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
   .features-section { padding: 80px 24px; }
@@ -834,6 +800,248 @@ footer {
   .cta-inner { flex-direction: column; text-align: center; }
   .audio-control { bottom: 20px; right: 20px; padding: 10px 16px; }
 }
+
+/* ── Top 15 Section ── */
+.top15-section {
+  background: var(--dark);
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+.top15-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+}
+
+.top15-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.top15-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.top15-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.top15-badge-line { width: 40px; height: 1px; background: var(--red); }
+.top15-badge-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.top15-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.top15-title span { color: var(--red); }
+.top15-subtitle {
+  font-size: 16px;
+  color: var(--white-60);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.top15-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 36px;
+}
+.top15-tab {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid var(--white-20);
+  background: transparent;
+  color: var(--white-60);
+  transition: all 0.2s;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+.top15-tab:hover { border-color: var(--red); color: var(--white); }
+.top15-tab.active { background: var(--red); border-color: var(--red); color: var(--white); }
+
+.top15-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+@media (max-width: 1300px) { .top15-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 1000px) { .top15-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 700px)  { .top15-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.t15-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+}
+.t15-card:hover {
+  border-color: var(--red);
+  background: rgba(210,0,0,0.07);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(210,0,0,0.2);
+}
+.t15-card.champ {
+  border-color: var(--gold);
+  background: rgba(201,162,39,0.06);
+}
+.t15-card.champ:hover {
+  border-color: var(--gold);
+  box-shadow: 0 12px 32px rgba(201,162,39,0.2);
+}
+
+.t15-rank {
+  position: absolute;
+  top: 10px; left: 10px;
+  width: 28px; height: 28px;
+  background: var(--red);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(210,0,0,0.5);
+}
+.t15-rank.gold-badge {
+  background: linear-gradient(135deg, var(--gold), #b8860b);
+  box-shadow: 0 2px 8px rgba(201,162,39,0.5);
+  font-size: 11px;
+}
+
+.t15-photo {
+  height: 180px;
+  background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+.t15-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.t15-silhouette {
+  width: 65px; height: 88px;
+  opacity: 0.25;
+}
+.t15-photo::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  background: linear-gradient(to top, rgba(10,10,10,0.9), transparent);
+  pointer-events: none;
+}
+.t15-card.champ .t15-photo {
+  background: linear-gradient(180deg, #1a1500 0%, #111 100%);
+}
+
+.t15-info {
+  padding: 10px 14px 14px;
+}
+.t15-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+.t15-nickname {
+  font-size: 11px;
+  color: var(--white-40);
+  font-style: italic;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 16px;
+}
+.t15-record {
+  font-size: 12px;
+  color: var(--white-60);
+  margin-bottom: 8px;
+}
+.t15-record strong { color: var(--red-light); font-size: 14px; }
+.t15-card.champ .t15-record strong { color: var(--gold); }
+.t15-stats {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.t15-stat {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.07);
+  color: var(--white-60);
+}
+.t15-stat.red { background: rgba(210,0,0,0.2); color: #ff6666; }
+.t15-stat.gold { background: rgba(201,162,39,0.2); color: var(--gold); }
+
+.top15-loader {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; justify-content: center;
+  padding: 60px;
+  color: var(--white-40);
+  gap: 12px;
+  font-size: 14px;
+}
+.top15-loader .ld-spin {
+  width: 28px; height: 28px;
+  border: 2px solid rgba(255,255,255,0.1);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: t15spin 0.7s linear infinite;
+}
+@keyframes t15spin { to { transform: rotate(360deg); } }
+
+.top15-cta {
+  text-align: center;
+  margin-top: 36px;
+}
+.top15-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--red);
+  color: white;
+  padding: 14px 32px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: background 0.2s, transform 0.2s;
+}
+.top15-cta-btn:hover { background: var(--red-light); transform: translateY(-2px); }
+.top15-cta-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
 </style>
 </head>
 <body>
@@ -871,13 +1079,6 @@ footer {
 
   <!-- Navigation -->
   <nav id="navbar">
-    <a href="/" class="nav-logo">UFC<span>Analytics</span></a>
-    <ul class="nav-links">
-      <li><a href="/dashboard">Dashboard</a></li>
-      <li><a href="/dashboard#sec-physical">Research</a></li>
-      <li><a href="/dashboard#sec-fighters">Fighters</a></li>
-      <li><a href="/dashboard#sec-compare">Compare</a></li>
-    </ul>
     <a href="/dashboard" class="nav-btn">
       <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       Launch Dashboard
@@ -890,7 +1091,7 @@ footer {
       <div class="hero-left">
         <div class="badge">
           <div class="badge-dot"></div>
-          <span class="badge-text">Premium Data Intelligence</span>
+          <span class="badge-text">UFC Performance Analysis</span>
         </div>
         
         <h1 class="hero-title">
@@ -941,10 +1142,9 @@ footer {
       <div class="hero-right">
         <div class="stats-card" id="stats-card">
           <div class="card-header">
-            <span class="card-title">Live Statistics</span>
-            <div class="live-badge">
-              <div class="live-dot"></div>
-              <span>Live</span>
+            <span class="card-title">Dataset Highlights</span>
+            <div class="insight-badge">
+              <span>Insights</span>
             </div>
           </div>
           
@@ -1089,6 +1289,33 @@ footer {
   </div>
 </section>
 
+
+<!-- Top 15 Rankings -->
+<section class="top15-section">
+  <div class="top15-container">
+    <div class="top15-header">
+      <div class="top15-badge">
+        <div class="top15-badge-line"></div>
+          <span class="top15-badge-text">Men's Division Rankings</span>
+        <div class="top15-badge-line"></div>
+      </div>
+      <h2 class="top15-title">Champions + <span>Top 15</span></h2>
+        <p class="top15-subtitle">Explore the current official UFC men's champions and ranked fighters across each division.</p>
+    </div>
+    <div class="top15-tabs" id="landing-div-tabs">
+      <div class="top15-loader"><div class="ld-spin"></div> Loading divisions...</div>
+    </div>
+    <div class="top15-grid" id="landing-rankings-grid">
+    </div>
+    <div class="top15-cta">
+      <a href="/dashboard#sec-top15" class="top15-cta-btn">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        View Full Rankings
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- CTA Banner -->
 <div class="cta-banner">
   <div class="cta-inner">
@@ -1121,7 +1348,7 @@ footer {
         <div class="footer-stat-label">Divisions</div>
       </div>
     </div>
-    <div class="footer-copyright">Premium Data Intelligence Platform</div>
+    <div class="footer-copyright">UFC Data Analysis Platform</div>
   </div>
 </footer>
 
@@ -1232,6 +1459,134 @@ document.addEventListener('mousemove', (e) => {
   const x = (e.clientX / window.innerWidth - 0.5) * 10;
   const y = (e.clientY / window.innerHeight - 0.5) * 10;
   statsCard.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
+});
+</script>
+<script>
+// ── Top 15 Rankings (Landing Page) ──
+const SVG_SIL_LANDING = `<svg viewBox="0 0 80 110" fill="currentColor" class="t15-silhouette">
+  <ellipse cx="42" cy="13" rx="11" ry="12"/>
+  <path d="M37 24 L47 24 L49 31 L35 31 Z"/>
+  <path d="M22 33 Q42 29 62 34 L60 77 Q42 82 22 75 Z"/>
+  <path d="M22 40 L6 58 Q4 62 8 63 L12 60 L25 48Z"/>
+  <path d="M62 40 L78 54 Q80 57 78 60 L74 58 L62 48Z"/>
+  <path d="M30 76 Q26 96 22 110 L34 110 L40 77Z"/>
+  <path d="M52 77 Q58 96 62 110 L50 110 L44 77Z"/>
+</svg>`;
+
+let landingDivisions = [];
+let landingActiveDivision = '';
+
+async function initLandingTop15() {
+  const tabsEl = document.getElementById('landing-div-tabs');
+  const grid = document.getElementById('landing-rankings-grid');
+
+  try {
+    const resp = await fetch('/api/top15');
+    if (!resp.ok) throw new Error('Top 15 API not available');
+
+    const data = await resp.json();
+    landingDivisions = data.divisions || [];
+
+    if (!landingDivisions.length) {
+      if (tabsEl) tabsEl.innerHTML = '';
+      if (grid) grid.innerHTML = '<div class="top15-loader">No ranking data found</div>';
+      return;
+    }
+
+    tabsEl.innerHTML = landingDivisions.map(d =>
+      `<div class="top15-tab" onclick="loadLandingDivision('${d}')">${d}</div>`
+    ).join('');
+
+    loadLandingDivision(landingDivisions[0]);
+  } catch(e) {
+    if (tabsEl) tabsEl.innerHTML = '';
+    if (grid) grid.innerHTML = '<div class="top15-loader">Top 15 rankings will appear here when the dashboard data API is running.</div>';
+  }
+}
+
+async function loadLandingDivision(division) {
+  landingActiveDivision = division;
+  document.querySelectorAll('.top15-tab').forEach(t => {
+    t.classList.toggle('active', t.textContent === division);
+  });
+
+  const grid = document.getElementById('landing-rankings-grid');
+  grid.innerHTML = '<div class="top15-loader"><div class="ld-spin"></div> Loading ' + division + '...</div>';
+
+  try {
+    const resp = await fetch('/api/top15/' + encodeURIComponent(division));
+    if (!resp.ok) throw new Error('Division rankings not available');
+
+    const data = await resp.json();
+    renderLandingRankings(data.fighters || []);
+  } catch(e) {
+    grid.innerHTML = '<div class="top15-loader">Unable to load ' + division + ' rankings right now.</div>';
+  }
+}
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"]/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;'
+  }[char]));
+}
+
+function renderLandingRankings(fighters) {
+  const grid = document.getElementById('landing-rankings-grid');
+  const topFighters = fighters;
+
+  if (!topFighters.length) {
+    grid.innerHTML = '<div class="top15-loader">No fighters found for this division</div>';
+    return;
+  }
+
+  grid.innerHTML = topFighters.map(f => {
+      const isChamp = f.belt === 1;
+      const fighterName = escapeHTML(f.name || 'Unknown Fighter');
+      const fighterId = escapeHTML(f.Fighter_Id || 'placeholder');
+      const imageSrc = escapeHTML(f.image || `/static/fighters/${fighterId}.jpg`);
+      const rank = f.rank || '';
+      const rankContent = isChamp
+        ? `<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+        : escapeHTML(rank);
+    const nickname = f.nickname && f.nickname !== 'No Nickname' && f.nickname !== 'nan' && f.nickname !== 'None'
+      ? '"' + escapeHTML(f.nickname) + '"' : '';
+    const wins = escapeHTML(f.W ?? 0);
+    const losses = escapeHTML(f.L ?? 0);
+    const draws = escapeHTML(f.D ?? 0);
+    const winRate = escapeHTML(f.win_rate ?? 0);
+    const koRate = Number(f.ko_rate || 0);
+
+    return `
+      <div class="t15-card${isChamp ? ' champ' : ''}" onclick="window.location='/dashboard#sec-top15'">
+        <div class="t15-rank${isChamp ? ' gold-badge' : ''}">${rankContent}</div>
+      <div class="t15-photo">
+        <img src="${imageSrc}"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+             style="width:100%;height:100%;object-fit:cover;object-position:top center"
+             alt="${fighterName}">
+        <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center">
+          ${SVG_SIL_LANDING}
+        </div>
+      </div>
+      <div class="t15-info">
+        <div class="t15-name">${fighterName}</div>
+        <div class="t15-nickname">${nickname}</div>
+        <div class="t15-record"><strong>${wins}</strong>-${losses}-${draws}</div>
+        <div class="t15-stats">
+          <span class="t15-stat red">${winRate}% W</span>
+          ${koRate > 0 ? '<span class="t15-stat">' + escapeHTML(koRate) + '% KO</span>' : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Init on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  initLandingTop15();
 });
 </script>
 </body>
