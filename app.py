@@ -60,7 +60,7 @@ fights_df['Win_Method'] = fights_df['Method'].apply(categorize_method)
 
 # ── Precompute percentile thresholds for star ratings ─────────────────────────
 PCTILES = {}
-for col in ['Sig. Str. %', 'KO Rate', 'SUB Rate', 'Win_Rate', 'Total_Fights', 'TD']:
+for col in ['Strike_Acc', 'KO_Rate', 'Sub_Rate', 'Win_Rate', 'Total_Fights', 'Avg_Takedowns']:
     if col in fighter_stats_df.columns:
         vals = fighter_stats_df[col].dropna()
         PCTILES[col] = [float(vals.quantile(q)) for q in [0.2, 0.4, 0.6, 0.8]]
@@ -147,11 +147,11 @@ def kpis():
 @app.route('/api/charts/overview')
 def ch_overview():
     cols = [c for c in ['height_cm','weight_kg','reach_cm','Win_Rate',
-                         'Sig. Str. %','KO Rate','SUB Rate','TD','SUB']
+                         'Strike_Acc','KO_Rate','Sub_Rate','Avg_Takedowns','Avg_Sub_Attempts']
             if c in fighter_stats_df.columns]
     labels = {'height_cm':'Height','weight_kg':'Weight','reach_cm':'Reach',
-              'Win_Rate':'Win Rate','Sig. Str. %':'Strike Acc','KO Rate':'KO Rate',
-              'SUB Rate':'Sub Rate','TD':'Takedowns','SUB':'Submissions'}
+              'Win_Rate':'Win Rate','Strike_Acc':'Strike Acc','KO_Rate':'KO Rate',
+              'Sub_Rate':'Sub Rate','Avg_Takedowns':'Takedowns','Avg_Sub_Attempts':'Submissions'}
     corr = fighter_stats_df[cols].dropna().corr()
     z    = np.round(corr.values, 2)
     disp = [labels.get(c, c) for c in corr.columns]
@@ -181,7 +181,7 @@ def ch_physical():
     df = fighter_stats_df.dropna(subset=['height_cm','weight_kg','reach_cm','Win_Rate']).copy()
     attrs = [('height_cm','Height (cm)'), ('reach_cm','Reach (cm)'), ('weight_kg','Weight (kg)')]
     charts = []
-    for metric_col, metric_lbl in [('Win_Rate','Win Rate'), ('Sig. Str. %','Striking Accuracy %')]:
+    for metric_col, metric_lbl in [('Win_Rate','Win Rate'), ('Strike_Acc','Striking Accuracy %')]:
         if metric_col not in df.columns: continue
         dm = df.dropna(subset=[metric_col])
         fig = make_subplots(1, 3,
@@ -220,8 +220,8 @@ def ch_stance():
     df = fighter_stats_df.dropna(subset=['Stance','Win_Rate'])
     df = df[df['Stance'].isin(MAIN)].copy()
     ss = df.groupby('Stance').agg(Win_Rate=('Win_Rate','mean'), Count=('Win_Rate','count'),
-        KO_Rate=('KO Rate','mean'), Sub_Rate=('SUB Rate','mean'),
-        Strike_Acc=('Sig. Str. %','mean')).reset_index()
+        KO_Rate=('KO_Rate','mean'), Sub_Rate=('Sub_Rate','mean'),
+        Strike_Acc=('Strike_Acc','mean')).reset_index()
     bar = go.Figure()
     for col, lbl, color in [('Win_Rate','Win Rate','#d20000'),('KO_Rate','KO Rate','#ef4444'),
                               ('Sub_Rate','Sub Rate','#8b5cf6'),('Strike_Acc','Strike Acc','#3b82f6')]:
@@ -251,11 +251,11 @@ def ch_stance():
 def ch_experience():
     df = fighter_stats_df.dropna(subset=['Total_Fights','Win_Rate']).copy()
     bins  = [0,5,10,15,20,25,float('inf')]
-    blbls = ['1–5','6–10','11–15','16–20','21–25','26+']
+    blbls = ['1-5','6-10','11-15','16-20','21-25','26+']
     df['Exp'] = pd.cut(df['Total_Fights'], bins=bins, labels=blbls)
     es = df.groupby('Exp', observed=True).agg(Win_Rate=('Win_Rate','mean'),
-        Count=('Win_Rate','count'), KO_Rate=('KO Rate','mean'),
-        Sub_Rate=('SUB Rate','mean')).reset_index()
+        Count=('Win_Rate','count'), KO_Rate=('KO_Rate','mean'),
+        Sub_Rate=('Sub_Rate','mean')).reset_index()
     fig_bar = make_subplots(specs=[[{'secondary_y': True}]])
     fig_bar.add_trace(go.Bar(x=es['Exp'].astype(str), y=es['Win_Rate'], name='Avg Win Rate',
         marker=dict(color=PAL[:len(es)], line=dict(width=0)),
@@ -328,8 +328,8 @@ def ch_outcomes():
 def ch_weight():
     wc = fighter_stats_df.groupby('Weight_Class_Std').agg(
         height=('height_cm','mean'), weight=('weight_kg','mean'), reach=('reach_cm','mean'),
-        win_rate=('Win_Rate','mean'), strike_acc=('Sig. Str. %','mean'),
-        ko_rate=('KO Rate','mean'), sub_rate=('SUB Rate','mean')).reset_index()
+        win_rate=('Win_Rate','mean'), strike_acc=('Strike_Acc','mean'),
+        ko_rate=('KO_Rate','mean'), sub_rate=('Sub_Rate','mean')).reset_index()
     wc = wc.dropna(subset=['Weight_Class_Std'])
     cat   = pd.CategoricalDtype(categories=WC_ORDER, ordered=True)
     wc['Weight_Class_Std'] = wc['Weight_Class_Std'].astype(cat)
@@ -411,8 +411,8 @@ def fighter_detail(fid):
 
     # Star ratings
     stars = {}
-    rating_map = [('Sig. Str. %','striking'), ('KO Rate','ko_power'),
-                  ('SUB Rate','grappling'), ('Win_Rate','win_rate'), ('Total_Fights','experience')]
+    rating_map = [('Strike_Acc','striking'), ('KO_Rate','ko_power'),
+                  ('Sub_Rate','grappling'), ('Win_Rate','win_rate'), ('Total_Fights','experience')]
     for col, lbl in rating_map:
         val = d.get(col)
         if val != 'N/A':
@@ -423,7 +423,7 @@ def fighter_detail(fid):
 
     # Radar values (0–100 scale)
     radar = {'labels': ['Striking','Power','Grappling','Win Rate','Experience'], 'values': []}
-    for col in ['Sig. Str. %','KO Rate','SUB Rate','Win_Rate','Total_Fights']:
+    for col in ['Strike_Acc','KO_Rate','Sub_Rate','Win_Rate','Total_Fights']:
         val = d.get(col)
         try:
             v = float(val)
